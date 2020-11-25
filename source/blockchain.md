@@ -51,6 +51,10 @@ enum Regions {
 
 后续会给出一些兼容已有链的特定实现，比如[executor_chaincode](https://github.com/cita-cloud/executor_chaincode)就是兼容`Fabric`的实现。
 
+也可以针对一些特定应用场景，提供特定的`VM`和智能合约编程语言。比如可信计算，隐私计算，数据格式转换等。
+
+甚至可以不提供智能合约，直接针对具体应用实现，类似于原生合约。
+
 #### Consensus
 `Consensus`微服务，主要提供让提案在多个共识参与方之间达成一致的功能。接口包括：
 
