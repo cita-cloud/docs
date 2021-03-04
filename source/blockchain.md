@@ -6,7 +6,7 @@
 
 设计上依然采用微服务架构，划分为`Controller`，`Network`，`Consensus`，`Storage`，`Executor`，`KMS`六个微服务。微服务之间相互解耦，达到不同实现可以灵活替换，自由组合的目的。
 
-解耦设计的细节参见[底层链技术白皮书](https://github.com/cita-cloud/rfcs/blob/master/rfcs/0002-technology/0002-technology.md)。
+解耦设计的细节参见[底层链技术白皮书](https://talk.citahub.com/t/topic/1663)。
 
 在此基础上，为了能够快速构建起完整的，成熟的生态。在之前解耦的基础上，让解耦出的每一个微服务都能独立完成某项功能，每个微服务的接口能够自洽，方便直接复用已有的库或者软件。
 
@@ -42,7 +42,7 @@ enum Regions {
 #### KMS
 `KMS`微服务，主要提供私钥加密存储，以及相关的密码学服务。接口有：`GenerateKeyPair`，`HashData`，`VerifyDataHash`，`SignMessage`，`RecoverSignature`，形成——生成密钥对/哈希以及相关的验证/签名以及相关的验证——这么一个自洽的功能集合。可以认为是一个软件加密机加上一个密码学工具箱。
 
-目前的实现[kms](https://github.com/cita-cloud/kms)，支持`secp256k1+keccak`和`sm2+sm3`两种密码学算法组合。
+目前的实现[kms_eth](https://github.com/cita-cloud/kms_eth)和[kms_sm](https://github.com/cita-cloud/kms_sm)，分别实现了`secp256k1+keccak`和`sm2+sm3`两种密码学算法组合。
 
 #### Executor
 `Executor`微服务，主要提供根据交易改变链上状态以及查询链上状态的功能。接口有：`Exec`和`Call`，分别对应执行和查询。
