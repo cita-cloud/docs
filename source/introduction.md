@@ -1,11 +1,6 @@
 # CITA-Cloud 介绍
 ### 产品定位
-`CITA-Cloud`定位于可信的连接不同的业务系统，包括传统应用，行业应用，云和物联网设备。
-![](_static/images/position.png)
-详情参见[产品定位白皮书](https://talk.citahub.com/t/topic/1662)。
-### 系统架构
-`CITA-Cloud`是一个完整的解决方案，除了区块链底层，还包括中间件层面的各种服务，以及上层的数字资产管理层。支撑企业用户在各种不同的基础设施上直接构建各种行业解决方案的能力。
-![](_static/images/architecture.png)
+参见[产品定位白皮书](https://talk.citahub.com/t/topic/1662)。
 ### 运行环境
 `CITA-Cloud`默认运行在`k8s`环境中，原因有：
 
