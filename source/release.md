@@ -1,5 +1,5 @@
 # 版本
-### v0.1.0
-[版本发布说明](https://github.com/cita-cloud/runner_k8s/releases/tag/v0.1.0)
-### v0.2.0
-[版本发布说明](https://github.com/cita-cloud/runner_k8s/releases/tag/v0.2.0)
+### v3.0.0
+[版本发布说明](https://github.com/cita-cloud/runner_k8s/releases/tag/v3.0.0)
+### v4.0.0
+[版本发布说明](https://github.com/cita-cloud/runner_k8s/releases/tag/v4.0.0)
