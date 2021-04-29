@@ -18,7 +18,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'CITA-Cloud'
-copyright = '2020, Rivtower'
+copyright = '2021, Rivtower'
 author = 'Rivtower'
 
 
