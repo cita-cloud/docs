@@ -42,9 +42,9 @@ minikube start --registry-mirror=https://hub-mirror.c.163.com --image-repository
 1. 下载配置生成工具。
    
     ```
-    $ wget https://github.com/cita-cloud/runner_k8s/archive/refs/heads/master.zip
-    $ unzip master.zip
-    $ cd runner_k8s-master
+    $ wget https://github.com/cita-cloud/runner_k8s/archive/refs/heads/v5.0.0.zip
+    $ unzip v5.0.0.zip
+    $ cd runner_k8s-5.0.0
     $ ls
     config.xml         create_k8s_config.py  create_syncthing_config.py  requirements.txt
     create_account.py  create_pvc.py         README.md                   service-config.toml
@@ -93,7 +93,7 @@ cita-cloud
 
 `test-chain.yaml`用于将链部署到`k8s`集群，里面声明了相关的`secret/deployment/service`，文件名跟链的名称保持一致。
 
-针对更复杂的情况，有更多可设置的参数，参见[runner_k8s文档](https://github.com/cita-cloud/runner_k8s/blob/master/README.md)。
+针对更复杂的情况，有更多可设置的参数，参见[runner_k8s文档](https://github.com/cita-cloud/runner_k8s/blob/v5.0.0/README.md)。
 
 
 ## 运行链
@@ -143,9 +143,9 @@ docker@minikube:~$ tail -10f cita-cloud-datadir/cita-cloud/test-chain/node0/logs
 #### 下载cita_cloud_proto
 
 ```
-$ wget https://github.com/cita-cloud/cita_cloud_proto/archive/refs/heads/master.zip
-$ unzip master.zip
-$ cd cita_cloud_proto-master
+$ wget https://github.com/cita-cloud/cita_cloud_proto/archive/refs/heads/v5.0.0.zip
+$ unzip v5.0.0.zip
+$ cd cita_cloud_proto-5.0.0
 $ ls
 build.rs  Cargo.toml  protos  README.md  src
 ```
@@ -160,8 +160,8 @@ build.rs  Cargo.toml  protos  README.md  src
 
 ```
 $ ./grpcurl -emit-defaults -plaintext -d '{"flag": false}' \
--proto ~/cita_cloud_proto-master/protos/controller.proto \
--import-path ~/cita_cloud_proto-master/protos \
+-proto ~/cita_cloud_proto-5.0.0/protos/controller.proto \
+-import-path ~/cita_cloud_proto-5.0.0/protos \
 `minikube ip`:30004 controller.RPCService/GetBlockNumber
 {
 "blockNumber": "320"
@@ -172,8 +172,8 @@ $ ./grpcurl -emit-defaults -plaintext -d '{"flag": false}' \
 
 ```
 $ ./grpcurl -emit-defaults -plaintext -d '{"flag": false}' \
--proto ~/cita_cloud_proto-master/protos/controller.proto \
--import-path ~/cita_cloud_proto-master/protos \
+-proto ~/cita_cloud_proto-5.0.0/protos/controller.proto \
+-import-path ~/cita_cloud_proto-5.0.0/protos \
 `minikube ip`:30004 controller.RPCService/GetSystemConfig
 {
   "version": 0,

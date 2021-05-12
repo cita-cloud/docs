@@ -29,8 +29,8 @@ $ ./update_admin update -a 0x380fc667f4ccd2e91366331f76d4030d27427185 -i 1 -c `m
 
 ```
 $ ./grpcurl -emit-defaults -plaintext -d '' \
-    -proto ~/cita_cloud_proto-master/protos/controller.proto \
-    -import-path ~/cita_cloud_proto-master/protos \
+    -proto ~/cita_cloud_proto-5.0.0/protos/controller.proto \
+    -import-path ~/cita_cloud_proto-5.0.0/protos \
     `minikube ip`:30004 \
     controller.RPCService/GetSystemConfig
 {
@@ -62,8 +62,8 @@ $ echo OA/GZ/TM0ukTZjMfdtQDDSdCcYU= | base64 -d | hexdump -C
 
 ```
 $ ./grpcurl -emit-defaults -plaintext -d '' \
-    -proto ~/cita_cloud_proto-master/protos/controller.proto \
-    -import-path ~/cita_cloud_proto-master/protos \
+    -proto ~/cita_cloud_proto-5.0.0/protos/controller.proto \
+    -import-path ~/cita_cloud_proto-5.0.0/protos \
     `minikube ip`:30004 \
     controller.RPCService/GetSystemConfig
 {
@@ -92,8 +92,8 @@ $ ./update_validators update -i 1 -c `minikube ip`:30004 -v 0x9b87c3739321b4753a
 
 ```
 $ ./grpcurl -emit-defaults -plaintext -d '' \
-    -proto ~/cita_cloud_proto-master/protos/controller.proto \
-    -import-path ~/cita_cloud_proto-master/protos \
+    -proto ~/cita_cloud_proto-5.0.0/protos/controller.proto \
+    -import-path ~/cita_cloud_proto-5.0.0/protos \
     `minikube ip`:30004 \
     controller.RPCService/GetSystemConfig
 {
@@ -142,8 +142,8 @@ $ echo /+cBkHTdwT0+qxRU+jRFRY3A8NA= | base64 -d | hexdump -C
 
 ```
 $ ./grpcurl -emit-defaults -plaintext -d '' \
-    -proto ~/cita_cloud_proto-master/protos/controller.proto \
-    -import-path ~/cita_cloud_proto-master/protos \
+    -proto ~/cita_cloud_proto-5.0.0/protos/controller.proto \
+    -import-path ~/cita_cloud_proto-5.0.0/protos \
     `minikube ip`:30004 \
     controller.RPCService/GetSystemConfig
 {
@@ -167,8 +167,8 @@ $ ./set_block_interval set -i 1 -c `minikube ip`:30004 -b 3
 
 ```
 $ ./grpcurl -emit-defaults -plaintext -d '' \
-    -proto ~/cita_cloud_proto-master/protos/controller.proto \
-    -import-path ~/cita_cloud_proto-master/protos \
+    -proto ~/cita_cloud_proto-5.0.0/protos/controller.proto \
+    -import-path ~/cita_cloud_proto-5.0.0/protos \
     `minikube ip`:30004 \
     controller.RPCService/GetSystemConfig
 {
@@ -205,8 +205,8 @@ $ ./emergency_brake enable -i 1
 
 ```
 $ ./grpcurl -emit-defaults -plaintext -d '' \
-    -proto ~/cita_cloud_proto-master/protos/controller.proto \
-    -import-path ~/cita_cloud_proto-master/protos \
+    -proto ~/cita_cloud_proto-5.0.0/protos/controller.proto \
+    -import-path ~/cita_cloud_proto-5.0.0/protos \
     `minikube ip`:30004 \
     controller.RPCService/GetSystemConfig
 {
@@ -234,8 +234,8 @@ $ ./emergency_brake disable -i 1
 
 ```
 $ ./grpcurl -emit-defaults -plaintext -d '' \
-    -proto ~/cita_cloud_proto-master/protos/controller.proto \
-    -import-path ~/cita_cloud_proto-master/protos \
+    -proto ~/cita_cloud_proto-5.0.0/protos/controller.proto \
+    -import-path ~/cita_cloud_proto-5.0.0/protos \
     `minikube ip`:30004 \
     controller.RPCService/GetSystemConfig
 {

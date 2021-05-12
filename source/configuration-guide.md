@@ -1,6 +1,6 @@
 # 配置说明
 
-参见[runner_k8s文档](https://github.com/cita-cloud/runner_k8s/blob/master/README.md)。
+参见[runner_k8s文档](https://github.com/cita-cloud/runner_k8s/blob/v5.0.0/README.md)。
 
 ## 链级配置
 

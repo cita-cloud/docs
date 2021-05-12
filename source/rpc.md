@@ -16,8 +16,8 @@
 
 ```
 $ ./grpcurl -emit-defaults -plaintext -d '' \
-    -proto ~/cita_cloud_proto-master/protos/controller.proto \
-    -import-path ~/cita_cloud_proto-master/protos \
+    -proto ~/cita_cloud_proto-5.0.0/protos/controller.proto \
+    -import-path ~/cita_cloud_proto-5.0.0/protos \
     `minikube ip`:30004 controller.RPCService/GetPeerCount
 {
   "peerCount": "2"
@@ -40,8 +40,8 @@ $ ./grpcurl -emit-defaults -plaintext -d '' \
 
 ```
 $ ./grpcurl -emit-defaults -plaintext -d '{"flag": false}' \
-    -proto ~/cita_cloud_proto-master/protos/controller.proto \
-    -import-path ~/cita_cloud_proto-master/protos \
+    -proto ~/cita_cloud_proto-5.0.0/protos/controller.proto \
+    -import-path ~/cita_cloud_proto-5.0.0/protos \
     `minikube ip`:30004 controller.RPCService/GetBlockNumber
 {
   "blockNumber": "320"
@@ -65,8 +65,8 @@ $ ./grpcurl -emit-defaults -plaintext -d '{"flag": false}' \
 
 ```
 $ ./grpcurl -emit-defaults -plaintext -d '{"hash": "n7T5mKGARwowz5DFLV5tpanV+XCxnQ4P4YAuSjDTmdA="}' \
-    -proto ~/cita_cloud_proto-master/protos/controller.proto \
-    -import-path ~/cita_cloud_proto-master/protos \
+    -proto ~/cita_cloud_proto-5.0.0/protos/controller.proto \
+    -import-path ~/cita_cloud_proto-5.0.0/protos \
     `minikube ip`:30004 controller.RPCService/GetTransaction
 {
   "normalTx": {
@@ -105,8 +105,8 @@ $ ./grpcurl -emit-defaults -plaintext -d '{"hash": "n7T5mKGARwowz5DFLV5tpanV+XCx
 
 ```
 $ ./grpcurl -emit-defaults -plaintext -d '' \
-    -proto ~/cita_cloud_proto-master/protos/controller.proto \
-    -import-path ~/cita_cloud_proto-master/protos \
+    -proto ~/cita_cloud_proto-5.0.0/protos/controller.proto \
+    -import-path ~/cita_cloud_proto-5.0.0/protos \
     `minikube ip`:30004 controller.RPCService/GetSystemConfig
 {
   "version": 0,
@@ -142,8 +142,8 @@ $ ./grpcurl -emit-defaults -plaintext -d '' \
 
 ```
 $ ./grpcurl -emit-defaults -plaintext -d '' \
-    -proto ~/cita_cloud_proto-master/protos/controller.proto \
-    -import-path ~/cita_cloud_proto-master/protos \
+    -proto ~/cita_cloud_proto-5.0.0/protos/controller.proto \
+    -import-path ~/cita_cloud_proto-5.0.0/protos \
     `minikube ip`:30004 controller.RPCService/GetVersion
 {
   "version": "4.0.0"
@@ -166,8 +166,8 @@ $ ./grpcurl -emit-defaults -plaintext -d '' \
 
 ```
 $ ./grpcurl -emit-defaults -plaintext -d '{"block_number": 10}' \
-    -proto ~/cita_cloud_proto-master/protos/controller.proto \
-    -import-path ~/cita_cloud_proto-master/protos \
+    -proto ~/cita_cloud_proto-5.0.0/protos/controller.proto \
+    -import-path ~/cita_cloud_proto-5.0.0/protos \
     `minikube ip`:30004 controller.RPCService/GetBlockHash
 {
   "hash": "zt8g46kl/bZraBM2nb+6Jao7bu0IAUb83U+IPsgs3Hk="
@@ -190,8 +190,8 @@ $ ./grpcurl -emit-defaults -plaintext -d '{"block_number": 10}' \
 
 ```
 $ ./grpcurl -emit-defaults -plaintext -d '{"hash": "fJkDwCaMi7mOnHTVQ/IcGNr83aoUxnj5kAkDDhRkya0="}' \
-   -proto ~/cita_cloud_proto-master/protos/controller.proto \
-   -import-path ~/cita_cloud_proto-master/protos \
+   -proto ~/cita_cloud_proto-5.0.0/protos/controller.proto \
+   -import-path ~/cita_cloud_proto-5.0.0/protos \
    `minikube ip`:30004 controller.RPCService/GetTransactionBlockNumber
 {
   "blockNumber": "22"
@@ -214,8 +214,8 @@ $ ./grpcurl -emit-defaults -plaintext -d '{"hash": "fJkDwCaMi7mOnHTVQ/IcGNr83aoU
 
 ```
 $ ./grpcurl -emit-defaults -plaintext -d '{"hash": "fJkDwCaMi7mOnHTVQ/IcGNr83aoUxnj5kAkDDhRkya0="}' \
-    -proto ~/cita_cloud_proto-master/protos/controller.proto \
-    -import-path ~/cita_cloud_proto-master/protos \
+    -proto ~/cita_cloud_proto-5.0.0/protos/controller.proto \
+    -import-path ~/cita_cloud_proto-5.0.0/protos \
     `minikube ip`:30004 controller.RPCService/GetTransactionIndex
 {
   "txIndex": "2"
@@ -238,8 +238,8 @@ $ ./grpcurl -emit-defaults -plaintext -d '{"hash": "fJkDwCaMi7mOnHTVQ/IcGNr83aoU
 
 ```
 $ ./grpcurl -emit-defaults -plaintext -d '{"hash": "CeTdeke5A8WeTexqWBxl5elFb8vaHFkLYcTkPo5JAMs="}' \
-    -proto ~/cita_cloud_proto-master/protos/controller.proto \
-    -import-path ~/cita_cloud_proto-master/protos \
+    -proto ~/cita_cloud_proto-5.0.0/protos/controller.proto \
+    -import-path ~/cita_cloud_proto-5.0.0/protos \
     `minikube ip`:30004 controller.RPCService/GetBlockByHash
 {
   "version": 0,
@@ -274,8 +274,8 @@ $ ./grpcurl -emit-defaults -plaintext -d '{"hash": "CeTdeke5A8WeTexqWBxl5elFb8va
 
 ```
 $ ./grpcurl -emit-defaults -plaintext -d '{"block_number": 10}' \
-    -proto ~/cita_cloud_proto-master/protos/controller.proto \
-    -import-path ~/cita_cloud_proto-master/protos \
+    -proto ~/cita_cloud_proto-5.0.0/protos/controller.proto \
+    -import-path ~/cita_cloud_proto-5.0.0/protos \
     `minikube ip`:30004 controller.RPCService/GetBlockByNumber
 {
   "version": 0,
