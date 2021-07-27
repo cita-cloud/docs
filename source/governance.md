@@ -1,50 +1,57 @@
 # 治理
 本章节的操作需要超级管理员权限，且都非常危险，请谨慎操作。
 
-## 安装工具
+超级管理员账户在`运行CITA-Cloud`时指定，详情参见`快速入门`相关章节的内容。
 
-目前工具还比较原始，且没有提供编译好的二进制，需要用户自行下载源码编译安装。
+在`cloud-cli`中登录超级管理员账户：
+```
+$ cldi account login admin
+OK, now the default user is `admin`, account addr is 0xae069e1925a1dad2a1f4c7034d87258dfd9b6532
+```
 
-参见[仓库地址](https://github.com/cita-cloud/tools)。
-
-## 超级管理员
+## 更新超级管理员
 
 超级管理员可以指定下一任超级管理员。
 
 操作示例：
 
-在链的配置过程中，会生成存放超级管理员私钥的数据库文件`kms.db`和账户在数据库中的序号`key_id`。
-
-使用跟链匹配的`kms`组件和前述`kms.db`来启动`kms`服务。
-
-通过`-i`传递超级管理员账户的`key_id`，`-a`参数传递新的`super admin`账户地址。
-
-```
-$ ./update_admin update -a 0x380fc667f4ccd2e91366331f76d4030d27427185 -i 1 -c `minikube ip`:30004
-2021-04-28T16:06:16.609927914+08:00 INFO update_admin - waiting for a while...
-2021-04-28T16:06:25.677037921+08:00 INFO update_admin - OK!
-```
-
-查询`SystemConfig`确认`admin`变成了新的账户地址。
-
-```
-$ ./grpcurl -emit-defaults -plaintext -d '' \
-    -proto ~/cita_cloud_proto-master/protos/controller.proto \
-    -import-path ~/cita_cloud_proto-master/protos \
-    `minikube ip`:30004 \
-    controller.RPCService/GetSystemConfig
-{
-  ...
-  "admin": "OA/GZ/TM0ukTZjMfdtQDDSdCcYU=",
-  ...
-  "adminPreHash": "2bq+B1JoDUUFggNM7tjhFI/Y6MQQIGwS4EkaoiG9a6E=",
-  ...
-}
-$ echo OA/GZ/TM0ukTZjMfdtQDDSdCcYU= | base64 -d | hexdump -C
-00000000  38 0f c6 67 f4 cc d2 e9  13 66 33 1f 76 d4 03 0d  |8..g.....f3.v...|
-00000010  27 42 71 85                                       |'Bq.|
-00000014
-```
+1. 查看系统配置，确认当前超级管理员账户。
+  ```
+  $ cldi system-config 
+  {
+    "admin": "0xae069e1925a1dad2a1f4c7034d87258dfd9b6532",
+    "block_interval": 6,
+    "chain_id": "0x26b0b83e7281be3b117658b6f2636d0368cad3d74f22243428f5401a4b70897e",
+    "validators": [
+      "0xc35b3b7437a31b4d0a737041a17a8e181ae25ba5",
+      "0xa5e75c8ed90c17d2cd0b637943c7ce83248dbf20",
+      "0x32872cec919211f5d144f8464b45140f4a146002",
+      "0x790f590a1ea9764bcc26154c3de868ccf7bdcad4"
+    ],
+    "version": 0
+  }
+  ```
+2. 指定新的超级管理员
+  ```
+  $ cldi update-admin 0x9817ac046e0b6a2903352d05497564147ddc0a6f 
+  tx_hash: 0x1f3b25887bca912b5809e4860cd507574682efe457c01d2d450aa2067c06e826
+  ```
+3. 等待几秒，待交易上链之后，查看系统配置确认`admin`变成了新的账户地址。
+  ```
+  $ cldi system-config 
+  {
+    "admin": "0x9817ac046e0b6a2903352d05497564147ddc0a6f",
+    "block_interval": 6,
+    "chain_id": "0x26b0b83e7281be3b117658b6f2636d0368cad3d74f22243428f5401a4b70897e",
+    "validators": [
+      "0xc35b3b7437a31b4d0a737041a17a8e181ae25ba5",
+      "0xa5e75c8ed90c17d2cd0b637943c7ce83248dbf20",
+      "0x32872cec919211f5d144f8464b45140f4a146002",
+      "0x790f590a1ea9764bcc26154c3de868ccf7bdcad4"
+    ],
+    "version": 0
+  }
+  ```
 
 ## 共识节点管理
 
@@ -52,133 +59,94 @@ $ echo OA/GZ/TM0ukTZjMfdtQDDSdCcYU= | base64 -d | hexdump -C
 
 操作示例：
 
-在链的配置过程中，会生成存放超级管理员私钥的数据库文件`kms.db`和账户在数据库中的序号`key_id`。
+1. 查看系统配置，确认当前的验证人列表。
+  ```
+  $ cldi system-config                                                                         
+  {
+    "admin": "0xae069e1925a1dad2a1f4c7034d87258dfd9b6532",
+    "block_interval": 3,
+    "chain_id": "0x26b0b83e7281be3b117658b6f2636d0368cad3d74f22243428f5401a4b70897e",
+    "validators": [
+      "0x724f28ac8d069f150d541a07235ebc2363ae9b2a",
+      "0x1e0427b2a2ba34dceda5788d98f59aef0eb92f8e",
+      "0x868a116bd018c3ed0facb4a761829485f03c2f73"
+    ],
+    "version": 0
+  }
+  ```
+2. 设置新的共识节点列表，新增地址为`0xc35b3b7437a31b4d0a737041a17a8e181ae25ba5`的共识节点。
+  ```
+  $ cldi update-validators 0x724f28ac8d069f150d541a07235ebc2363ae9b2a 0x1e0427b2a2ba34dceda5788d98f59aef0eb92f8e 0x868a116bd018c3ed0facb4a761829485f03c2f73 0xc35b3b7437a31b4d0a737041a17a8e181ae25ba5
+  tx_hash: 0x54f9ebdb3d5e52b80cad92c7551a706a4ae20aecd7cde88c167f8659bec4a4b4
+  ```
+3. 等待几秒，待交易上链之后，查看系统配置确认`validators`变成了新的一组账户地址。
+  ```
+  $ cldi system-config
+  {
+    "admin": "0xae069e1925a1dad2a1f4c7034d87258dfd9b6532",
+    "block_interval": 3,
+    "chain_id": "0x26b0b83e7281be3b117658b6f2636d0368cad3d74f22243428f5401a4b70897e",
+    "validators": [
+      "0x724f28ac8d069f150d541a07235ebc2363ae9b2a",
+      "0x1e0427b2a2ba34dceda5788d98f59aef0eb92f8e",
+      "0x868a116bd018c3ed0facb4a761829485f03c2f73",
+      "0xc35b3b7437a31b4d0a737041a17a8e181ae25ba5"
+    ],
+    "version": 0
+  }
+  ```
 
-使用跟链匹配的`kms`组件和前述`kms.db`来启动`kms`服务。
+共识节点列表变更之后，被剔除的共识节点的共识会停掉，链可能会停止出块。
 
-通过`-i`传递超级管理员账户的`key_id`，`-v`参数传递新的共识节点列表，用逗号隔开的一组账户地址。
-
-首先查看当前的验证人列表:
-
-```
-$ ./grpcurl -emit-defaults -plaintext -d '' \
-    -proto ~/cita_cloud_proto-master/protos/controller.proto \
-    -import-path ~/cita_cloud_proto-master/protos \
-    `minikube ip`:30004 \
-    controller.RPCService/GetSystemConfig
-{
-  ...
-  "validators": [
-    "G9qFsSUTToPVoFgkwkoWhXU02X4=",
-    "jQbZ2EUmojWMbMnu7t8m+ImhtTw=",
-    "cp68Y+9FPCRkRqU/hAuwAuy0KjA=",
-    "EknAFRpaXJeTdza63Qe6eIA4Vvw="
-  ],
-  ...
-  "validatorsPreHash": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-  ...
-}
-```
-
-设置新的共识节点列表为`0x9b87c3739321b4753aee1ef012d4ec5d7b26dd4d,0x2a783705d63870f83d22520d93bee754e32f04c5,0xffe7019074ddc13d3eab1454fa3445458dc0f0d0`。
-
-```
-$ ./update_validators update -i 1 -c `minikube ip`:30004 -v 0x9b87c3739321b4753aee1ef012d4ec5d7b26dd4d,0x2a783705d63870f83d22520d93bee754e32f04c5,0xffe7019074ddc13d3eab1454fa3445458dc0f0d0
-2021-04-29T12:01:00.012615335+08:00 INFO update_validators - waiting for a while...
-2021-04-29T12:01:15.036363788+08:00 INFO update_validators - OK!
-```
-
-查询`SystemConfig`确认`validators`变成了新的一组账户地址。
-
-```
-$ ./grpcurl -emit-defaults -plaintext -d '' \
-    -proto ~/cita_cloud_proto-master/protos/controller.proto \
-    -import-path ~/cita_cloud_proto-master/protos \
-    `minikube ip`:30004 \
-    controller.RPCService/GetSystemConfig
-{
-  ...
-  "validators": [
-    "m4fDc5MhtHU67h7wEtTsXXsm3U0=",
-    "Kng3BdY4cPg9IlINk77nVOMvBMU=",
-    "/+cBkHTdwT0+qxRU+jRFRY3A8NA="
-  ],
-  ...
-  "validatorsPreHash": "odfZw+wlze5TaSAdETqrdTClDIeLUz0ahoPn6ewLLN8=",
-  ...
-}
-
-$ echo m4fDc5MhtHU67h7wEtTsXXsm3U0= | base64 -d | hexdump -C
-00000000  9b 87 c3 73 93 21 b4 75  3a ee 1e f0 12 d4 ec 5d  |...s.!.u:......]|
-00000010  7b 26 dd 4d                                       |{&.M|
-00000014
-$ echo Kng3BdY4cPg9IlINk77nVOMvBMU= | base64 -d | hexdump -C
-00000000  2a 78 37 05 d6 38 70 f8  3d 22 52 0d 93 be e7 54  |*x7..8p.="R....T|
-00000010  e3 2f 04 c5                                       |./..|
-00000014
-$ echo /+cBkHTdwT0+qxRU+jRFRY3A8NA= | base64 -d | hexdump -C
-00000000  ff e7 01 90 74 dd c1 3d  3e ab 14 54 fa 34 45 45  |....t..=>..T.4EE|
-00000010  8d c0 f0 d0                                       |....|
-00000014
-```
-
-共识节点列表变更之后，原有共识节点的共识会停掉，链可能会停止出块。
-
-直到使用新的共节点账户的共识节点启动并完成同步之后才会继续共识并出块。
+直到使用新加入的共节点账户的共识节点启动并完成同步之后才会继续共识并出块。
 
 ## 修改出块间隔
 
-设置新的出块间隔。
+超级管理员可以设置新的出块间隔。
 
 操作示例：
 
-在链的配置过程中，会生成存放超级管理员私钥的数据库文件`kms.db`和账户在数据库中的序号`key_id`。
+1. 查看当前的出块间隔。
 
-使用跟链匹配的`kms`组件和前述`kms.db`来启动`kms`服务。
+  ```
+  $ cldi system-config
+  {
+    "admin": "0x9817ac046e0b6a2903352d05497564147ddc0a6f",
+    "block_interval": 6,  //出块间隔为6秒
+    "chain_id": "0x26b0b83e7281be3b117658b6f2636d0368cad3d74f22243428f5401a4b70897e",
+    "validators": [
+      "0xc35b3b7437a31b4d0a737041a17a8e181ae25ba5",
+      "0xa5e75c8ed90c17d2cd0b637943c7ce83248dbf20",
+      "0x32872cec919211f5d144f8464b45140f4a146002",
+      "0x790f590a1ea9764bcc26154c3de868ccf7bdcad4"
+    ],
+    "version": 0
+  }
+  ```
 
-通过`-i`传递超级管理员账户的`key_id`，`-a`参数传递新的`super admin`账户地址。
+2. 修改出块间隔为3秒。
 
-首先查看当前的出块间隔：
+  ```
+  $ cldi  cldi set-block-interval 3
+  tx_hash: 0xa0cad608b1e0245f988d193380a56aea1056bca217f2a73dadb8dcec02e20cb9
+  ```
 
-```
-$ ./grpcurl -emit-defaults -plaintext -d '' \
-    -proto ~/cita_cloud_proto-master/protos/controller.proto \
-    -import-path ~/cita_cloud_proto-master/protos \
-    `minikube ip`:30004 \
-    controller.RPCService/GetSystemConfig
-{
-  ...
-  "blockInterval": 6,
-  ...
-  "blockIntervalPreHash": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-  ...
-}
-```
-
-修改出块间隔为3秒：
-
-```
-$ ./set_block_interval set -i 1 -c `minikube ip`:30004 -b 3
-2021-04-29T15:12:19.397725063+08:00 INFO set_block_interval - waiting for a while...
-2021-04-29T15:12:28.412780267+08:00 INFO set_block_interval - OK!
-```
-
-查询`SystemConfig`确认`blockInterval`变成了新的值。
-
-```
-$ ./grpcurl -emit-defaults -plaintext -d '' \
-    -proto ~/cita_cloud_proto-master/protos/controller.proto \
-    -import-path ~/cita_cloud_proto-master/protos \
-    `minikube ip`:30004 \
-    controller.RPCService/GetSystemConfig
-{
-  ...
-  "blockInterval": 3,
-  ...
-  "blockIntervalPreHash": "OT4KJp/CcUb+d3KQJK8VYHZvVyL0RaGUR4mWE96s5+U=",
-  ...
-}
-```
+3. 等待几秒，待交易上链之后，查看系统配置确认`blockInterval`变成了新的值。
+  ```
+  $ cldi system-config
+  {
+    "admin": "0x9817ac046e0b6a2903352d05497564147ddc0a6f",
+    "block_interval": 3,
+    "chain_id": "0x26b0b83e7281be3b117658b6f2636d0368cad3d74f22243428f5401a4b70897e",
+    "validators": [
+      "0xc35b3b7437a31b4d0a737041a17a8e181ae25ba5",
+      "0xa5e75c8ed90c17d2cd0b637943c7ce83248dbf20",
+      "0x32872cec919211f5d144f8464b45140f4a146002",
+      "0x790f590a1ea9764bcc26154c3de868ccf7bdcad4"
+    ],
+    "version": 0
+  }
+  ```
 
 ## 紧急制动
 
@@ -187,63 +155,31 @@ $ ./grpcurl -emit-defaults -plaintext -d '' \
 主要使用场景为进行一些升级，维护等操作时，不希望有其他交易干扰。
 
 #### 开启
-
-在链的配置过程中，会生成存放超级管理员私钥的数据库文件`kms.db`和账户在数据库中的序号`key_id`。
-
-使用跟链匹配的`kms`组件和前述`kms.db`来启动`kms`服务。
-
-通过`-i`传递超级管理员账户的`key_id`。
-
 ```
-$ ./emergency_brake enable -i 1
-...
-2021-04-27T10:58:38.048269659+08:00 INFO emergency_brake - waiting for a while...
-2021-04-27T10:58:44.061257726+08:00 INFO emergency_brake - OK!
+$  cldi emergency-brake on
+tx_hash: 0x5b5aaa42b4312fb204a156d279e0f98805e62a98cdf9293c4d5f361fcefc3d88
 ```
 
-查询`SystemConfig`确认`emergencyBrake`变成了`True`。
+等待几秒，待交易上链之后，将只有超级管理员可以发送治理交易，普通用户和普通交易会返回`forbidden`错误。
 
+例如使用普通用户账户`test`创建合约：
 ```
-$ ./grpcurl -emit-defaults -plaintext -d '' \
-    -proto ~/cita_cloud_proto-master/protos/controller.proto \
-    -import-path ~/cita_cloud_proto-master/protos \
-    `minikube ip`:30004 \
-    controller.RPCService/GetSystemConfig
-{
-  ...
-  "emergencyBrake": true,
-  ...
-  "emergencyBrakePreHash": "W1qqQrQxL7IEoVbSeeD5iAXmKpjN+Sk8TV82H878PYg="
-}
+$ cldi account login test
+OK, now the default user is `test`, account addr is 0x415f568207900b6940477396fcd2c201efe49beb
+$ cldi create 0x608060405234801561001057600080fd5b5060f58061001f6000396000f3006080604052600436106053576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306661abd1460585780634f2be91f146080578063d826f88f146094575b600080fd5b348015606357600080fd5b50606a60a8565b6040518082815260200191505060405180910390f35b348015608b57600080fd5b50609260ae565b005b348015609f57600080fd5b5060a660c0565b005b60005481565b60016000808282540192505081905550565b600080819055505600a165627a7a72305820faa1d1f51d7b5ca2b200e0f6cdef4f2d7e44ee686209e300beb1146f40d32dee0029
+thread 'main' panicked at 'called `Result::unwrap()` on an `Err` value: Status { code: InvalidArgument, message: "Expect error: forbidden", metadata: MetadataMap { headers: {"content-type": "application/grpc", "date": "Wed, 21 Jul 2021 09:05:37 GMT"} }, source: None }', src/client.rs:146:14
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 ```
-
-此时，发送普通交易将会返回`forbidden`错误信息。
 
 #### 关闭
-
-准备条件以及参数跟开启时相同。
-
 ```
-$ ./emergency_brake disable -i 1
-...
-2021-04-27T10:58:38.048269659+08:00 INFO emergency_brake - waiting for a while...
-2021-04-27T10:58:44.061257726+08:00 INFO emergency_brake - OK!
+$ cldi emergency-brake off
+tx_hash: 0x347cf8a7ef89958e936344dc8318fd0ca7dd5eadaab60df74f094989549b7427
 ```
-
-查询`SystemConfig`确认`emergencyBrake`变成了`False`。
-
+等待几秒，待交易上链之后，普通用户就可以再次正常发送交易了。
 ```
-$ ./grpcurl -emit-defaults -plaintext -d '' \
-    -proto ~/cita_cloud_proto-master/protos/controller.proto \
-    -import-path ~/cita_cloud_proto-master/protos \
-    `minikube ip`:30004 \
-    controller.RPCService/GetSystemConfig
-{
-  ...
-  "emergencyBrake": false,
-  ...
-  "emergencyBrakePreHash": "F0nyI2Tqr/yVbw5b6mAwc38mRp3zAotrq+Em+MO+6d8="
-}
+$ cldi account login test
+OK, now the default user is `test`, account addr is 0x415f568207900b6940477396fcd2c201efe49beb
+$ cldi create 0x608060405234801561001057600080fd5b5060f58061001f6000396000f3006080604052600436106053576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306661abd1460585780634f2be91f146080578063d826f88f146094575b600080fd5b348015606357600080fd5b50606a60a8565b6040518082815260200191505060405180910390f35b348015608b57600080fd5b50609260ae565b005b348015609f57600080fd5b5060a660c0565b005b60005481565b60016000808282540192505081905550565b600080819055505600a165627a7a72305820faa1d1f51d7b5ca2b200e0f6cdef4f2d7e44ee686209e300beb1146f40d32dee0029
+tx_hash: 0x7eeaefdf3d266a2b1a8b6350952b1353b230207bc4c089735a3d2e482dc1f77e
 ```
-
-此时，就可以正常发送普通交易了。

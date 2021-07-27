@@ -16,181 +16,352 @@
 
 * docker 安装方法参见[官方文档](https://docs.docker.com/engine/install/)。
 
+* helm下载 安装版本可查看[helm文档](https://helm.sh/docs/intro/install/)
+
 #### k8s集群
 
 `k8s`集群的搭建非常复杂，为了快速体验，我们推荐使用`minikube`，可以在本地快速搭建一个单节点的`k8s`集群。
 
-安装运行`minikube`参见[链接](https://minikube.sigs.k8s.io/docs/start/)。
+安装运行`minikube`参见[官方文档](https://minikube.sigs.k8s.io/docs/start/)。
 
 国内需要设置一些镜像参数，参考：
 
 ```
-minikube start --registry-mirror=https://hub-mirror.c.163.com --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers --vm-driver=docker --alsologtostderr -v=8 --base-image registry.cn-hangzhou.aliyuncs.com/google_containers/kicbase:v0.0.10
+minikube start --registry-mirror=https://hub-mirror.c.163.com --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers --vm-driver=docker --alsologtostderr -v=8 --base-image registry.cn-hangzhou.aliyuncs.com/google_containers/kicbase:v0.0.17
 ```
 
-安装`k8s`集群命令行工具`kubectl`，参考[官方文档](https://kubernetes.io/zh/docs/tasks/tools/install-kubectl/)。
+安装`k8s`集群命令行工具`kubectl`，参考[官方文档](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)。
 
+#### cloud-cli
 
-## 生成链的配置
-
-#### 软件依赖
-
-* python3
-
-#### 生成配置
-
-1. 下载配置生成工具。
-   
-    ```
-    $ wget https://github.com/cita-cloud/runner_k8s/archive/refs/heads/master.zip
-    $ unzip master.zip
-    $ cd runner_k8s-master
-    $ ls
-    config.xml         create_k8s_config.py  create_syncthing_config.py  requirements.txt
-    create_account.py  create_pvc.py         README.md                   service-config.toml
-    ```
-   
-2. 安装依赖包。
-   
-    ```
-    pip install -r requirements.txt
-    ```
-
-3. 创建`PVC`。
-   
-    ```
-    $ minikube ssh
-    docker@minikube:~$ mkdir cita-cloud-datadir
-    docker@minikube:~$ exit
-    $ ./create_pvc.py local_pvc
-    $ ls
-    local-pvc.yaml
-    $ kubectl apply -f local-pvc.yaml
-    ```
-
-4. 生成配置。
-   
-    ```
-    ./create_k8s_config.py local_cluster --kms_password 123456 --peers_count 3 --pvc_name local-pvc
-    $ ls
-    cita-cloud  test-chain.yaml
-    ```
-
-生成的cita-cloud目录结构如下：
+该工具为`CITA-Cloud`链的命令行客户端，可以方便的对链进行常用的操作。
 
 ```
-$ tree cita-cloud
-cita-cloud
-└── test-chain
-    ├── node0
-    ├── node1
-    ├── node2
+$ wget https://github.com/cita-cloud/cloud-cli/releases/download/v0.1.1/cldi
+$ chmod +x cldi
+$ sudo mv ./cldi /usr/local/bin/
+$ cldi -h
+cloud-cli 0.1.0
+The command line interface to interact with `CITA-Cloud`.
+
+USAGE:
+    cldi [OPTIONS] [SUBCOMMAND]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -e, --executor_addr <executor_addr>    executor address
+    -r, --rpc_addr <rpc_addr>              rpc(controller) address
+    -u, --user <user>                      the user(account) to send tx
+
+SUBCOMMANDS:
+    account               Manage account
+    bench                 Send multiple txs with random content
+    block-hash            Get block hash by block number(height)
+    block-number          Get block number
+    call                  Executor call
+    completions           Generate completions for current shell
+    create                Create contract
+    emergency-brake       Send emergency brake cmd to chain
+    get-abi               Get specific contract abi
+    get-balance           Get balance by account address
+    get-block             Get block by number or hash
+    get-code              Get code by contract address
+    get-tx                Get transaction by hash
+    help                  Prints this message or the help of the given subcommand(s)
+    peer-count            Get peer count
+    receipt               Get receipt by tx_hash
+    send                  Send transaction
+    set-block-interval    Set block interval
+    store-abi             Store abi
+    system-config         Get system config
+    update-admin          Update admin of the chain
+    update-validators     Update validators of the chain
 ```
 
-最外层是`cita-cloud`；第二层是链的名称，这里采用默认值`test-chain`；最里面是各个节点的文件夹。
-
-`node0`，`node1`, `node2`是三个节点文件夹，里面有相应节点的配置文件。
-
-`test-chain.yaml`用于将链部署到`k8s`集群，里面声明了相关的`secret/deployment/service`，文件名跟链的名称保持一致。
-
-针对更复杂的情况，有更多可设置的参数，参见[runner_k8s文档](https://github.com/cita-cloud/runner_k8s/blob/master/README.md)。
+## 运行CITA-Cloud
 
 
-## 运行链
-
-#### 部署
+#### 添加Charts仓库
 
 ```
-$ scp -i ~/.minikube/machines/minikube/id_rsa -r cita-cloud docker@`minikube ip`:~/cita-cloud-datadir/
-$ kubectl apply -f test-chain.yaml
+$ helm repo add cita-cloud https://registry.devops.rivtower.com/chartrepo/cita-cloud
+$ helm repo update
+$ helm search repo cita-cloud
+NAME                                            CHART VERSION   APP VERSION     DESCRIPTION                                       
+cita-cloud/cita-cloud-config                    6.0.0           6.0.0           Create a job to change config of CITA-Cloud blo...
+cita-cloud/cita-cloud-eip                       6.0.0           6.0.0           Create EIP for CITA-Cloud                         
+cita-cloud/cita-cloud-local-cluster             6.1.0           6.1.0           Setup CITA-Cloud blockchain in one k8s cluster    
+cita-cloud/cita-cloud-multi-cluster-node        6.1.0           6.1.0           Setup CITA-Cloud node in multi k8s cluster        
+cita-cloud/cita-cloud-porter-lb                 6.0.0           6.0.0           Setup porter Loadbalancer for CITA-Cloud node     
+cita-cloud/cita-cloud-pvc                       6.0.0           6.0.0           Create PVC for CITA-Cloud 
 ```
+
+#### 创建PVC
+
+```
+$ helm install local-pvc cita-cloud/cita-cloud-pvc --set scName=standard
+$ kubectl get pvc
+NAME        STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS    AGE
+local-pvc   Bound    pvc-fd3eaebd-3413-4205-b88a-dbc6cee9a057   10Gi       RWO            standard        18m
+```
+
+对应的路径在`minikube`虚拟机内的 `/tmp/hostpath-provisioner/default/local-pvc`。
+
+注意：如果`minikube`版本为 `v1.20.0`，这里会有一个bug。详细情况和解决方法参见[链接](https://tonybai.com/2021/05/14/a-bug-of-minikube-1-20/)。
+
+
+#### 生成超级管理员账户
+
+```
+$ cldi account create admin
+user: `admin`
+account_addr: 0xae069e1925a1dad2a1f4c7034d87258dfd9b6532
+```
+
+
+#### 运行CITA-Cloud
+
+```
+$ helm install test-chain cita-cloud/cita-cloud-local-cluster --set config.superAdmin=0xae069e1925a1dad2a1f4c7034d87258dfd9b6532
+NAME: test-chain
+LAST DEPLOYED: Wed Jul 14 23:09:37 2021
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+```
+
+该命令会创建一条有3个节点，链名为`test-chain`的链。
+
+注意：`superAdmin`参数必须设置为自己生成的账户地址，切勿使用默认值。
 
 #### 查看运行情况
 
-查看节点是否运行正常：
-
 ```
-$ kubectl get deployments.apps
-NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
-test-chain-0              1/1     1            1           71s
-test-chain-1              1/1     1            1           71s
-test-chain-2              1/1     1            1           70s
+$ kubectl get pod
+NAME                      READY      STATUS       RESTARTS     AGE
+test-chain-0              7/7        Running      1            3m24s
+test-chain-1              7/7        Running      1            3m24s
+test-chain-2              7/7        Running      1            3m24s
 ```
 
 查看日志：
 
 ```
 $ minikube ssh
-docker@minikube:~$ tail -10f cita-cloud-datadir/cita-cloud/test-chain/node0/logs/controller-service.log
-2020-08-27T07:42:43.280172163+00:00 INFO controller::chain - 1 blocks finalized
-2020-08-27T07:42:43.282871996+00:00 INFO controller::chain - executed block 1397 hash: 0x 16469..e061
-2020-08-27T07:42:43.354375501+00:00 INFO controller::pool - before update len of pool 0, will update 0 tx
-2020-08-27T07:42:43.354447445+00:00 INFO controller::pool - after update len of pool 0
-2020-08-27T07:42:43.354467947+00:00 INFO controller::pool - low_bound before update: 0
-2020-08-27T07:42:43.354484999+00:00 INFO controller::pool - low_bound after update: 0
-2020-08-27T07:42:43.385062636+00:00 INFO controller::controller - get block from network
-2020-08-27T07:42:43.385154627+00:00 INFO controller::controller - add block
-2020-08-27T07:42:43.386148650+00:00 INFO controller::chain - add block 0x 11cf7..cad9
-2020-08-27T07:42:46.319058783+00:00 INFO controller - reconfigure consensus!
+docker@minikube:~$ tail -10f /tmp/hostpath-provisioner/default/local-pvc/test-chain-0/logs/controller-service.log
+2021-07-21T08:12:07.242086786+00:00 INFO controller::node_manager - update node: 0xc3469...ebaeb
+2021-07-21T08:12:07.242251607+00:00 INFO controller::node_manager - update node: 0xa6a1...208f9
+2021-07-21T08:12:07.284207745+00:00 INFO controller::controller - add remote proposal(0x7b28...5cc64) through check_proposal
+2021-07-21T08:12:10.228046821+00:00 INFO controller::controller - add remote proposal(0x26e7...fcf91) through check_proposal
+2021-07-21T08:12:10.251289942+00:00 INFO controller::util - height: 126 hash 0x26e7...fcf91
+2021-07-21T08:12:10.253093372+00:00 INFO controller::chain - finalize_block: 126, block_hash: 0x26e7...fcf91
+2021-07-21T08:12:10.254012416+00:00 INFO controller::node_manager - update node: 0xc346...ebaeb
+2021-07-21T08:12:10.254931221+00:00 INFO controller::node_manager - update node: 0x766a...7a954
+2021-07-21T08:12:10.273834898+00:00 WARN controller - rpc: process_network_msg failed: Receive early status from same node
+2021-07-21T08:12:10.296086993+00:00 INFO controller::controller - add remote proposal(0xe5f4...973cd) through check_proposal
+2021-07-21T08:12:13.216728462+00:00 INFO controller::chain - main_chain_tx_hash len 0
+2021-07-21T08:12:13.216755352+00:00 INFO controller::chain - tx poll len 0
+2021-07-21T08:12:13.216766922+00:00 INFO controller::chain - proposal 127 prevhash 0x26e7...fcf91
+2021-07-21T08:12:13.216778762+00:00 INFO controller::chain - proposal 127 block_hash 0x6a14...1e4e6
+2021-07-21T08:12:13.256383088+00:00 INFO controller::util - height: 127 hash 0x6a14...1e4e6
 ```
 
 ## 基本操作
 
-#### 软件依赖
+#### 指定链的RPC端口
 
-* grpcurl [下载链接](https://github.com/fullstorydev/grpcurl/releases)
-
-#### 下载cita_cloud_proto
+可以通过设置环境变量的方式，为`cloud-cli`工具指定链的`RPC`端口：
 
 ```
-$ wget https://github.com/cita-cloud/cita_cloud_proto/archive/refs/heads/master.zip
-$ unzip master.zip
-$ cd cita_cloud_proto-master
-$ ls
-build.rs  Cargo.toml  protos  README.md  src
+$ export CITA_CLOUD_RPC_ADDR=`minikube ip`:30004 CITA_CLOUD_EXECUTOR_ADDR=`minikube ip`:30005
 ```
 
-#### 查询操作
-
-`cita-cloud`的`RPC`接口采用的是`gRPC`，因此需要使用`grpcurl`工具才能在命令行访问。
-
-同时需要相应的`protobuf`定义文件。
-
-查看块高:
+#### 查看块高
 
 ```
-$ ./grpcurl -emit-defaults -plaintext -d '{"flag": false}' \
--proto ~/cita_cloud_proto-master/protos/controller.proto \
--import-path ~/cita_cloud_proto-master/protos \
-`minikube ip`:30004 controller.RPCService/GetBlockNumber
+$ cldi block-number
+block_number: 74
+```
+
+#### 查看系统配置
+
+```
+$ cldi system-config
 {
-"blockNumber": "320"
-}
-```
-
-查看系统配置：
-
-```
-$ ./grpcurl -emit-defaults -plaintext -d '{"flag": false}' \
--proto ~/cita_cloud_proto-master/protos/controller.proto \
--import-path ~/cita_cloud_proto-master/protos \
-`minikube ip`:30004 controller.RPCService/GetSystemConfig
-{
-  "version": 0,
-  "chainId": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=",
-  "admin": "CU1ivX7bcvYbAEKIbHfPDhR/bEI=",
-  "blockInterval": 6,
+  "admin": "0xae069e1925a1dad2a1f4c7034d87258dfd9b6532",
+  "block_interval": 3,
+  "chain_id": "0x26b0b83e7281be3b117658b6f2636d0368cad3d74f22243428f5401a4b70897e",
   "validators": [
-    "eO1A2A+j/eHvUnvLAny4ycq/i5U=",
-    "78dGY0xDCXTQq1dmcRFmUdBdpek=",
-    "FqpkYXH8c3JMWST4/kKMLpGBEMk="
+    "0x67611c4afee6a50c56d3a81c733260c2e1ca35ab",
+    "0x97e05af22f5870c67b7f98bc6c7ebbba0273376b",
+    "0x3275a8e90a92a29496edd9a7a5853a3fd3d51451",
+    "0x148d37bd89ba2a8c7b5e4784df51a355439166b9"
   ],
-  "versionPreHash": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-  "chainIdPreHash": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-  "adminPreHash": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-  "blockIntervalPreHash": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-  "validatorsPreHash": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+  "version": 0
 }
 ```
 
-注意：部分参数实际类型为`bytes`，`grpcurl`工具对其进行了`Base64`编码，输出显示为字符串。
+#### 停止链
+
+```
+$ helm uninstall test-chain
+release "test-chain" uninstalled
+```
+
+#### 删除链
+
+```
+$ helm install clean cita-cloud/cita-cloud-config --set config.action=clean --set pvcName=local-pvc
+NAME: clean
+LAST DEPLOYED: Wed Jul 14 20:20:37 2021
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+```
+
+注意：该命令将永久性的删除链的所有数据，请谨慎操作。
+
+## 账户操作
+
+#### 创建账户
+
+```
+$ cldi account create test
+user: `test`
+account_addr: 0x415f568207900b6940477396fcd2c201efe49beb
+```
+
+#### 查看账户信息
+
+创建账户后通过命令查看该账户的账户地址、私钥以及公钥：
+
+```
+$ cldi account export test
+{
+  "account_addr": "0x415f568207900b6940477396fcd2c201efe49beb",
+  "private_key": "0x4f894fc00e6c71c7d0dde511eef64824b64fce87fd6f43492808cb99e9f22a57",
+  "public_key": "0x6dd968546f2af3053be1d31aed723b58bf5380884ec5f2d41e8156dcc17c1317456c2cc9fb28290d7da0e606267ec1b00bfe54bb214ba5d6c2831c8211e9f343"
+}
+```
+
+#### 登录账户
+
+登录刚刚创建的`test`账户
+
+```
+$ cldi account login test
+OK, now the default user is `test`, account addr is 0x415f568207900b6940477396fcd2c201efe49beb
+```
+
+登录账户之后，可以以该账户的身份发送交易。
+
+## 发送交易
+
+#### 编译合约
+
+这里以`Counter`合约为例:
+
+```
+$ cat Counter.sol 
+pragma solidity ^0.4.24;
+
+contract Counter {
+    uint public count;
+    
+    function add() public {
+        count += 1;
+    }
+    
+    function reset() public {
+        count = 0;
+    }
+}
+
+$ curl -o solc -L https://github.com/ethereum/solidity/releases/download/v0.4.24/solc-static-linux
+$ chmod +x solc
+$ sudo mv ./solc /usr/local/bin/
+$ solc --hashes --bin Counter.sol 
+
+======= Counter.sol:Counter =======
+Binary: 
+608060405234801561001057600080fd5b5060f58061001f6000396000f3006080604052600436106053576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306661abd1460585780634f2be91f146080578063d826f88f146094575b600080fd5b348015606357600080fd5b50606a60a8565b6040518082815260200191505060405180910390f35b348015608b57600080fd5b50609260ae565b005b348015609f57600080fd5b5060a660c0565b005b60005481565b60016000808282540192505081905550565b600080819055505600a165627a7a72305820a841f5848c8c68bc957103089b41e192a79aed7ac2aebaf35ae1e36469bd44d90029
+Function signatures: 
+4f2be91f: add()
+06661abd: count()
+d826f88f: reset()
+```
+
+#### 创建合约
+
+```
+$ cldi create 0x608060405234801561001057600080fd5b5060f58061001f6000396000f3006080604052600436106053576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306661abd1460585780634f2be91f146080578063d826f88f146094575b600080fd5b348015606357600080fd5b50606a60a8565b6040518082815260200191505060405180910390f35b348015608b57600080fd5b50609260ae565b005b348015609f57600080fd5b5060a660c0565b005b60005481565b60016000808282540192505081905550565b600080819055505600a165627a7a72305820faa1d1f51d7b5ca2b200e0f6cdef4f2d7e44ee686209e300beb1146f40d32dee0029
+tx_hash: 0xb8fdb0a82d0403921fd0c11c7846500bdb5c032ad2e615dd1e8f42439f38f516
+```
+
+创建合约的参数是编译合约输出的二进制字节码，注意前面要增加`0x`前缀。
+
+返回值为这笔创建合约交易的交易哈希。
+
+#### 查看交易回执
+
+```
+$ cldi receipt 0xb8fdb0a82d0403921fd0c11c7846500bdb5c032ad2e615dd1e8f42439f38f516
+{
+  "block_number": 1111,
+  "contract_addr": "0x138e2c0098ab9a5c38a7bc4a16a186f58fc4058a",
+  "cumulative_quota_used": "0x0000000000000000000000000000000000000000000000000000000000018ed3",
+  "error_msg": "",
+  "legacy_cita_block_hash": "0x1b99b5e81feaef86dca9a309644ddbaaa7377733712b850ce50aff6c01ab2d4e",
+  "logs": [],
+  "logs_bloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "quota_used": "0x0000000000000000000000000000000000000000000000000000000000018ed3",
+  "state_root": "0x9584cba462dec67dafaf5ae1210c8e3b3e58991ca31cafdbc395884b7d880364",
+  "tx_hash": "0xb8fdb0a82d0403921fd0c11c7846500bdb5c032ad2e615dd1e8f42439f38f516",
+  "tx_index": 0
+}
+```
+
+参数为前一步操作返回的交易哈希。
+
+返回值为该笔交易的执行结果信息，其中`contract_addr`字段为刚才部署的合约的地址。
+
+得到合约地址后，就可以调用其中的方法。
+
+##### 查询合约状态
+
+查询合约中的`count`值：
+
+```
+$ cldi call -t 0x138e2c0098ab9a5c38a7bc4a16a186f58fc4058a 0x06661abd
+result: 0x0000000000000000000000000000000000000000000000000000000000000000
+```
+
+`-t`参数为合约地址。
+
+第二个参数为要调用的`count()`方法的函数签名。
+
+返回值为`count`的当前值。
+
+#### 发送交易
+
+向合约发送交易，调用`add`方法改变`count`的值：
+
+```
+$ cldi send -t 0x138e2c0098ab9a5c38a7bc4a16a186f58fc4058a 0x4f2be91f
+```
+
+`-t`参数为合约地址。
+
+第二个参数为要调用的`add()`方法的函数签名。
+
+等待交易上链之后，再次查询就可以发现合约状态有了变化：
+
+```
+$ cldi call -t 0x138e2c0098ab9a5c38a7bc4a16a186f58fc4058a 0x06661abd
+result: 0x0000000000000000000000000000000000000000000000000000000000000001
+```
+
