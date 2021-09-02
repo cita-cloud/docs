@@ -384,36 +384,38 @@ balance: 0x0000000000000000000000000000000000000000000000000000000000000000
 ```
 $ cldi get-abi 0x253479ef7f0209ad761960e9f41bb18d1113b2bb
 ABI:
-nstant": true,
-              "inputs": [],
-              "name": "count",
-              "outputs": [
-                       {
-                                "name": "",
-                                "type": "uint256"
-                        }
-                ],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function"
-        },
-        {
-                "constant": false,
-                "inputs": [],
-                "name": "add",
-                "outputs": [],
-                "payable": false,
-                "stateMutability": "nonpayable",
-                "type": "function"
-        },
-        {
-                "constant": false,
-                "inputs": [],
-                "name": "reset",
-                "outputs": [],
-                "payable": false,
-                "stateMutability": "nonpayable",
-                "type": "function"
-        }
+[
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "count",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "add",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "reset",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
 ]
 ```
