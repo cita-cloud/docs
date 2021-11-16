@@ -14,23 +14,28 @@
 
 #### 软件依赖
 
-* docker 安装方法参见[官方文档](https://docs.docker.com/engine/install/)。
+* `docker` 安装方法参见[官方文档](https://docs.docker.com/engine/install/)。
 
-* helm下载 安装版本可查看[helm文档](https://helm.sh/docs/intro/install/)
+* `helm` 安装方法参见[helm文档](https://helm.sh/docs/intro/install/)。Helm是Kubernetes的包管理器。Helm是寻找、共享和使用为Kubernetes构建的软件的最佳方式。
 
 #### k8s集群
 
-`k8s`集群的搭建非常复杂，为了快速体验，我们推荐使用`minikube`，可以在本地快速搭建一个单节点的`k8s`集群。
+`k8s`集群的搭建非常复杂，在`快速入门`中，我们推荐使用`minikube`，可以在本地快速搭建一个单节点的`k8s`集群。
 
-安装运行`minikube`参见[官方文档](https://minikube.sigs.k8s.io/docs/start/)。
+* `minikube` 安装方法参见[官方文档](https://minikube.sigs.k8s.io/docs/start/)。
 
-国内需要设置一些镜像参数，参考：
+安装完成后用下面的命令启动`minikube`，国内需要在启动`minikube`时设置一些镜像参数，注意不能在根权限下启动`minikube`。
 
 ```
 minikube start --registry-mirror=https://hub-mirror.c.163.com --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers --vm-driver=docker --alsologtostderr -v=8 --base-image registry.cn-hangzhou.aliyuncs.com/google_containers/kicbase:v0.0.17
 ```
+耐心等待，看到以下信息代表启动成功。
 
-安装`k8s`集群命令行工具`kubectl`，参考[官方文档](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)。
+```
+* Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+```
+
+* `k8s`集群命令行工具`kubectl`安装方法参见[官方文档](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)。kubectl是Kubernetes集群的命令行工具,通过kubectl能够对集群本身进行管理,并能够在集群上进行容器化应用的安装部署。
 
 #### cloud-cli
 
@@ -99,7 +104,8 @@ cita-cloud/cita-cloud-porter-lb                 6.0.0           6.0.0           
 cita-cloud/cita-cloud-pvc                       6.0.0           6.0.0           Create PVC for CITA-Cloud 
 ```
 
-#### 创建PVC
+#### 创建PVC（Persistent Volume Claim）
+PersistentVolumeClaim (PVC)是对PV的申请(Claim)。PVC通常由普通用户创建 和维护。需要为Pod分配存储资源时，用户可以创建一个PVC,指明存储资源的容量大小 和访问模式(比如只读)等信息，Kubemetes会查找并提供满足条件的PV。
 
 ```
 $ helm install local-pvc cita-cloud/cita-cloud-pvc --set scName=standard
