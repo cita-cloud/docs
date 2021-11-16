@@ -68,7 +68,7 @@
 
 * 默认为`true`。
 
-##### `--kms_passwords`
+#### `--kms_passwords`
 
 指定每个节点的`kms`服务的密码。
 
