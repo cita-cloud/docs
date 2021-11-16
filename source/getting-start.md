@@ -104,7 +104,7 @@ cita-cloud/cita-cloud-porter-lb                 6.0.0           6.0.0           
 cita-cloud/cita-cloud-pvc                       6.0.0           6.0.0           Create PVC for CITA-Cloud 
 ```
 
-#### 创建PVC（Persistent Volume Claim）
+#### 创建PVC
 PersistentVolumeClaim (PVC)是对PV的申请(Claim)。PVC通常由普通用户创建 和维护。需要为Pod分配存储资源时，用户可以创建一个PVC,指明存储资源的容量大小 和访问模式(比如只读)等信息，Kubemetes会查找并提供满足条件的PV。
 
 ```
