@@ -1,4 +1,4 @@
-# 快速入门
+﻿# 快速入门
 
 ## 环境准备
 
@@ -190,6 +190,12 @@ $ export CITA_CLOUD_RPC_ADDR=`minikube ip`:30004 CITA_CLOUD_EXECUTOR_ADDR=`minik
 ```
 $ cldi block-number
 block_number: 74
+```
+
+注意：这里minikube可能出现svc端口映射问题 使用以下命令解决
+
+```
+$ kubectl port-forward pod/test-chain-0 50002:50002 50004:50004
 ```
 
 #### 查看系统配置
