@@ -2,7 +2,7 @@
 
 区块链是个分布式对等网络，但是其配置需要集中生成。因为每个节点都要包含所有节点的信息，因此需要将所有节点的信息集中到一起，生成每个节点的配置文件，然后再下发下去分别运行。
 
-对于CITA-Cloud来说，生成配置的工具为[cita_cloud_config](https://github.com/cita-cloud/cita_cloud_config/blob/main/README.md)。
+对于CITA-Cloud来说，生成配置的工具为[cita_cloud_config](https://github.com/cita-cloud/cita_cloud_config)。
 
 > **注意**
 >
@@ -12,7 +12,7 @@
 
 ## 链级配置
 
-链级配置指的是链自身的一些属性、系统初始配置，创世块，节点网络地址等配置，用户在`起链前`进行初始化配置。
+链级配置指的是链自身的一些属性，系统初始参数、创世块、节点网络地址等配置，用户需在`起链前`初始化配置。
 
 #### `--chain_name`
 
@@ -96,6 +96,7 @@
 
 共识微服务是否选择`bft`实现。
 
+* 默认为`false`。
 * 根据选择的共识算法而定。
 * 该参数会影响共识微服务的账户/私钥等配置文件。
 
@@ -372,7 +373,7 @@ OPTIONS:
 1. [secp256k1] 与 [kecak]
 2. [sm2] 与 [sm3]
 
-用户可以通过在`service-config.toml`选择不同的`kms`微服务具体实现来选择不同的密码学组合。
+用户可以通过在`service-config.toml`选择不同的`kms`微服务具体实现来选择不同的密码学组合。（`service-config.toml`在 cita-cloud/operator 中）
 
 1. 对应`kms_eth`。
 2. 对应`kms_sm`。
