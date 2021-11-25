@@ -1,4 +1,4 @@
-﻿# 快速入门
+﻿﻿# 快速入门
 
 ## 环境准备
 
@@ -117,6 +117,22 @@ local-pvc   Bound    pvc-fd3eaebd-3413-4205-b88a-dbc6cee9a057   10Gi       RWO  
 对应的路径在`minikube`虚拟机内的 `/tmp/hostpath-provisioner/default/local-pvc`。
 
 注意：如果`minikube`版本为 `v1.20.0`，这里会有一个bug。详细情况和解决方法参见[链接](https://tonybai.com/2021/05/14/a-bug-of-minikube-1-20/)。
+
+注意：若果这里使用的是k8s需要先自建pvc，配置如下：
+
+```
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: chain0-pvc
+spec:
+  storageClassName: nas-client-provisioner
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi
+```
 
 
 #### 生成超级管理员账户
