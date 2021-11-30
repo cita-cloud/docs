@@ -1,8 +1,8 @@
 # 配置说明
 
-区块链是个分布式对等网络，但是其配置需要集中生成。因为每个节点都要包含所有节点的信息，因此需要将所有节点的信息集中到一起，生成每个节点的配置文件，然后再下发下去分别运行。
+区块链是一个分布式对等网络，但是其配置需要集中生成。在CITA-Cloud中每个节点都要包含其他节点的信息，因此需要将所有节点的信息集中到一起，生成适用于各个节点的配置文件，然后再下发给各个节点分别运行。
 
-对于CITA-Cloud来说，生成配置的工具为[cita_cloud_config](https://github.com/cita-cloud/cita_cloud_config)。
+CITA-Cloud的配置生成工具为[cloud-config](https://github.com/cita-cloud/cloud-config)。
 
 > **注意**
 >
@@ -12,368 +12,138 @@
 
 ## 链级配置
 
-链级配置指的是链自身的一些属性，系统初始参数、创世块、节点网络地址等配置，用户需在`起链前`初始化配置。
+链级配置指的是链自身的一些属性，系统初始参数、创世块、节点网络地址等配置，用户需在`起链`前初始化链级配置。
+
+### 1.`init-chain-config`命令
+初始化除admin(管理员账户)，validators(共识节点地址列表)，node_network_address_list（节点网络地址列表）之外的链级配置。因为前述三个操作需要一些额外的准备工作，且需要先对除此之外的链接配置信息在所有参与方之间达成共识。因此对于去中心化场景来说，这一步其实是一个公示的过程。执行之后会生成$(config-dir)/$(chain-name)/chain_config.toml。该命令有以下参数：
+
+####  `--block_interval`
+
+设置出块时间间隔，默认值为3。
+
+####  `--block_limit`
+
+设置区块限制，默认值为100。
 
 #### `--chain_name`
 
-指定链的名字。
+设置链的名字。
 
-* 链的名字本身不会保存在链上，但是系统初始配置中的`chain_id`是用`chain_name`计算得到的。计算方式为`chain_id = sha3_256(chain_name)`。
-* `chain_id`在生成的 `init_sys_config.toml` 文件中可以查看到。
 * 链的名字会作为文件夹的名称。以`test-chain`为例，按节点序号分别创建`test-chain-0，test-chain-1，test-chain-2`等节点文件夹，分别存放每个节点的配置文件。
 * 如果没有传递 `chain_name` 参数，则默认链的名字为 `test-chain`。
 
+####  `--chain_id`
+
+设置链id，默认为空字符串。检测到为默认值时，自动替换为hex(sm3($(chain_name)))。
+
+####  `--config-dir`
+
+设置配置文件目录，默认为当前目录。
+
 #### `--timestamp`
 
-指定起链的时间戳。
+设置起链的时间戳，默认参数为0。检测到为默认值时，自动替换为当前时间对应的时间戳。
 
 * 具体数值是指自 `1970-1-1` 以来的毫秒数，默认是取当前的时间。
-* 这个值在生成的 `genesis.toml` 文件中可以查看到。
 
-#### `--super_admin`
+#### `--prevhash`
 
-指定超级管理员地址。
+设置创世块的父哈希值，默认为0x0000000000000000000000000000000000000000000000000000000000000000
 
-* 该账户拥有最高权限，用来治理整条链。用户**必须**自己设置超级管理员。
-* 这个值在生成的 `init_sys_config.toml` 文件中可以查看到。
+#### `--version`
 
-#### `--nodes`
+设置配置版本信息。
 
-指定所有节点的网络地址，格式为`ip:port`。
+####  微服务相关参数
 
-* `ip`也可以是主机名或着域名。
-* 节点网络地址用逗号分割，个数需要和创建节点的个数保持一致，顺序也要和共识节点的账户地址等保持一致。
-
-#### `--authorities`
-
-指定所有共识节点的账户地址。
-
-* 账户地址用逗号分割，个数需要和创建节点的个数保持一致，顺序也要和节点网络地址等保持一致。
-* 安全起见，我们建议的流程是：先由每个共识节点单独生成各自的私钥和地址，私钥请务必由自己妥善保管；地址交由负责起链的超级管理员，生成链的配置。分发配置之后，起链前，由各节点独自将自己的私钥补充进来。
-
-#### `--block_delay_number`
-
-区块从共识完成到最终确认，延迟的区块数量。
-
-#### `--peers_count`
-
-指定链的节点数量。
-
-* 仅当用户没有传递`--nodes`参数时才生效，否则以`--nodes`的值为准。
-* 仅用于单集群模式，会自动生成对应数量的节点网络地址。
-
-#### `--enable_tls`
-
-是否打开通信加密功能。
-
-* 默认为`true`。
-
-#### `--kms_passwords`
-
-指定每个节点的`kms`服务的密码。
-
-* 每个节点在创建自己的节点账户时就需要设置密码，生成配置时也需要提供。
-* 多个节点的密码用逗号分割，个数需要和创建节点的个数保持一致，顺序也要和节点网络地址等保持一致。
-* 如果用户只需要传递了一个密码，则自动识别为单集群模式，所有的节点共用一个密码。
-
-## 其他配置
-
-#### `--is_stdout`
-
-是否将日志输出到标准输出。
-
-* 默认为`false`。
-* 该参数会影响各个微服务的`log4rs`配置。
-
-#### `--log_level`
-
-日志等级。
-
-* 默认为`info`。
-* 该参数会影响各个微服务的`log4rs`配置。
-
-#### `--is_bft`
-
-共识微服务是否选择`bft`实现。
-
-* 默认为`false`。
-* 根据选择的共识算法而定。
-* 该参数会影响共识微服务的账户/私钥等配置文件。
-
-## 微服务配置
-
-#### network_p2p
-
-命令行参数：
+使用`init-chain-config`命令设置微服务的相关参数如下
 
 ```
-USAGE:
-    network run [OPTIONS]
+--consensus_image <CONSENSUS_IMAGE>
+	set consensus micro service image name (consensus_bft/consensus_raft) [default:consensus_raft]
 
-FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+--consensus_tag <CONSENSUS_TAG>
+	set consensus micro service image tag [default: latest]
 
-OPTIONS:
-    -p, --port <grpc-port>       Sets grpc port of this service [default: 50000]
-    -k, --key_file <key-file>    Sets path of network key file [default: network-key]
+--controller_image <CONTROLLER_IMAGE>
+	set controller micro service image name (controller)[default:controller]
+
+--controller_tag <CONTROLLER_TAG>
+	set controller micro service image tag [default: latest]
+
+--executor_image <EXECUTOR_IMAGE>
+	set executor micro service image name (executor_evm) [default: executor_evm]
+
+--executor_tag <EXECUTOR_TAG>
+	set executor micro service image tag [default: latest]
+
+--kms_image <KMS_IMAGE>
+	set kms micro service image name (kms_eth/kms_sm) [default: kms_sm]
+
+--kms_tag <KMS_TAG>
+	set kms micro service image tag [default: latest]
+
+--network_image <NETWORK_IMAGE>
+	set network micro service image name (network_tls/network_p2p) [default: network_p2p]
+
+--network_tag <NETWORK_TAG>
+	set network micro service image tag [default: latest]
+
+--storage_image <STORAGE_IMAGE>
+	set storage micro service image name (storage_rocksdb) [default: storage_rocksdb]
+
+--storage_tag <STORAGE_TAG>
+	set storage micro service image tag [default: latest]
 ```
 
-配置文件：
+### 2.`set-admin`命令
 
-1. 日志配置文件 `network-log4rs.yaml`。日志配置参见[log4rs文档](https://docs.rs/log4rs/1.0.0/log4rs/#configuration-via-a-yaml-file)。
-2. 节点私钥`network-key`。用于通信加密，文件内容为`0x`开头的十六进制字符串。
-3. 服务配置文件 `network-config.toml`。
+设置管理员账户。账户需要事先通过`new-account`子命令创建。如果网络微服务选择了`network_tls`，则还需要通过`create-ca`创建链的根证书。
 
-服务配置文件例子：
+参数：
 
 ```
-$ cat network-config.toml 
-enable_tls = true
-port = 40000
-[[peers]]
-ip = "test-chain-1"
-port = 40000
-[[peers]]
-ip = "test-chain-2"
-port = 40000
+--admin <ADMIN>              
+	set admin
+--chain-name <CHAIN_NAME>    
+	set chain name [default: test-chain]
+--config-dir <CONFIG_DIR>    
+	set config file directory,default means currentdirectory[default:.]
 ```
 
-* `enable_tls` 是否打开通信加密功能。
-* `peers`：配置对端节点信息。在网络服务启动时会首先连接 `peers` 中的节点。
+* `admin`为必选参数。值为之前用`new-account`创建的地址。
 
-#### network_direct
+### 3.`set-validators`命令
 
-命令行参数：
-```
-USAGE:
-    network run [OPTIONS]
+设置共识节点账户列表。账户同样需要事先通过`new-account`子命令，由各个共识节点分别创建，然后将账户地址集中到一起进行设置。
 
-FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
-
-OPTIONS:
-    -p, --port <grpc-port>       Sets grpc port of this service [default: 50000]
-    -k, --key_file <key-file>    Sets path of network key file. It's not used for network_direct.
-                                 Leave it here for compatibility [default: network-key]
-```
-
-配置文件：
-
-1. 日志配置文件 `network-log4rs.yaml`。日志配置参见[log4rs文档](https://docs.rs/log4rs/1.0.0/log4rs/#configuration-via-a-yaml-file)。
-2. 服务配置文件 `network-config.toml`。同`network_p2p`。
-
-#### consensus_raft
-
-命令行参数：
-```
-USAGE:
-    consensus run [OPTIONS]
-
-FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
-
-OPTIONS:
-    -p, --port <grpc-port>    Sets grpc port of this service [default: 50003]
-```
-
-配置文件：
-
-1. 日志配置文件 `consensus-log4rs.yaml`。日志配置参见[log4rs文档](https://docs.rs/log4rs/1.0.0/log4rs/#configuration-via-a-yaml-file)。
-2. 节点账户地址`node_address`。文件内容为`0x`开头的十六进制字符串。
-3. 服务配置文件 `consensus-config.toml`。
-
-服务配置文件例子：
+参数：
 
 ```
-network_port = 50000
-controller_port = 50004
-node_id = 0
+--chain-name <CHAIN_NAME>
+	set chain name [default: test-chain]
+--config-dir <CONFIG_DIR>
+	set config file directory,default means current directory[default:.]
+--validators <VALIDATORS>
+	validators account splited by ','
 ```
 
-* `network_port` 网络微服务的`gRPC`端口。
-* `controller_port` 控制微服务的`gRPC`端口。
-* `node_id` 废弃参数。
+* `validators`为必选参数。值为多个之前用`new-account`创建的地址,用逗号分隔。
 
-#### consensus_bft
+### 4.`set-nodelist`命令
 
-命令行参数：
-```
-USAGE:
-    consensus run [OPTIONS]
+设置节点网络地址列表。各个节点参与方需要根据自己的网络环境，预先保留节点的`ip`，`port`和`domain`。然后将相关信息集中到一起进行设置。至此，链级配置信息设置完成，可以下发配置文件`chain_config.toml`到各个节点。如果网络微服务选择了`network_tls`，则需要通过`create-csr`根据节点的`domain`为各个节点创建证书和签名请求。然后请求`CA`通过`sign-crs`处理签名请求，并下发生成的`cert.pem`到各个节点。
 
-FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
-
-OPTIONS:
-    -p, --port <grpc-port>    Sets grpc port of this service [default: 50001]
-```
-
-配置文件：
-
-1. 日志配置文件 `consensus-log4rs.yaml`。日志配置参见[log4rs文档](https://docs.rs/log4rs/1.0.0/log4rs/#configuration-via-a-yaml-file)。
-2. 节点账户地址`node_address`。文件内容为`0x`开头的十六进制字符串。
-3. 节点私钥文件`node_key`。文件内容为`0x`开头的十六进制字符串。
-4. 服务配置文件 `consensus-config.toml`。同`consensus_raft`。
-
-#### executor_poc
-
-命令行参数：
-```
-USAGE:
-    executor run [OPTIONS]
-
-FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
-
-OPTIONS:
-    -p, --port <grpc-port>    Sets grpc port of this service [default: 50002]
-```
-
-配置文件：
-
-1. 日志配置文件 `executor-log4rs.yaml`。日志配置参见[log4rs文档](https://docs.rs/log4rs/1.0.0/log4rs/#configuration-via-a-yaml-file)。
-
-#### executor_evm
-
-命令行参数：
-```
-USAGE:
-    executor run [FLAGS] [OPTIONS]
-
-FLAGS:
-    -c, --compatibility    Sets eth compatibility, default false
-    -h, --help             Prints help information
-    -V, --version          Prints version information
-
-OPTIONS:
-    -p, --port <grpc-port>    Set executor port, default 50002
-```
-
-* `-c`参数表示是否与以太坊兼容（CITA 默认与以太坊在块的时间戳精度上不兼容，CITA 为毫秒，以太坊为秒）。
-
-配置文件：
-
-1. 日志配置文件 `executor-log4rs.yaml`。日志配置参见[log4rs文档](https://docs.rs/log4rs/1.0.0/log4rs/#configuration-via-a-yaml-file)。
-
-#### storage_rocksdb
-
-命令行参数：
-```
-USAGE:
-    storage run [OPTIONS]
-
-FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
-
-OPTIONS:
-    -d, --db <db-path>        Sets db path [default: chain_data]
-    -p, --port <grpc-port>    Sets grpc port of this service [default: 50003]
-```
-
-配置文件：
-
-1. 日志配置文件 `storage-log4rs.yaml`。日志配置参见[log4rs文档](https://docs.rs/log4rs/1.0.0/log4rs/#configuration-via-a-yaml-file)。
-
-#### storage_sqlite
-
-命令行参数：
-```
-USAGE:
-    storage run [OPTIONS]
-
-FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
-
-OPTIONS:
-    -d, --db <db-path>        Sets db path [default: storage.db]
-    -p, --port <grpc-port>    Sets grpc port of this service [default: 50003]
-```
-
-配置文件：
-
-1. 日志配置文件 `storage-log4rs.yaml`。日志配置参见[log4rs文档](https://docs.rs/log4rs/1.0.0/log4rs/#configuration-via-a-yaml-file)。
-
-#### controller
-
-命令行参数：
-```
-USAGE:
-    controller run [OPTIONS]
-
-FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
-
-OPTIONS:
-    -p, --port <grpc-port>    Sets grpc port of this service [default: 50004]
-```
-
-配置文件：
-
-1. 日志配置文件 `controller-log4rs.yaml`。日志配置参见[log4rs文档](https://docs.rs/log4rs/1.0.0/log4rs/#configuration-via-a-yaml-file)。
-2. `key_id`，内容为一个十进制数字，表示节点账户在`kms`数据库中的序号。
-2. 服务配置文件`controller-config.toml`。
-
-服务配置文件例子：
+参数：
 
 ```
-network_port = 50000
-consensus_port = 50001
-storage_port = 50003
-kms_port = 50005
-executor_port = 50002
-block_delay_number = 0
+--chain-name <CHAIN_NAME>
+	set chain name [default: test-chain]
+--config-dir <CONFIG_DIR>
+	set config file directory,default means current directory[default:.]
+--nodelist <NODE_LIST>
+	node list looks like localhost:40000:node0,localhost:40001:node1
 ```
 
-* `network_port` 网络微服务的`gRPC`端口。
-* `consensus_port` 共识微服务的`gRPC`端口。
-* `storage_port` 存储微服务的`gRPC`端口。
-* `kms_port` `kms`微服务的`gRPC`端口。
-* `executor_port` 执行器微服务的`gRPC`端口。
-* `block_delay_number` 区块从共识完成到最终确认，延迟的区块数量。
-
-#### kms_sm
-
-命令行参数：
-```
-USAGE:
-    kms run [OPTIONS]
-
-FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
-
-OPTIONS:
-    -d, --db <db-path>        Sets path of db file [default: kms.db]
-    -p, --port <grpc-port>    Sets grpc port of this service [default: 50005]
-    -k, --key <key-file>      Sets path of key_file
-```
-
-* `-k` 参数传递一个文件，内容为`kms`服务的密码。如果不传递该参数，则会进入交互模式，需要用户在命令行上输入密码。
-
-配置文件：
-
-1. 日志配置文件 `kms-log4rs.yaml`。日志配置参见[log4rs文档](https://docs.rs/log4rs/1.0.0/log4rs/#configuration-via-a-yaml-file)。
-
-#### kms_eth
-
-跟`kms_sm`相同。
-
-## 密码学算法配置
-
-目前`CITA-Cloud`支持两种密码学算法的组合（分别为签名算法和散列算法）：
-
-1. [secp256k1] 与 [kecak]
-2. [sm2] 与 [sm3]
-
-用户可以通过在`service-config.toml`选择不同的`kms`微服务具体实现来选择不同的密码学组合。（`service-config.toml`在 cita-cloud/operator 中）
-
-1. 对应`kms_eth`。
-2. 对应`kms_sm`。
+* `nodelist`为必选参数。值为多个节点的网络地址,用逗号分隔。每个节点的网络地址包含`ip`,`port`和`domain`，之间用冒号分隔。
+* `domain`为任意字符串，只需要确保节点之间不重复即可。
