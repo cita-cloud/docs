@@ -1,4 +1,6 @@
-# 快速入门
+﻿﻿# 快速入门
+
+本章介绍的是使用minikube的快速入门操作方法，CITA-Cloud提供本地运行版本runner_local，参阅`本地运行`一节
 
 ## 环境准备
 
@@ -118,7 +120,6 @@ local-pvc   Bound    pvc-fd3eaebd-3413-4205-b88a-dbc6cee9a057   10Gi       RWO  
 
 注意：如果`minikube`版本为 `v1.20.0`，这里会有一个bug。详细情况和解决方法参见[链接](https://tonybai.com/2021/05/14/a-bug-of-minikube-1-20/)。
 
-
 #### 生成超级管理员账户
 
 ```
@@ -183,6 +184,13 @@ docker@minikube:~$ tail -10f /tmp/hostpath-provisioner/default/local-pvc/test-ch
 
 ```
 $ export CITA_CLOUD_RPC_ADDR=`minikube ip`:30004 CITA_CLOUD_EXECUTOR_ADDR=`minikube ip`:30005
+```
+
+注意：这里minikube可能出现svc端口映射问题 使用以下命令解决
+
+```
+$ kubectl port-forward pod/test-chain-0 50002:50002 50004:50004
+$ export CITA_CLOUD_RPC_ADDR=localhost:30004 CITA_CLOUD_EXECUTOR_ADDR=localhost:30005
 ```
 
 #### 查看块高
