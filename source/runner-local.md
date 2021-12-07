@@ -35,10 +35,32 @@ $ apt install -y --no-install-recommends make git protobuf-compiler libssl-dev p
 $ cargo install --path config
 ```
 
-3. 使用`cloud-config create`命令生成配置，更多配置参数参见[cloud-config文档](https://github.com/cita-cloud/cloud-config)
+3. 使用`cloud-config create-dev`命令生成配置
 
 ```
-$ cloud-config create --peers-count 4 --consensus consensus_raft --network network_tls --kms-password 123456 --config-dir tmp --use_num
+$ cloud-config create-dev --help
+cloud-config-create-dev 
+
+create config in env dev
+
+USAGE:
+    cloud-config create-dev [FLAGS] [OPTIONS]
+
+FLAGS:
+    -h, --help       Print help information
+        --is-bft     is consensus bft
+        --is-tls     is network tls
+    -V, --version    Print version information
+
+OPTIONS:
+	--chain-name <CHAIN_NAME>      set chain name [default: test-chain]
+	--config-dir <CONFIG_DIR>      set config file directory, default means current directory[default: .]
+	--log-level <LOG_LEVEL>        log level [default: info]
+	--peers-count <PEERS_COUNT>    set initial node number [default: 4]
+```
+
+```
+$ cloud-config create-dev --is-bft --config-dir tmp
 ```
 
 4. 查看生成的配置

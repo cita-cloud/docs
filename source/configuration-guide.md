@@ -381,7 +381,7 @@ node_addr = 'c7e1fe8c89790ef0f4c0548e759c849806475a48'
 
 说明：
 
-`grpc_listen_port`是本节点共识微服务和其他微服务通信的grpc端口，`controller_port`是共识微服务的`gRPC`端口，`network_port`是网络微服务的`gRPC`端口，`node_addr`是本节点的不带前缀`0x`的地址。
+`grpc_listen_port`是本节点共识微服务和其他微服务通信的grpc端口，`controller_port`是共识微服务的`gRPC`端口，`network_port`是网络微服务的`gRPC`端口，`node_addr`是本节点的地址。
 
 #### consensus_bft
 
