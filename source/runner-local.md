@@ -1,17 +1,18 @@
-﻿# 本地运行
+# 本地运行
 
 [runner_local](https://github.com/cita-cloud/runner_local)是CITA-Cloud的本地运行版本，可以方便不熟悉k8s运行环境的用户在本地体验CITA-Cloud。
 
 ## 获取工程及子模块文件
 
-1. 首先使用`git clone`命令获取`runner_local`文件，命令如下：
+* 首先使用`git clone`命令获取`runner_local`文件，命令如下：
 
 ```
 $ git clone git@github.com:cita-cloud/runner_local.git
 ```
 
-2. 使用`git checkout`切换到需要使用的版本分支。
-3. 适用以下命令获取runner_local中的各个子模块
+* 使用`git checkout`切换到需要使用的版本分支。
+
+* 适用以下命令获取runner_local中的各个子模块
 
 ```
 $ git submodule update --init --remote
@@ -21,7 +22,7 @@ $ git submodule update --init --remote
 
 使用[cloud-config](https://github.com/cita-cloud/cloud-config)生成链的配置文件。
 
-1. 安装依赖
+* 安装依赖
 
 ```
 $ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -29,13 +30,13 @@ $ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 $ apt install -y --no-install-recommends make git protobuf-compiler libssl-dev pkg-config clang
 ```
 
-2. 安装`cloud-config`
+* 安装`cloud-config`
 
 ```
 $ cargo install --path config
 ```
 
-3. 使用`cloud-config create-dev`命令生成配置
+* 使用`cloud-config create-dev`命令生成配置
 
 ```
 $ cloud-config create-dev --help
@@ -63,7 +64,7 @@ OPTIONS:
 $ cloud-config create-dev --is-bft --config-dir tmp
 ```
 
-4. 查看生成的配置
+* 查看生成的配置
 
 ```
 $ tree tmp/ -L 1
@@ -79,6 +80,8 @@ tmp
 
 ## 编译和使用
 
+编译工程
+
 ```
 $ make release
 ```
@@ -93,7 +96,7 @@ $ cd target/install
 >  
 > 在使用前请先参阅`快速入门`-`环境准备`-`cloud-cli`，安装`CITA-Cloud`命令行工具`cloud-cli`，可以方便地对链进行常用操作。
 
-启动链
+* 启动链
 
 ```
 $ ./scripts/env.sh start config/test-chain-0 50000 && ./scripts/env.sh start config/test-chain-1 51000 && ./scripts/env.sh start config/test-chain-2 52000 && ./scripts/env.sh start config/test-chain-3 53000
@@ -101,13 +104,13 @@ $ ./scripts/env.sh start config/test-chain-0 50000 && ./scripts/env.sh start con
 
 启动成功后就可以使用`cloud-cli`与链进行交互了，链的操作与使用`k8s`运行的`CITA-Cloud`一样，参阅`快速入门`中`基本操作`、`账户操作`、`发送交易`三节。
 
-停止链
+* 停止链
 
 ```
 $ ./scripts/env.sh stop
 ```
 
-删除链文件
+* 删除链文件
 
 ```
 $ ./scripts/env.sh clean config/test-chain-0 && ./scripts/env.sh clean config/test-chain-1 && ./scripts/env.sh clean config/test-chain-2 && ./scripts/env.sh clean config/test-chain-3
