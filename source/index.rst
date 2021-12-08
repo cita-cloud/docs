@@ -29,7 +29,7 @@ CITA-Cloud 是一个基于云原生的联盟链框架，用户可以基于该框
 
    introduction
    getting-start
-   runner_local
+   runner-local
    configuration-guide
    deployment-guide
    upgrade
