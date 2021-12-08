@@ -98,12 +98,12 @@ $ helm repo add cita-cloud https://registry.devops.rivtower.com/chartrepo/cita-c
 $ helm repo update
 $ helm search repo cita-cloud
 NAME                                            CHART VERSION   APP VERSION     DESCRIPTION                                       
-cita-cloud/cita-cloud-config                    6.0.0           6.0.0           Create a job to change config of CITA-Cloud blo...
-cita-cloud/cita-cloud-eip                       6.0.0           6.0.0           Create EIP for CITA-Cloud                         
-cita-cloud/cita-cloud-local-cluster             6.1.0           6.1.0           Setup CITA-Cloud blockchain in one k8s cluster    
-cita-cloud/cita-cloud-multi-cluster-node        6.1.0           6.1.0           Setup CITA-Cloud node in multi k8s cluster        
-cita-cloud/cita-cloud-porter-lb                 6.0.0           6.0.0           Setup porter Loadbalancer for CITA-Cloud node     
-cita-cloud/cita-cloud-pvc                       6.0.0           6.0.0           Create PVC for CITA-Cloud 
+cita-cloud/cita-cloud-config                    6.3.0           6.3.0           Create a job to change config of CITA-Cloud blo...
+cita-cloud/cita-cloud-eip                       6.3.0           6.3.0           Create EIP for CITA-Cloud                         
+cita-cloud/cita-cloud-local-cluster             6.3.0           6.3.0           Setup CITA-Cloud blockchain in one k8s cluster    
+cita-cloud/cita-cloud-multi-cluster-node        6.3.0           6.3.0           Setup CITA-Cloud node in multi k8s cluster        
+cita-cloud/cita-cloud-porter-lb                 6.3.0           6.3.0           Setup porter Loadbalancer for CITA-Cloud node     
+cita-cloud/cita-cloud-pvc                       6.0.0           6.0.0           Create PVC for CITA-Cloud
 ```
 
 #### 创建PVC
@@ -228,7 +228,7 @@ release "test-chain" uninstalled
 #### 删除链
 
 ```
-$ helm install clean cita-cloud/cita-cloud-config --set config.action=clean --set pvcName=local-pvc
+$ helm install clean cita-cloud/cita-cloud-config --set config.action.type=clean
 NAME: clean
 LAST DEPLOYED: Wed Jul 14 20:20:37 2021
 NAMESPACE: default
