@@ -27,7 +27,6 @@ NAMESPACE: default
 STATUS: deployed
 REVISION: 1
 TEST SUITE: None
-release "init" uninstalled
 ```
 
 #### 生成文件
@@ -50,7 +49,6 @@ NAMESPACE: default
 STATUS: deployed
 REVISION: 1
 TEST SUITE: None
-release "increase" uninstalled
 ```
 
 #### 生成文件
@@ -81,7 +79,6 @@ NAMESPACE: default
 STATUS: deployed
 REVISION: 1
 TEST SUITE: None
-release "decrease" uninstalled
 ```
 
 #### 文件变化
@@ -107,7 +104,6 @@ NAMESPACE: default
 STATUS: deployed
 REVISION: 1
 TEST SUITE: None
-release "clean" uninstalled
 $ helm uninstall clean 
 release "clean" uninstalled
 ```
