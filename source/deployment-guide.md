@@ -74,7 +74,7 @@ $ helm install cita-cloud-eip cita-cloud/cita-cloud-eip
 
 然后使用如下命令创建`SVC`。
 ```
-$ helm install test-chain-0-lb ./cita-cloud-porter-lb
+$ helm install test-chain-0-lb cita-cloud/cita-cloud-porter-lb
 ```
 * `test-chain-0-lb`为`SVC`的名字。
 * 更多参数参见[链接](https://github.com/cita-cloud/charts/tree/main/cita-cloud-porter-lb)。
@@ -83,7 +83,7 @@ $ helm install test-chain-0-lb ./cita-cloud-porter-lb
 
 可以使用`Chart`工程：
 ```
-$ helm install init-multi cita-cloud/cita-cloud-config
+$ helm install init-multi cita-cloud/cita-cloud-config --set config.action.type=initMulti --set config.chainName=test-chain --set config.action.initMulti.superAdmin=8f81961f263f45f88230375623394c9301c033e7 --set config.action.initMulti.kmsPasswordList="123456\,123456\,123456" --set config.action.initMulti.nodeList="192.168.10.123:40000:node0\,192.168.10.134:40000:node1\,192.168.10.135:40000:node2" --set pvcName=local-pvc
 ```
 更多参数参见[链接](https://github.com/cita-cloud/charts/tree/main/cita-cloud-config)。
 
@@ -93,7 +93,7 @@ $ helm install init-multi cita-cloud/cita-cloud-config
 
 可以使用`Chart`工程：
 ```
-$ helm install test-chain-0 cita-cloud/cita-cloud-multi-cluster-node
+$ helm install test-chain-node0 cita-cloud/cita-cloud-multi-cluster-node --set config.chainName=test-chain --set config.domain=node0
 ```
 * `chainName`和`kmsPassword`参数要与第3步保持一致。
 * `CITA-Cloud`的各个微服务都有多种实现，用户可以通过`xxx.imageName`和`xxx.imageTag`参数来选择要使用的实现。

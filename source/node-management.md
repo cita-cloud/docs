@@ -20,7 +20,7 @@
 此时生成的三个节点默认是共识节点。
 
 ```
-$ helm install init cita-cloud/cita-cloud-config --set config.chainName=test-chain --set pvcName=local-pvc --set 'config.arguments={--kms_password,123456,--nodes,192.168.12.2:30000\,192.168.12.3:30000\,192.168.12.4:30000,--is_bft,true,--is_stdout,true}' --wait && helm uninstall init
+$ helm install init-multi cita-cloud/cita-cloud-config --set config.action.type=initMulti --set config.chainName=test-chain --set config.action.initMulti.superAdmin=8f81961f263f45f88230375623394c9301c033e7 --set config.action.initMulti.kmsPasswordList="123456\,123456\,123456" --set config.action.initMulti.nodeList="192.168.10.123:40000:node0\,192.168.10.134:40000:node1\,192.168.10.135:40000:node2" --set pvcName=local-pvc
 NAME: init
 LAST DEPLOYED: Thu Jul 29 23:29:52 2021
 NAMESPACE: default
@@ -35,14 +35,16 @@ release "init" uninstalled
 ```
 $ cd /tmp/hostpath-provisioner/default/local-pvc
 $ ls
-test-chain  test-chain-0  test-chain-1  test-chain-2  test-chain.config
+test-chain  test-chain-node0  test-chain-node1  test-chain-node2
 ```
 
 ### 添加普通节点
 
 ```
-$ helm install increase cita-cloud/cita-cloud-config --set config.action=increase --set config.chainName=test-chain --set pvcName=local-pvc --set 'config.arguments={--kms_password,123456,--node,192.168.12.5:30000}' --wait && helm uninstall increase
-NAME: increase
+$ helm uninstall init-multi 
+release "init-multi" uninstalled
+$ helm install increase-multi cita-cloud/cita-cloud-config --set config.action.type=increaseMulti --set config.chainName=test-chain --set config.action.increaseMulti.kmsPassword=123456 --set config.action.increaseMulti.node="192.168.10.136:40000:node3" --set pvcName=local-pvc
+NAME: increase-multi
 LAST DEPLOYED: Thu Jul 29 23:38:26 2021
 NAMESPACE: default
 STATUS: deployed
@@ -56,24 +58,24 @@ release "increase" uninstalled
 ```
 $ cd /tmp/hostpath-provisioner/default/local-pvc
 $ ls
-test-chain  test-chain-0  test-chain-1  test-chain-2  test-chain-3  test-chain.config
+test-chain  test-chain-node0  test-chain-node1  test-chain-node2  test-chain-node3
 ```
 
 多了节点文件夹`test-chain-3`。
 
 ```
-$ ls test-chain-3
-blocks                  controller-log4rs.yaml  key_id               network_key          tx_infos
-consensus-config.toml   executor-log4rs.yaml    kms-log4rs.yaml      node_address         txs
-consensus-log4rs.yaml   genesis.toml            network-config.toml  node_key
-controller-config.toml  init_sys_config.toml    network-log4rs.yaml  storage-log4rs.yaml
+$ ls test-chain-node3
+config.toml             executor-log4rs.yaml  kms-log4rs.yaml      node_config.toml
+controller-log4rs.yaml  kms.db                network-log4rs.yaml  storage-log4rs.yaml
 ```
 
 ### 删除普通节点
 
 ```
-$ helm install decrease cita-cloud/cita-cloud-config --set config.action=decrease --set config.chainName=test-chain --set pvcName=local-pvc --wait && helm uninstall decrease
-NAME: decrease
+$ helm uninstall increase-multi
+release "increase-multi" uninstalled
+$ helm install decrease-multi cita-cloud/cita-cloud-config --set config.action.type=decreaseMulti --set config.chainName=test-chain --set config.action.decreaseMulti.domain=node3
+NAME: decrease-multi
 LAST DEPLOYED: Thu Jul 29 23:42:38 2021
 NAMESPACE: default
 STATUS: deployed
@@ -87,15 +89,17 @@ release "decrease" uninstalled
 ```
 $ cd /tmp/hostpath-provisioner/default/local-pvc/
 $ ls
-test-chain  test-chain-0  test-chain-1  test-chain-2 test-chain.config
+test-chain  test-chain-node0  test-chain-node1  test-chain-node2
 ```
 
-少了节点文件夹`test-chain-3`。
+少了节点文件夹`test-chain-node3`。
 
 ### 删除链
 
 ```
-$ helm install clean cita-cloud/cita-cloud-config --set config.action=clean --set config.chainName=test-chain --set pvcName=local-pvc --wait && helm uninstall clean
+$ helm uninstall decrease-multi 
+release "decrease-multi" uninstalled
+$ helm install clean cita-cloud/cita-cloud-config --set config.action.type=clean
 Location: /home/mid/.kube/config
 NAME: clean
 LAST DEPLOYED: Thu Jul 29 23:47:11 2021
@@ -103,6 +107,8 @@ NAMESPACE: default
 STATUS: deployed
 REVISION: 1
 TEST SUITE: None
+release "clean" uninstalled
+$ helm uninstall clean 
 release "clean" uninstalled
 ```
 
