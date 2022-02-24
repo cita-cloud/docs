@@ -1,21 +1,49 @@
-# 中间件
+# 组件
 
-### 分布式身份
+组件是各个微服务的实现。
 
-参见[分布式数字身份产业联盟](https://www.did-a.org.cn/)。
+仓库名称以微服务名称开头，下划线后接用于标识不同实现的名称。
 
-### 数据存证
+比如`storage_rocksdb`，是基于`rocksdb`实现的`storage`微服务。
 
-参见[RivLink](https://www.rivtower.com/products/rivhub#rivlink)。
+组件分为两类：
 
-### 物联网设备
+* 原厂组件，即`CITA-Cloud`自带的组件。
+* 第三方组件。
 
-参见[RivIoT](https://www.rivtower.com/products/rivhub#riviot)。
+组件的成熟度：1-5，1表示仅实现必要的功能的最小实现，5表示非常成熟的实现。
 
-### 数据协作
+组件状态：开发中，维护中，废弃。
 
-参见[RivFlow](https://www.rivtower.com/products/rivhub#rivflow)。
+## 原厂组件
 
-### 跨链连接
+### controller
 
-### 隐私计算
+### consensus_bft
+
+### consensus_raft
+
+### network_p2p
+
+### network_tls
+
+### network_quic
+
+### kms_eth
+
+### kms_sm
+
+### storage_rocksdb
+
+### storage_sqlite
+
+### storage_tikv
+
+### executor_evm
+
+## 第三方组件
+
+### executor_chaincode
+
+### kms_sdsm
+

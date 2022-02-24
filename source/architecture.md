@@ -1,24 +1,110 @@
 # 架构设计
 
-## 整体设计原则
+`CITA-Cloud`总体设计上采用微服务架构，划分为`Controller`，`Network`，`Consensus`，`Storage`，`Executor`，`KMS`六个微服务。
 
-`CITA-Cloud`总体设计上依然采用微服务架构，划分为`Controller`，`Network`，`Consensus`，`Storage`，`Executor`，`KMS`六个微服务。微服务之间相互解耦，达到不同实现可以灵活替换，自由组合的目的。
+微服务接口定义参见[cita_cloud_proto](https://github.com/cita-cloud/cita_cloud_proto)。
 
-解耦设计的细节参见[底层链技术白皮书](https://talk.citahub.com/t/topic/1663)。
+微服务之间相互解耦，达到不同实现可以灵活替换，自由组合的目的。解耦设计的细节参见[底层链技术白皮书](https://talk.citahub.com/t/topic/1663)。
 
-在此基础上，为了能够快速构建起完整的，成熟的生态。在之前解耦的基础上，让解耦出的每一个微服务都能独立完成某项功能，每个微服务的接口能够自洽，方便直接复用已有的库或者软件。
+为了能够快速构建起完整的，成熟的生态。在之前解耦的基础上，让解耦出的每一个微服务都能独立完成某项功能，每个微服务的接口能够自洽。使其不只是作为`CITA-Cloud`的组件存在，还可以拥有自己独立的生态。
 
-## 协议详解
+## Network
 
-#### Network
+`Network`微服务，维护与其他节点之间的网络连接，为本节点的其他微服务提供网络服务。
 
-`Network`微服务，主要提供网络部分的功能，分为收/发两大部分功能。收的部分采用了控制反转，收到的网络报文根据报文头中的字段分发到不同的`Grpc`地址，因此只提供了一个注册接口(`RegisterNetworkMsgHandler`);发的部分提供了单播(`SendMsg`)和广播(`Broadcast`)两个接口。此外就是一个查询网络连接状态的接口(GetNetworkStatus)。
+主要服务有收/发网络消息和节点管理，状态查询。
 
-实现上就是已有网络库的简单封装。
+### 接收网络消息
 
-其中一个实现[network_direct](https://github.com/cita-cloud/network_direct)直接使用系统网络库，内部实现为节点的全互联。另外一个实现[network_p2p](https://github.com/cita-cloud/network_p2p)，使用了已有的一个`p2p`库。
+收的部分采用了控制反转，收到的网络消息根据消息头中的`module`字段分发到其他微服务，并通过回调其他微服务的`gRPC`接口的方式在微服务间传递网络消息。
 
-#### Storage
+因此只有一个注册接口，用于其他需要网络服务的微服务注册信息。
+
+```
+// 注册网络服务接口
+rpc RegisterNetworkMsgHandler(RegisterInfo) returns (common.StatusCode);
+
+// 注册网络服务所需的信息
+message RegisterInfo {
+    string module_name = 1;  // 微服务名称
+    string hostname = 2;     // 网络消息分发时，回调地址的域名
+    string port = 3;         // 网络消息分发时，回调地址的端口
+}
+
+// 网络消息分发时，回调的 gRPC 接口
+// 注册网络服务的其他微服务必须实现该接口
+service NetworkMsgHandlerService {
+    rpc ProcessNetworkMsg(NetworkMsg) returns (common.StatusCode);
+}
+
+// 网络消息结构
+message NetworkMsg {
+    string module = 1;  // 接收的微服务名称
+    string type = 2;    // 消息类型，用于在同一个微服务内区分不同的消息
+    uint64 origin = 3;  // 消息的节点标识
+    bytes msg = 4;      // 消息数据
+}
+```
+
+### 发送网络消息
+发的部分提供了单播(`SendMsg`)和广播(`Broadcast`)两个接口。
+
+```
+// 发送消息给一个特定的节点
+// 通过消息中的 origin 字段指定接收节点的标识
+rpc SendMsg(NetworkMsg) returns (common.StatusCode);
+
+// 广播消息
+// 消息中的 origin 字段被忽略
+rpc Broadcast(NetworkMsg) returns (common.StatusCode);
+```
+
+关于消息中的`origin`字段，在收到网络消息之后，需要对其进行一个处理。
+
+发送时填的是接收节点的标识，接收到之后会讲该字段修改为发送放的标识。
+
+### 状态查询
+
+```
+message NetworkStatusResponse {
+    uint64 peer_count = 1;
+}
+
+rpc GetNetworkStatus(common.Empty) returns (NetworkStatusResponse);
+```
+
+查询网络连接状态的接口，返回当前连接的节点数量。
+
+
+```
+message NodeNetInfo {
+    string multi_address = 1;
+    uint64 origin = 2;
+}
+
+message TotalNodeNetInfo {
+    repeated NodeNetInfo nodes = 1;
+}
+
+rpc GetPeersNetInfo(common.Empty) returns (common.TotalNodeNetInfo);
+```
+
+查询节点网络信息的接口，返回连接的邻居节点的网络地址和标识信息。
+
+### 节点管理
+
+```
+message NodeNetInfo {
+    string multi_address = 1;
+    uint64 origin = 2;
+}
+
+rpc AddNode(common.NodeNetInfo) returns (common.StatusCode);
+```
+
+增加节点信息的接口(`AddNode`)，用于临时增加一个节点到网络中。
+
+## Storage
 
 `Storage`微服务，主要提供`KV`存储相关的功能，涵盖了常用的增删改查功能。接口上有：`Store`(其语义是`updata`，同时包含增和改的功能)，`Load`，`Delete`。
 
