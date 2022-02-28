@@ -1,0 +1,15 @@
+@startuml
+== Init ==
+Controller -> Consensus: Reconfigure(ConsensusConfiguration)
+== Start Consensus ==
+Consensus -> Controller: GetProposal
+Controller -> Consensus: Proposal
+Consensus -> Other_Consensus: Broadcast Proposal
+Other_Consensus -> Other_Controller: CheckProposal(Proposal)
+Other_Controller -> Other_Consensus: check result
+Consensus <-> Other_Consensus: Vote or other msg
+Consensus -> Controller: CommitBlock(ProposalWithProof)
+== Sync ==
+Controller -> Consensus: CheckBlock(ProposalWithProof)
+Consensus -> Controller: check result
+@enduml
