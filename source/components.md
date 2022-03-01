@@ -2,48 +2,294 @@
 
 组件是各个微服务的实现。
 
-仓库名称以微服务名称开头，下划线后接用于标识不同实现的名称。
+每个组件单独一个代码仓库，仓库名称以微服务名称开头，下划线后接用于标识不同实现的名称。
 
-比如`storage_rocksdb`，是基于`rocksdb`实现的`storage`微服务。
+构建物使用微服务名称，以便于相互替换。
+
+比如`storage_rocksdb`，是基于`rocksdb`实现的`Storage`微服务，其构建物为可执行文件`storage`。
 
 组件分为两类：
 
 * 原厂组件，即`CITA-Cloud`自带的组件。
 * 第三方组件。
 
-组件的成熟度：1-5，1表示仅实现必要的功能的最小实现，5表示非常成熟的实现。
-
-组件状态：开发中，维护中，废弃。
+组件还有以下一些指标：
+1. 组件的成熟度：1-5，1表示仅实现必要的功能的最小实现，5表示非常成熟的实现。
+2. 组件的状态：开发中，维护中，废弃。
+3. 组件的授权状态：商业，或者开源。
 
 ## 原厂组件
 
-### controller
-
-### consensus_bft
-
-### consensus_raft
-
 ### network_p2p
+
+介绍： 基于网络库[tentacle](https://github.com/nervosnetwork/tentacle)实现。
+
+特点： 
+* 支持[secio](https://github.com/libp2p/specs/blob/master/secio/README.md)，通信加密保证安全。
+* 支持多路复用(`yamux`)，可以自定义协议。
+* 支持节点发现，节点之间会自动交换连接的节点信息。
+
+[代码仓库](https://github.com/cita-cloud/network_p2p
+
+成熟度： 4
+
+状态： 维护中
+
+授权： 开源，`Apache-2.0 License`
 
 ### network_tls
 
+介绍： 基于[tokio-rustls](https://crates.io/crates/tokio-rustls)实现。
+
+特点：
+* 支持`TLS1.3`，通信加密保证安全。
+* 使用标准的`x509`证书，方便复用已有的基础设施。
+* 支持白名单，便于权限管理。
+
+[代码仓库](https://github.com/cita-cloud/network_tls)
+
+成熟度： 4
+
+状态： 维护中
+
+授权： 开源，`Apache-2.0 License`
+
+### network_direct
+
+介绍： 基于`tokio`网络库的实现。
+
+特点：
+* 网络直连，简单可靠
+* 无通信加密
+
+[代码仓库](https://github.com/cita-cloud/network_direct)
+
+成熟度： 3
+
+状态： 废弃
+
+授权： 开源，`Apache-2.0 License`
+
 ### network_quic
 
-### kms_eth
+介绍： 基于[QUIC](https://zhuanlan.zhihu.com/p/32553477)网络协议的实现。
 
-### kms_sm
+特点：
+* 高效，基于`UDP`协议，开销更小。
+* 安全，默认支持`TLS`，通信加密。
+* 可靠，弱网络下效果更高。
+
+[代码仓库](https://github.com/cita-cloud/network_quic)
+
+成熟度： 2
+
+状态： 开发中
+
+授权： 开源，`Apache-2.0 License`
 
 ### storage_rocksdb
 
+介绍： 基于[rocksdb](https://zhuanlan.zhihu.com/p/51285080)的实现。
+
+特点：
+* 高效，`KV`数据库，读写效率高。
+* 可靠，多数区块链项目都使用`rocksdb`作为存储引擎，稳定性好。
+
+[代码仓库](https://github.com/cita-cloud/storage_rocksdb)
+
+成熟度： 4
+
+状态： 维护中
+
+授权： 开源，`Apache-2.0 License`
+
+### storage_sled
+
+介绍： 基于[sled](https://github.com/spacejam/sled)的实现。
+
+特点：
+* 高效，读写效率高。
+* 目前尚未稳定。
+
+[代码仓库](https://github.com/cita-cloud/storage_sled)
+
+成熟度： 2
+
+状态： 开发中
+
+授权： 开源，`Apache-2.0 License`
+
 ### storage_sqlite
+
+介绍： 基于[sqlite](https://sql50.readthedocs.io/zh_CN/latest/sqlite_intro.html)的实现。
+
+特点：
+* 轻量，嵌入式数据库，开销小。
+* 功能丰富，完整支持`SQL`。
+
+[代码仓库](https://github.com/cita-cloud/storage_sqlite)
+
+成熟度： 3
+
+状态： 废弃
+
+授权： 开源，`Apache-2.0 License`
 
 ### storage_tikv
 
+介绍： 基于[tikv](https://docs.pingcap.com/zh/tidb/stable/tikv-overview)的实现。
+
+特点：
+* 扩展能力强，分布式`KV`数据库。
+* 稳定可靠，支持分布式事务操作，得到广泛应用。
+
+[代码仓库](https://github.com/cita-cloud/storage_tikv)
+
+成熟度： 2
+
+状态： 废弃
+
+授权： 开源，`Apache-2.0 License`
+
+### kms_sm
+
+介绍： 国密算法的实现，使用`sm2`签名算法和`sm3`哈希算法。
+
+特点：
+* 符合中国国家密码标准。
+* 高效，纯`Rust`实现，采用多种优化技术。
+
+[代码仓库](https://github.com/cita-cloud/kms_sm)
+
+成熟度： 4
+
+状态： 维护中
+
+授权： 开源，`Apache-2.0 License`
+
+### kms_eth
+
+介绍： 兼容以太坊算法的实现，使用`secp256k1`签名算法和`kek`哈希算法。
+
+特点：
+* 兼容以太坊。
+
+[代码仓库](https://github.com/cita-cloud/kms_eth)
+
+成熟度： 4
+
+状态： 维护中
+
+授权： 开源，`Apache-2.0 License`
+
 ### executor_evm
 
-## 第三方组件
+介绍： 基于以太坊的`EVM`实现。
+
+特点：
+* 兼容以太坊的智能合约生态。
+
+[代码仓库](https://github.com/cita-cloud/executor_evm)
+
+成熟度： 4
+
+状态： 维护中
+
+授权： 开源，`Apache-2.0 License`
 
 ### executor_chaincode
 
-### kms_sdsm
+介绍： 实验性兼容`Fabric Chaincode`实现。
 
+特点：
+* 兼容`Fabric`的智能合约生态。
+
+[代码仓库](https://github.com/cita-cloud/executor_chaincode)
+
+成熟度： 1
+
+状态： 废弃
+
+授权： 开源，`Apache-2.0 License`
+
+### consensus_bft
+
+介绍： 基于[CITA-BFT](https://docs.citahub.com/zh-CN/cita/architecture/cons)实现。
+
+特点：
+* 拜占庭容错。
+* 线性消息复杂度。
+
+[代码仓库](https://github.com/cita-cloud/consensus_bft)
+
+成熟度： 4
+
+状态： 维护中
+
+授权： 开源，`Apache-2.0 License`
+
+### consensus_raft
+
+介绍： 基于[Raft](https://github.com/tikv/raft-rs)实现。
+
+特点：
+* 非拜占庭容错。
+* 成熟实现，稳定可靠。
+
+[代码仓库](https://github.com/cita-cloud/consensus_raft)
+
+成熟度： 4
+
+状态： 维护中
+
+授权： 开源，`Apache-2.0 License`
+
+### controller
+
+介绍： 目前唯一的`Controller`实现。
+
+特点：
+* 先共识后执行。
+* 高性能，流水线式并行。
+* `utxo`模型的系统配置管理。
+* 丰富的治理功能。
+
+[代码仓库](https://github.com/cita-cloud/controller)
+
+成熟度： 4
+
+状态： 维护中
+
+授权： 开源，`Apache-2.0 License`
+
+## 第三方组件
+
+### executor_chaincode_ext
+
+介绍： 增强型兼容`Fabric Chaincode`实现。
+
+特点：
+* 兼容`chaincode`合约。
+
+代码仓库： 无
+
+成熟度： 3
+
+状态： 废弃
+
+授权： 商业
+
+### kms_sdibc
+
+介绍： 基于高性能国密算法实现。
+
+特点：
+* 性能好。
+
+代码仓库： 无
+
+成熟度： 4
+
+状态： 废弃
+
+授权： 商业
