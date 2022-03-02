@@ -1,103 +1,89 @@
 ﻿# 部署指南
 
-部署一条`CITA-Cloud`产生的链，除了准备好`k8s`集群外，还需要实现进行持久化存储和网络的设置。
+因为采用微服务架构，相比单体软件来说，运维部署比较复杂。
+
+例如：微服务之间如何相互调用；启动顺序如何保证；配置项如何管理等等。
+
+所幸微服务架构已经非常流行，相应的基础设施也已经非常成熟。其中最重要的一点就是云原生技术的发展，它大大简化了微服务架构的应用在运维部署，配置管理方面的工作。
+
+
+## 运行环境
+`CITA-Cloud`推荐的运行环境为`k8s`集群。
+* 对于开发，可以是`minikube`等单机版本的`k8s`集群。
+* 对于测试，可以是几台机器搭建的简单的`k8s`集群。
+* 对于生产环境，推荐有专人维护的高可用`k8s`集群，或者云厂商提供的容器云方案。
+
+其优点是：
+* 不同环境的操作方式是统一的。
+* 功能灵活，强大。可以实现各种复杂的配置，自动化运维等。
+* 生态繁荣。基于云原生社区，有非常多成熟的配套工具和解决方案。
+
+部署一条`CITA-Cloud`产生的链，除了准备好运行环境，还需要事先进行持久化存储和网络的设置。
 
 ## 持久化存储
 
-链的节点是有状态的服务，需要挂载持久化存储来保存数据。
+链的节点是有状态的服务，需要挂载持久化存储保存数据。
 
-为了方便对接不同的存储服务，我们使用了`k8s`的`PV/PVC`对存储进行了抽象。
+为了方便对接不同类型的存储服务，我们使用了`k8s`中的`PV/PVC`概念对存储进行了抽象。
 
-建议由运维人员配置`StorageClass`，对`PV/PVC`进行动态绑定。
+建议由运维人员配置`StorageClass`，对`PV/PVC`实行动态绑定。
 
-例如`快速入门`中就使用了`minikube`自带的名为`standard`的`StorageClass`。
-
-```
-$ helm install local-pvc cita-cloud/cita-cloud-pvc --set scName=standard
-```
-
-用户需要根据自己的环境以及所使用的存储服务来设置`scName`参数。
-
-`local-pvc`为创建的`PVC`的名字，用户也可以随意设置。
+* 对于开发环境，可以使用简单的`hostPath`，在宿主机本地存储。
+* 对于测试环境，可以使用`NFS`，由单独一台磁盘比较大的机器提供存储。
+* 对于生产环境，推荐使用各种成熟的云存储，分布式存储，`NAS`等专业存储系统。
 
 ## 网络
 
-网络方面，需要节点之间可以通过网络相互连接。
+网络方面，需要微服务之间，以及节点之间可以通过网络相互访问。
 
-集群内部可以通过`k8s`的`SVC`来暴露节点的网络端口。
+目前推荐的部署方式是，一个节点一个`Pod`，里面包含6个微服务的容器。
 
-如果是跨集群的情况，则需要使用`LoaderBalancer`服务对外暴露节点的网络端口。
+微服务之间可以直接通过本地环回网络通信。
 
-如使用公有云环境，请咨询当前使用的云服务商。
+节点间的网络通信，如果所有节点都在一个`k8s`集群内部，可以通过`k8s`的`Service`来暴露节点的网络端口。如果是跨集群的情况，则需要使用`NodePort`或者`LoaderBalancer`等服务对外暴露节点的网络端口。
 
-## 部署模式
+## 工具
 
-部署模式可分为单集群和多集群。
+### 配置工具
 
-#### 单集群
+当前的配置工具为[cloud-config](https://github.com/cita-cloud/cloud-config)，用于生成一条链多个节点，以及每个节点内多个微服务的配置文件。
 
-链的所有节点都在同一个`k8s`集群中。
+该配置工具支持常用的大部分组件；适用于各种场景，开发或是生产，单集群或者多集群；支持多种配置模式，集中式，去中心化方式。
 
-我们提供了一个`Chart`工程来实现该部署模式。在此之前需先执行`快速入门`-`运行CITA-Cloud`中的`添加Charts仓库`和`创建PVC`。
+具体使用方法，请参考[代码仓库](https://github.com/cita-cloud/cloud-config)中的`README`。
 
-```
-$ helm install test-chain cita-cloud/cita-cloud-local-cluster --set config.superAdmin=0xae069e1925a1dad2a1f4c7034d87258dfd9b6532 --set pvcName=local-pvc
-```
+### Chart工程
 
-* `test-chain`为要创建的链的名字。
-* `pvcName`参数指定了`PVC`的名字。
-* `superAdmin`要修改为自己的管理员地址。
-* `CITA-Cloud`的各个微服务都有多种实现，用户可以通过`xxx.imageName`和`xxx.imageTag`参数来选择要使用的实现。
-* 更多参数参见[链接](https://github.com/cita-cloud/charts/tree/main/cita-cloud-local-cluster)。
-* 部署上采用`statefulset`，链的每个节点对应一个`pod`。
-* 网络使用了`headless service`，使得节点直接可以相互访问。
+为了简化部署工作，按照云原生的指导原则，提供了[Charts工程](https://github.com/cita-cloud/charts)。
 
-#### 多集群
+使用`Helm`工具，可以实现一条命令完成一条链的部署。
 
-链的节点分布在多个`k8s`集群中。
+注意：
+* 该`Charts`工程已经包含了配置功能，无需再单独使用配置工具。
+* 该`Charts`工程支持多种场景和环境，单集群/多集群，开发环境/公有云环境。
 
-步骤如下：
-1. 规划节点所属的`k8s`集群。
-2. 提前设置好节点网络端口对外的`ip`和端口。
-3. 提前设置好各`k8s`集群节点的pvc。
-4. 集中生成配置。
-5. 将生成好的节点文件夹，分别下发到所属的`k8s`集群。
-6. 在各个`k8s`集群中分别运行节点。
+具体使用方法，请参考[代码仓库](https://github.com/cita-cloud/charts)中的`README`。
 
-第2步对外暴露节点网络端口。
+### Operator
 
-如果使用[porterLB](https://openelb.github.io/)，可以使用如下命令创建`eip`。
-```
-$ helm install cita-cloud-eip cita-cloud/cita-cloud-eip
-```
-* `cita-cloud-eip`为`eip`的名字。
-* 更多参数参见[链接](https://github.com/cita-cloud/charts/tree/main/cita-cloud-eip)。
+区块链类似于数据库，但与数据库又有一些不同的地方。相同的是都是有状态的服务，不同的是区块链在备份，迁移，升级，扩容等运维操作时都有特殊的要求。
 
-然后使用如下命令创建`SVC`。
-```
-$ helm install test-chain-0-lb cita-cloud/cita-cloud-porter-lb
-```
-* `test-chain-0-lb`为`SVC`的名字。
-* 更多参数参见[链接](https://github.com/cita-cloud/charts/tree/main/cita-cloud-porter-lb)。
+* 对于备份来说，区块链每个节点都是一个副本，相当于自带热备方案。冷备也跟数据库不一样，不是按时间（比如每天备份），而是要考虑区块高度。
+* 对于迁移和升级来说，区块链的节点是有身份的，因此不能先部署新的节点，再停老的节点，而是要反过来。
+* 对于扩容来说，增加节点并不能提升区块链的性能，反而会造成反效果，只能扩容`cpu`，内存。存储也必须所有节点一起扩充。
 
-第4步生成配置。
+因此，比较简单的配置部署工作，`Charts`工程就足以支撑。一旦涉及到比较复杂的运维操作，则需要一些定制开发。而`Operator`在`k8s`领域就是用来扩展自定义功能的。
 
-可以使用`Chart`工程：
-```
-$ helm install init-multi cita-cloud/cita-cloud-config --set config.action.type=initMulti --set config.chainName=test-chain --set config.action.initMulti.superAdmin=8f81961f263f45f88230375623394c9301c033e7 --set config.action.initMulti.kmsPasswordList="123456\,123456\,123456" --set config.action.initMulti.nodeList="192.168.10.123:40000:node0\,192.168.10.134:40000:node1\,192.168.10.135:40000:node2" --set pvcName=local-pvc
-```
-更多参数参见[链接](https://github.com/cita-cloud/charts/tree/main/cita-cloud-config)。
+我们的`Operator`以`CRD`的形式自定义了`Account`/`Chain`/`Node`等高层的资源类型，并提供了对这些自定义资源的操作方法。进一步简化了配置部署工作，同时也为将来提供复杂的运维功能打下了坚实的基础。
 
-也可以直接使用[cita-cloud-config](https://github.com/cita-cloud/cita_cloud_config)。
+基于`Operator`的工具有以下几个部分：
+1. `Operator`本身[cita-cloud-operator](https://github.com/cita-cloud/cita-cloud-operator)。
+2. 代理服务端[operator-proxy](https://github.com/cita-cloud/operator-proxy)。
+3. 代理客户端`cco-cli`。
 
-第6步在各个`k8s`运行节点。
+注意：
+* `Operator`已经包含了配置功能，无需再单独使用配置工具。
+* [cita-cloud-operator](https://github.com/cita-cloud/cita-cloud-operator)作为一个标准的`Operator`可以单独使用。
+* 代理服务端和客户端`cco-cli`进一步降低了操作难度，无需用户编写`yaml`文件。
 
-可以使用`Chart`工程：
-```
-$ helm install test-chain-node0 cita-cloud/cita-cloud-multi-cluster-node --set config.chainName=test-chain --set config.domain=node0
-```
-* `chainName`要与第4步保持一致, `domain`必须是第4步中其中一个节点的domain。
-* `CITA-Cloud`的各个微服务都有多种实现，用户可以通过`xxx.imageName`和`xxx.imageTag`参数来选择要使用的实现。
-* 更多参数参见[链接](https://github.com/cita-cloud/charts/tree/main/cita-cloud-multi-cluster-node)。
-
-针对阿里云场景，可以使用[cita_cloud_operator](https://github.com/cita-cloud/operator)。`CITA-Cloud`的各个微服务都有多种实现，用户可以通过`service-config.toml`配置文件来选择要使用的实现。
+具体使用方法，请参考[代码仓库](https://github.com/cita-cloud/operator-proxy)中的`README`。
