@@ -1,32 +1,40 @@
 # 快速入门
 
-本章介绍的是使用minikube的快速入门操作方法，CITA-Cloud提供本地运行版本runner_local，参阅`本地运行`一节
+本章介绍的是使用`minikube`作为运行环境，使用默认推荐的组件，快速搭建一条链的操作方法。
+
+关于更加深入的`定制`操作，请参阅`定制`章节。
 
 ## 环境准备
 
-#### 硬件配置建议
+### 硬件配置建议
 
-* CPU：2核或以上
-* 内存：4GB或以上
+* CPU：4核或以上
+* 内存：8GB或以上
 * 硬盘：30G或以上
+
+### 软件依赖
 
 #### 操作系统
 
 常见的`Linux`发行版本均可，例如：`CentOS`，`Debian`，`Ubuntu`等等。
 
-#### 软件依赖
+#### docker
 
-* `docker` 安装方法参见[官方文档](https://docs.docker.com/engine/install/)。
+安装方法参见[官方文档](https://docs.docker.com/engine/install/)。
 
-* `helm` 安装方法参见[helm文档](https://helm.sh/docs/intro/install/)。Helm是Kubernetes的包管理器。Helm是寻找、共享和使用为Kubernetes构建的软件的最佳方式。
+#### Helm
 
-#### k8s集群
+`Helm`是`Kubernetes`的包管理器，是寻找、共享和使用为`Kubernetes`构建的软件的最佳方式。
 
-`k8s`集群的搭建非常复杂，在`快速入门`中，我们推荐使用`minikube`，可以在本地快速搭建一个单节点的`k8s`集群。
+安装方法参见[文档](https://helm.sh/docs/intro/install/)。
 
-* `minikube` 安装方法参见[官方文档](https://minikube.sigs.k8s.io/docs/start/)。
+#### minikube
 
-安装完成后用下面的命令启动`minikube`，国内需要在启动`minikube`时设置一些镜像参数，注意不能在根权限下启动`minikube`。
+安装方法参见[官方文档](https://minikube.sigs.k8s.io/docs/start/)。
+
+安装完成后用下面的命令启动`minikube`，国内需要在启动`minikube`时设置一些镜像参数。
+
+注意不能使用`root`权限启动`minikube`。
 
 ```
 minikube start --registry-mirror=https://hub-mirror.c.163.com --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers --vm-driver=docker --alsologtostderr -v=8 --base-image registry.cn-hangzhou.aliyuncs.com/google_containers/kicbase:v0.0.17
@@ -37,61 +45,68 @@ minikube start --registry-mirror=https://hub-mirror.c.163.com --image-repository
 * Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
 ```
 
-* `k8s`集群命令行工具`kubectl`安装方法参见[官方文档](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)。kubectl是Kubernetes集群的命令行工具,通过kubectl能够对集群本身进行管理,并能够在集群上进行容器化应用的安装部署。
+#### kubectl
+
+`kubectl`是`Kubernetes`集群的命令行工具，通过`kubectl`能够对集群本身进行管理，并能够在集群上进行容器化应用的安装部署。
+
+安装方法参见[官方文档](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)。
 
 #### cloud-cli
 
 该工具为`CITA-Cloud`链的命令行客户端，可以方便的对链进行常用的操作。
 
 ```
-$ wget https://github.com/cita-cloud/cloud-cli/releases/download/v0.1.1/cldi
-$ chmod +x cldi
+$ wget https://github.com/cita-cloud/cloud-cli/releases/download/v0.2.0/cldi-x86_64-unknown-linux-musl.tar.gz
+$ tar zxvf cldi-x86_64-unknown-linux-musl.tar.gz
 $ sudo mv ./cldi /usr/local/bin/
 $ cldi -h
-cloud-cli 0.1.0
-The command line interface to interact with `CITA-Cloud`.
+cloud-cli 0.2.0
+The command line interface to interact with `CITA-Cloud v6.3.0`.
 
 USAGE:
     cldi [OPTIONS] [SUBCOMMAND]
 
-FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
-
 OPTIONS:
     -e, --executor_addr <executor_addr>    executor address
+    -h, --help                             Print help information
     -r, --rpc_addr <rpc_addr>              rpc(controller) address
     -u, --user <user>                      the user(account) to send tx
+    -V, --version                          Print version information
 
 SUBCOMMANDS:
-    account               Manage account
-    bench                 Send multiple txs with random content
-    block-hash            Get block hash by block number(height)
-    block-number          Get block number
-    call                  Executor call
-    completions           Generate completions for current shell
-    create                Create contract
-    emergency-brake       Send emergency brake cmd to chain
-    get-abi               Get specific contract abi
-    get-balance           Get balance by account address
-    get-block             Get block by number or hash
-    get-code              Get code by contract address
-    get-tx                Get transaction by hash
-    help                  Prints this message or the help of the given subcommand(s)
-    peer-count            Get peer count
-    receipt               Get receipt by tx_hash
-    send                  Send transaction
-    set-block-interval    Set block interval
-    store-abi             Store abi
-    system-config         Get system config
-    update-admin          Update admin of the chain
-    update-validators     Update validators of the chain
+    account                Manage account
+    add-node               Add node
+    bench                  Send transactions with {-c} workers over {--connections} connections
+    block-hash             Get block hash by block number(height)
+    block-number           Get block number
+    call                   Executor call
+    completions            Generate completions for current shell. Add the output script to
+                           `.profile` or `.bashrc` etc. to make it effective.
+    create                 Create contract
+    emergency-brake        Send emergency brake cmd to chain
+    get-abi                Get specific contract ABI
+    get-balance            Get balance by account address
+    get-block              Get block by block number(height) or hash
+    get-code               Get code by contract address
+    get-tx                 Get transaction by hash
+    get-tx-block-number    Get transaction's block number by tx_hash
+    get-tx-count           Get the transaction count of the address
+    get-tx-index           Get transaction's index by tx_hash
+    help                   Print this message or the help of the given subcommand(s)
+    peer-count             Get peer count
+    peers-info             Get peers info
+    receipt                Get receipt by tx_hash
+    send                   Send transaction
+    set-block-interval     Set block interval
+    store-abi              Store contract ABI
+    system-config          Get system config
+    update-admin           Update admin of the chain
+    update-validators      Update validators of the chain
 ```
 
-## 运行CITA-Cloud
+## 运行链
 
-
-#### 添加Charts仓库
+### 添加Charts仓库
 
 ```
 $ helm repo add cita-cloud https://registry.devops.rivtower.com/chartrepo/cita-cloud
@@ -106,8 +121,10 @@ cita-cloud/cita-cloud-porter-lb                 6.3.0           6.3.0           
 cita-cloud/cita-cloud-pvc                       6.0.0           6.0.0           Create PVC for CITA-Cloud
 ```
 
-#### 创建PVC
-PersistentVolumeClaim (PVC)是对PV的申请(Claim)。PVC通常由普通用户创建 和维护。需要为Pod分配存储资源时，用户可以创建一个PVC,指明存储资源的容量大小 和访问模式(比如只读)等信息，Kubemetes会查找并提供满足条件的PV。
+### 创建PVC
+`PVC`(`PersistentVolumeClaim`)是对`PV`的申请(`Claim`)。`PVC`通常由普通用户创建和维护。需要为`Pod`分配存储资源时，用户可以创建一个`PVC`，指明使用的`StorageClass`，`Kubemetes`会动态创建并绑定相关的`PV`。
+
+这里使用的是`minikube`自带的名为`standard`的`StorageClass`。
 
 ```
 $ helm install local-pvc cita-cloud/cita-cloud-pvc --set scName=standard
@@ -116,11 +133,11 @@ NAME        STATUS   VOLUME                                     CAPACITY   ACCES
 local-pvc   Bound    pvc-fd3eaebd-3413-4205-b88a-dbc6cee9a057   10Gi       RWO            standard        18m
 ```
 
-对应的路径在`minikube`虚拟机内的 `/tmp/hostpath-provisioner/default/local-pvc`。
+对应的路径在`minikube`虚拟机内的`/tmp/hostpath-provisioner/default/local-pvc`。
 
 注意：如果`minikube`版本为 `v1.20.0`，这里会有一个bug。详细情况和解决方法参见[链接](https://tonybai.com/2021/05/14/a-bug-of-minikube-1-20/)。
 
-#### 生成超级管理员账户
+### 生成超级管理员账户
 
 ```
 $ cldi account create admin
@@ -129,7 +146,7 @@ account_addr: 0xae069e1925a1dad2a1f4c7034d87258dfd9b6532
 ```
 
 
-#### 运行CITA-Cloud
+### 启动链
 
 ```
 $ helm install test-chain cita-cloud/cita-cloud-local-cluster --set config.superAdmin=0xae069e1925a1dad2a1f4c7034d87258dfd9b6532
@@ -140,11 +157,11 @@ STATUS: deployed
 REVISION: 1
 ```
 
-该命令会创建一条有3个节点，链名为`test-chain`的链。
+该命令会创建一条有3个节点，名为`test-chain`的链。
 
 注意：`superAdmin`参数必须设置为自己生成的账户地址，切勿使用默认值。
 
-#### 查看运行情况
+### 查看运行情况
 
 ```
 $ kubectl get pod
@@ -178,7 +195,7 @@ docker@minikube:~$ tail -10f /tmp/hostpath-provisioner/default/local-pvc/test-ch
 
 ## 基本操作
 
-#### 指定链的RPC端口
+### 指定链的RPC端口
 
 可以通过设置环境变量的方式，为`cloud-cli`工具指定链的`RPC`端口：
 
@@ -186,21 +203,21 @@ docker@minikube:~$ tail -10f /tmp/hostpath-provisioner/default/local-pvc/test-ch
 $ export CITA_CLOUD_RPC_ADDR=`minikube ip`:30004 CITA_CLOUD_EXECUTOR_ADDR=`minikube ip`:30005
 ```
 
-注意：这里minikube可能出现svc端口映射问题 使用以下命令解决
+注意：这里minikube可能出现`Service`端口映射问题。可以换一种操作方式。
 
 ```
 $ kubectl port-forward pod/test-chain-0 50002:50002 50004:50004
-$ export CITA_CLOUD_RPC_ADDR=localhost:30004 CITA_CLOUD_EXECUTOR_ADDR=localhost:30005
+$ export CITA_CLOUD_RPC_ADDR=localhost:50004 CITA_CLOUD_EXECUTOR_ADDR=localhost:50002
 ```
 
-#### 查看块高
+### 查看块高
 
 ```
 $ cldi block-number
 block_number: 74
 ```
 
-#### 查看系统配置
+### 查看系统配置
 
 ```
 $ cldi system-config
@@ -218,14 +235,14 @@ $ cldi system-config
 }
 ```
 
-#### 停止链
+### 停止链
 
 ```
 $ helm uninstall test-chain
 release "test-chain" uninstalled
 ```
 
-#### 删除链
+### 删除链
 
 ```
 $ helm install clean cita-cloud/cita-cloud-config --set config.action.type=clean
@@ -241,7 +258,7 @@ TEST SUITE: None
 
 ## 账户操作
 
-#### 创建账户
+### 创建账户
 
 ```
 $ cldi account create test
@@ -249,7 +266,7 @@ user: `test`
 account_addr: 0x415f568207900b6940477396fcd2c201efe49beb
 ```
 
-#### 查看账户信息
+### 查看账户信息
 
 创建账户后通过命令查看该账户的账户地址、私钥以及公钥：
 
@@ -262,7 +279,7 @@ $ cldi account export test
 }
 ```
 
-#### 登录账户
+### 登录账户
 
 登录刚刚创建的`test`账户
 
@@ -275,7 +292,7 @@ OK, now the default user is `test`, account addr is 0x415f568207900b6940477396fc
 
 ## 发送交易
 
-#### 编译合约
+### 编译合约
 
 这里以`Counter`合约为例:
 
@@ -309,7 +326,7 @@ Function signatures:
 d826f88f: reset()
 ```
 
-#### 创建合约
+### 创建合约
 
 ```
 $ cldi create 0x608060405234801561001057600080fd5b5060f58061001f6000396000f3006080604052600436106053576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306661abd1460585780634f2be91f146080578063d826f88f146094575b600080fd5b348015606357600080fd5b50606a60a8565b6040518082815260200191505060405180910390f35b348015608b57600080fd5b50609260ae565b005b348015609f57600080fd5b5060a660c0565b005b60005481565b60016000808282540192505081905550565b600080819055505600a165627a7a72305820faa1d1f51d7b5ca2b200e0f6cdef4f2d7e44ee686209e300beb1146f40d32dee0029
@@ -320,7 +337,7 @@ tx_hash: 0xb8fdb0a82d0403921fd0c11c7846500bdb5c032ad2e615dd1e8f42439f38f516
 
 返回值为这笔创建合约交易的交易哈希。
 
-#### 查看交易回执
+### 查看交易回执
 
 ```
 $ cldi receipt 0xb8fdb0a82d0403921fd0c11c7846500bdb5c032ad2e615dd1e8f42439f38f516
@@ -345,7 +362,7 @@ $ cldi receipt 0xb8fdb0a82d0403921fd0c11c7846500bdb5c032ad2e615dd1e8f42439f38f51
 
 得到合约地址后，就可以调用其中的方法。
 
-##### 查询合约状态
+### 查询合约状态
 
 查询合约中的`count`值：
 
@@ -360,7 +377,7 @@ result: 0x0000000000000000000000000000000000000000000000000000000000000000
 
 返回值为`count`的当前值。
 
-#### 发送交易
+### 发送交易
 
 向合约发送交易，调用`add`方法改变`count`的值：
 
@@ -378,4 +395,3 @@ $ cldi send -t 0x138e2c0098ab9a5c38a7bc4a16a186f58fc4058a 0x4f2be91f
 $ cldi call -t 0x138e2c0098ab9a5c38a7bc4a16a186f58fc4058a 0x06661abd
 result: 0x0000000000000000000000000000000000000000000000000000000000000001
 ```
-

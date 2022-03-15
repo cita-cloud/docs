@@ -1,0 +1,17 @@
+@startuml
+top to bottom direction
+skinparam actorStyle awesome
+actor user
+package Node {
+  user -- (Controller)
+  user -- (KMS)
+  (Controller) <--> (Network)
+  (Controller) <--> (Consensus)
+  (Controller) <--> (Storage)
+  (Controller) <--> (Executor)
+  (Network) <.> (Consensus)
+  (Controller) <.> (KMS)
+}
+
+(Other_Nodes) <--> (Network)
+@enduml
