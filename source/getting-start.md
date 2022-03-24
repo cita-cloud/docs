@@ -55,53 +55,45 @@ minikube start --registry-mirror=https://hub-mirror.c.163.com --image-repository
 
 该工具为`CITA-Cloud`链的命令行客户端，可以方便的对链进行常用的操作。
 
+使用方法参见[文档](https://cita-cloud.github.io/cloud-cli/)。
+
 ```
-$ wget https://github.com/cita-cloud/cloud-cli/releases/download/v0.2.0/cldi-x86_64-unknown-linux-musl.tar.gz
+$ wget https://github.com/cita-cloud/cloud-cli/releases/download/v0.3.0/cldi-x86_64-unknown-linux-musl.tar.gz
 $ tar zxvf cldi-x86_64-unknown-linux-musl.tar.gz
 $ sudo mv ./cldi /usr/local/bin/
 $ cldi -h
-cloud-cli 0.2.0
-The command line interface to interact with `CITA-Cloud v6.3.0`.
+$ cldi -h
+cldi 0.3.0
+Rivtower Technologies <contact@rivtower.com>
+The command line interface to interact with CITA-Cloud
 
 USAGE:
     cldi [OPTIONS] [SUBCOMMAND]
 
 OPTIONS:
-    -e, --executor_addr <executor_addr>    executor address
-    -h, --help                             Print help information
-    -r, --rpc_addr <rpc_addr>              rpc(controller) address
-    -u, --user <user>                      the user(account) to send tx
-    -V, --version                          Print version information
+    -c, --context <context>       context setting
+    -r <controller-addr>          controller address
+    -e <executor-addr>            executor address
+    -u <account-name>             account name
+        --crypto <crypto-type>    The crypto type of the target chain [possible values: SM, ETH]
+    -h, --help                    Print help information
+    -V, --version                 Print version information
 
 SUBCOMMANDS:
-    account                Manage account
-    add-node               Add node
-    bench                  Send transactions with {-c} workers over {--connections} connections
-    block-hash             Get block hash by block number(height)
-    block-number           Get block number
-    call                   Executor call
-    completions            Generate completions for current shell. Add the output script to
-                           `.profile` or `.bashrc` etc. to make it effective.
-    create                 Create contract
-    emergency-brake        Send emergency brake cmd to chain
-    get-abi                Get specific contract ABI
-    get-balance            Get balance by account address
-    get-block              Get block by block number(height) or hash
-    get-code               Get code by contract address
-    get-tx                 Get transaction by hash
-    get-tx-block-number    Get transaction's block number by tx_hash
-    get-tx-count           Get the transaction count of the address
-    get-tx-index           Get transaction's index by tx_hash
-    help                   Print this message or the help of the given subcommand(s)
-    peer-count             Get peer count
-    peers-info             Get peers info
-    receipt                Get receipt by tx_hash
-    send                   Send transaction
-    set-block-interval     Set block interval
-    store-abi              Store contract ABI
-    system-config          Get system config
-    update-admin           Update admin of the chain
-    update-validators      Update validators of the chain
+    get            Get data from chain
+    send           Send transaction
+    call           Call executor
+    create         create an EVM contract
+    context        Context commands
+    account        Account commands
+    admin          The admin commands for managing chain
+    rpc            Other RPC commands
+    ethabi         Ethereum ABI coder.
+    bench          Simple benchmarks
+    watch          Watch blocks
+    completions    Generate completions for current shell. Add the output script to `.profile`
+                       or `.bashrc` etc. to make it effective.
+    help           Print this message or the help of the given subcommand(s)
 ```
 
 ## 运行链
@@ -109,16 +101,18 @@ SUBCOMMANDS:
 ### 添加Charts仓库
 
 ```
-$ helm repo add cita-cloud https://registry.devops.rivtower.com/chartrepo/cita-cloud
+$ helm repo add cita-cloud https://cita-cloud.github.io/charts
 $ helm repo update
-$ helm search repo cita-cloud
-NAME                                            CHART VERSION   APP VERSION     DESCRIPTION                                       
-cita-cloud/cita-cloud-config                    6.3.0           6.3.0           Create a job to change config of CITA-Cloud blo...
-cita-cloud/cita-cloud-eip                       6.3.0           6.3.0           Create EIP for CITA-Cloud                         
-cita-cloud/cita-cloud-local-cluster             6.3.0           6.3.0           Setup CITA-Cloud blockchain in one k8s cluster    
-cita-cloud/cita-cloud-multi-cluster-node        6.3.0           6.3.0           Setup CITA-Cloud node in multi k8s cluster        
-cita-cloud/cita-cloud-porter-lb                 6.3.0           6.3.0           Setup porter Loadbalancer for CITA-Cloud node     
-cita-cloud/cita-cloud-pvc                       6.0.0           6.0.0           Create PVC for CITA-Cloud
+$ helm search repo cita-cloud/
+NAME                                            CHART VERSION   APP VERSION     DESCRIPTION
+cita-cloud/cita-cloud-aliyun-lb                 6.3.3           6.3.3           Setup CITA-Cloud node SLB in aliyun
+cita-cloud/cita-cloud-config                    6.3.3           6.3.3           Create a job to change config of CITA-Cloud blo...
+cita-cloud/cita-cloud-huaweiyun-lb              6.3.3           6.3.3           A Helm chart for Kubernetes
+cita-cloud/cita-cloud-local-cluster             6.3.3           6.3.3           Setup CITA-Cloud blockchain in one k8s cluster
+cita-cloud/cita-cloud-multi-cluster-node        6.3.3           6.3.3           Setup CITA-Cloud node in multi k8s cluster
+cita-cloud/cita-cloud-nodeport                  6.3.3           6.3.3           A Helm chart for Kubernetes
+cita-cloud/cita-cloud-porter-lb                 6.3.3           6.3.3           Setup porter Loadbalancer for CITA-Cloud node
+cita-cloud/cita-cloud-pvc                       6.3.3           6.3.3           Create PVC for CITA-Cloud
 ```
 
 ### 创建PVC
@@ -139,36 +133,59 @@ local-pvc   Bound    pvc-fd3eaebd-3413-4205-b88a-dbc6cee9a057   10Gi       RWO  
 
 ### 生成超级管理员账户
 
+使用 `cldi` 创建账户
 ```
-$ cldi account create admin
-user: `admin`
-account_addr: 0xae069e1925a1dad2a1f4c7034d87258dfd9b6532
+$ cldi account generate -h
+cldi-account-generate
+generate a new account
+
+USAGE:
+    cldi account generate [OPTIONS]
+
+OPTIONS:
+        --name <name>             The name for the new generated account, default to account address
+    -p, --password <password>     The password to encrypt the account
+        --crypto <crypto-type>    The crypto type for the generated account. [default: <current-
+                                  context-crypto-type>] [possible values: SM, ETH]
+    -h, --help                    Print help information
 ```
 
+设置密码为`123456`，加密算法选择`SM`。
+
+```
+$ cldi account generate --name admin -p 123456 --crypto SM
+{
+  "crypto_type": "SM",
+  "address": "0x5cf02ee90ef8b6443aed53f604dc237c3f617b34",
+  "public_key": "0x4e66a9a95137b9fd4ca9f3e4881e7296cb4a5b0b3fbfc9e49155c17f98165dae8836d76a40a12a698138d914da026a4441837d3f0004068149e43981216f8139",
+  "encrypted_sk": "0x86d0fbb2f69f302e557a84fb1815ddb5e1951c85cb5b35ec75f69f9585436d75"
+}
+```
 
 ### 启动链
 
 ```
-$ helm install test-chain cita-cloud/cita-cloud-local-cluster --set config.superAdmin=0xae069e1925a1dad2a1f4c7034d87258dfd9b6532
+$ helm install test-chain cita-cloud/cita-cloud-local-cluster --set config.superAdmin=0x5cf02ee90ef8b6443aed53f604dc237c3f617b34
 NAME: test-chain
-LAST DEPLOYED: Wed Jul 14 23:09:37 2021
+LAST DEPLOYED: Thu Mar 24 02:48:52 2022
 NAMESPACE: default
 STATUS: deployed
 REVISION: 1
 ```
 
-该命令会创建一条有3个节点，名为`test-chain`的链。
+该命令会创建一条有4个节点，名为`test-chain`的链。
 
-注意：`superAdmin`参数必须设置为自己生成的账户地址，切勿使用默认值。
+注意：`superAdmin`参数必须设置为自己生成的账户地址，此处仅为演示，切勿在正式环境中使用演示值。
 
 ### 查看运行情况
 
 ```
-$ kubectl get pod
-NAME                      READY      STATUS       RESTARTS     AGE
-test-chain-0              7/7        Running      1            3m24s
-test-chain-1              7/7        Running      1            3m24s
-test-chain-2              7/7        Running      1            3m24s
+$ kubectl get po
+NAME                                               READY   STATUS    RESTARTS   AGE
+test-chain-0                                       7/7     Running   0          8m3s
+test-chain-1                                       7/7     Running   0          8m3s
+test-chain-2                                       7/7     Running   0          8m3s
+test-chain-3                                       7/7     Running   0          8m3s
 ```
 
 查看日志：
@@ -176,62 +193,73 @@ test-chain-2              7/7        Running      1            3m24s
 ```
 $ minikube ssh
 docker@minikube:~$ tail -10f /tmp/hostpath-provisioner/default/local-pvc/test-chain-0/logs/controller-service.log
-2021-07-21T08:12:07.242086786+00:00 INFO controller::node_manager - update node: 0xc3469...ebaeb
-2021-07-21T08:12:07.242251607+00:00 INFO controller::node_manager - update node: 0xa6a1...208f9
-2021-07-21T08:12:07.284207745+00:00 INFO controller::controller - add remote proposal(0x7b28...5cc64) through check_proposal
-2021-07-21T08:12:10.228046821+00:00 INFO controller::controller - add remote proposal(0x26e7...fcf91) through check_proposal
-2021-07-21T08:12:10.251289942+00:00 INFO controller::util - height: 126 hash 0x26e7...fcf91
-2021-07-21T08:12:10.253093372+00:00 INFO controller::chain - finalize_block: 126, block_hash: 0x26e7...fcf91
-2021-07-21T08:12:10.254012416+00:00 INFO controller::node_manager - update node: 0xc346...ebaeb
-2021-07-21T08:12:10.254931221+00:00 INFO controller::node_manager - update node: 0x766a...7a954
-2021-07-21T08:12:10.273834898+00:00 WARN controller - rpc: process_network_msg failed: Receive early status from same node
-2021-07-21T08:12:10.296086993+00:00 INFO controller::controller - add remote proposal(0xe5f4...973cd) through check_proposal
-2021-07-21T08:12:13.216728462+00:00 INFO controller::chain - main_chain_tx_hash len 0
-2021-07-21T08:12:13.216755352+00:00 INFO controller::chain - tx poll len 0
-2021-07-21T08:12:13.216766922+00:00 INFO controller::chain - proposal 127 prevhash 0x26e7...fcf91
-2021-07-21T08:12:13.216778762+00:00 INFO controller::chain - proposal 127 block_hash 0x6a14...1e4e6
-2021-07-21T08:12:13.256383088+00:00 INFO controller::util - height: 127 hash 0x6a14...1e4e6
+2022-03-24T02:57:41.562867997+00:00 INFO controller::node_manager - update node: 0x6028b1113a9ac5f79d2fdfb37ca135812d675691
+2022-03-24T02:57:43.863863944+00:00 INFO controller::controller - chain_check_proposal: add remote proposal(0x90543745dee079d9a37d2b5bd1e026ad092089c1f3fd88ebbc16b10b3d1926f3)
+2022-03-24T02:57:43.864261069+00:00 INFO controller::controller - chain_check_proposal: finished
+2022-03-24T02:57:44.441848936+00:00 INFO controller::chain - height: 103 hash 0x90543745dee079d9a37d2b5bd1e026ad092089c1f3fd88ebbc16b10b3d1926f3
+2022-03-24T02:57:44.672342679+00:00 INFO controller::node_manager - update node: 0x6028b1113a9ac5f79d2fdfb37ca135812d675691
+2022-03-24T02:57:44.672366020+00:00 INFO controller::controller - update global status node(0x6028b1113a9ac5f79d2fdfb37ca135812d675691) height(103)
+2022-03-24T02:57:44.673242652+00:00 INFO controller::chain - exec_block(103): status: Success, executed_block_hash: 0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421
+2022-03-24T02:57:44.783682991+00:00 INFO controller::chain - finalize_block: 103, block_hash: 0x90543745dee079d9a37d2b5bd1e026ad092089c1f3fd88ebbc16b10b3d1926f3
 ```
 
 ## 基本操作
 
 ### 指定链的RPC端口
 
-可以通过设置环境变量的方式，为`cloud-cli`工具指定链的`RPC`端口：
+链有两个`rpc`地址，分别是`controller`和`executor`微服务。
+
+我们可以通过`-r`和`-e`来告诉`cldi`如何访问链：
+
+默认链会开启`nodeport`，端口分别为30004和30005。
+
+参数为:
 
 ```
-$ export CITA_CLOUD_RPC_ADDR=`minikube ip`:30004 CITA_CLOUD_EXECUTOR_ADDR=`minikube ip`:30005
+-r `minikube ip`:30004 -e `minikube ip`:30005
 ```
 
 注意：这里minikube可能出现`Service`端口映射问题。可以换一种操作方式。
 
 ```
 $ kubectl port-forward pod/test-chain-0 50002:50002 50004:50004
-$ export CITA_CLOUD_RPC_ADDR=localhost:50004 CITA_CLOUD_EXECUTOR_ADDR=localhost:50002
+```
+
+参数为：
+
+```
+-r localhost:50004 -e localhost:50002
 ```
 
 ### 查看块高
 
 ```
-$ cldi block-number
-block_number: 74
+$ cldi -r localhost:50004 -e localhost:50002 get block-number
+246
 ```
 
 ### 查看系统配置
 
 ```
-$ cldi system-config
+$ cldi -r localhost:50004 -e localhost:50002 get system-config
 {
-  "admin": "0xae069e1925a1dad2a1f4c7034d87258dfd9b6532",
+  "admin": "0x5cf02ee90ef8b6443aed53f604dc237c3f617b34",
+  "admin_pre_hash": "0x000000000000000000000000000000000000000000000000000000000000000000",
   "block_interval": 3,
-  "chain_id": "0x26b0b83e7281be3b117658b6f2636d0368cad3d74f22243428f5401a4b70897e",
+  "block_interval_pre_hash": "0x000000000000000000000000000000000000000000000000000000000000000000",
+  "chain_id": "0x63586a3c0255f337c77a777ff54f0040b8c388da04f23ecee6bfd4953a6512b4",
+  "chain_id_pre_hash": "0x000000000000000000000000000000000000000000000000000000000000000000",
+  "emergency_brake": false,
+  "emergency_brake_pre_hash": "0x000000000000000000000000000000000000000000000000000000000000000000",
   "validators": [
-    "0x67611c4afee6a50c56d3a81c733260c2e1ca35ab",
-    "0x97e05af22f5870c67b7f98bc6c7ebbba0273376b",
-    "0x3275a8e90a92a29496edd9a7a5853a3fd3d51451",
-    "0x148d37bd89ba2a8c7b5e4784df51a355439166b9"
+    "0x40283e85bfbe778a0ef0ee80688861ccc2c557a2",
+    "0x7b9e332f91fe894da0260fe2207f021d2d24008c",
+    "0x014146185e3b32e64f0d06021aa6fff8639d134a",
+    "0x6028b1113a9ac5f79d2fdfb37ca135812d675691"
   ],
-  "version": 0
+  "validators_pre_hash": "0x000000000000000000000000000000000000000000000000000000000000000000",
+  "version": 0,
+  "version_pre_hash": "0x000000000000000000000000000000000000000000000000000000000000000000"
 }
 ```
 
@@ -247,7 +275,7 @@ release "test-chain" uninstalled
 ```
 $ helm install clean cita-cloud/cita-cloud-config --set config.action.type=clean
 NAME: clean
-LAST DEPLOYED: Wed Jul 14 20:20:37 2021
+LAST DEPLOYED: Thu Mar 24 02:47:45 2022
 NAMESPACE: default
 STATUS: deployed
 REVISION: 1
@@ -261,34 +289,28 @@ TEST SUITE: None
 ### 创建账户
 
 ```
-$ cldi account create test
-user: `test`
-account_addr: 0x415f568207900b6940477396fcd2c201efe49beb
-```
-
-### 查看账户信息
-
-创建账户后通过命令查看该账户的账户地址、私钥以及公钥：
-
-```
-$ cldi account export test
+$ cldi account generate --name user -p 123456 --crypto SM
 {
-  "account_addr": "0x415f568207900b6940477396fcd2c201efe49beb",
-  "private_key": "0x4f894fc00e6c71c7d0dde511eef64824b64fce87fd6f43492808cb99e9f22a57",
-  "public_key": "0x6dd968546f2af3053be1d31aed723b58bf5380884ec5f2d41e8156dcc17c1317456c2cc9fb28290d7da0e606267ec1b00bfe54bb214ba5d6c2831c8211e9f343"
+  "crypto_type": "SM",
+  "address": "0xff96259e65869d6ed5677da696fa0357b09ae1ab",
+  "public_key": "0xeef14096351438124bba8088f24ae122ba30f8dd9c366259aad793fc6bdea18bf2603981712c93d294f78caa45ac14975ce8b9b4bab89dabcda49733dccb3bc5",
+  "encrypted_sk": "0x404e108f771689bc829717126f3194aa9c5458635955f46da9ea17196c2fc371"
 }
 ```
 
-### 登录账户
+### 解锁账户
 
-登录刚刚创建的`test`账户
+后续采用`cldi`交互式模式。
+
+解锁刚刚创建的`user`账户
 
 ```
-$ cldi account login test
-OK, now the default user is `test`, account addr is 0x415f568207900b6940477396fcd2c201efe49beb
+$ cldi
+cldi> account unlock user -p 123456
+cldi> -u user
 ```
 
-登录账户之后，可以以该账户的身份发送交易。
+`-u`选择使用该账户，可以以该账户的身份发送交易。
 
 ## 发送交易
 
@@ -329,8 +351,9 @@ d826f88f: reset()
 ### 创建合约
 
 ```
-$ cldi create 0x608060405234801561001057600080fd5b5060f58061001f6000396000f3006080604052600436106053576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306661abd1460585780634f2be91f146080578063d826f88f146094575b600080fd5b348015606357600080fd5b50606a60a8565b6040518082815260200191505060405180910390f35b348015608b57600080fd5b50609260ae565b005b348015609f57600080fd5b5060a660c0565b005b60005481565b60016000808282540192505081905550565b600080819055505600a165627a7a72305820faa1d1f51d7b5ca2b200e0f6cdef4f2d7e44ee686209e300beb1146f40d32dee0029
-tx_hash: 0xb8fdb0a82d0403921fd0c11c7846500bdb5c032ad2e615dd1e8f42439f38f516
+cldi> -r localhost:50004 -e localhost:50002
+cldi> create 0x608060405234801561001057600080fd5b5060f58061001f6000396000f3006080604052600436106053576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306661abd1460585780634f2be91f146080578063d826f88f146094575b600080fd5b348015606357600080fd5b50606a60a8565b6040518082815260200191505060405180910390f35b348015608b57600080fd5b50609260ae565b005b348015609f57600080fd5b5060a660c0565b005b60005481565b60016000808282540192505081905550565b600080819055505600a165627a7a72305820faa1d1f51d7b5ca2b200e0f6cdef4f2d7e44ee686209e300beb1146f40d32dee0029
+0xf18153579e86b4d81617bf9d3b34e1ca2d0433296927f4b04d5c5219d2d82d46
 ```
 
 创建合约的参数是编译合约输出的二进制字节码，注意前面要增加`0x`前缀。
@@ -340,18 +363,18 @@ tx_hash: 0xb8fdb0a82d0403921fd0c11c7846500bdb5c032ad2e615dd1e8f42439f38f516
 ### 查看交易回执
 
 ```
-$ cldi receipt 0xb8fdb0a82d0403921fd0c11c7846500bdb5c032ad2e615dd1e8f42439f38f516
+cldi> get receipt 0xf18153579e86b4d81617bf9d3b34e1ca2d0433296927f4b04d5c5219d2d82d46
 {
-  "block_number": 1111,
-  "contract_addr": "0x138e2c0098ab9a5c38a7bc4a16a186f58fc4058a",
+  "block_number": 454,
+  "contract_addr": "0xa4582f4966bdef3a2839e2f256a714426508ddb7",
   "cumulative_quota_used": "0x0000000000000000000000000000000000000000000000000000000000018ed3",
   "error_msg": "",
-  "legacy_cita_block_hash": "0x1b99b5e81feaef86dca9a309644ddbaaa7377733712b850ce50aff6c01ab2d4e",
+  "legacy_cita_block_hash": "0x09b2e445d5b3a5e118bb0aad8d812d237ff24f2aa9e37da75e5c68d43ddcdbba",
   "logs": [],
   "logs_bloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
   "quota_used": "0x0000000000000000000000000000000000000000000000000000000000018ed3",
-  "state_root": "0x9584cba462dec67dafaf5ae1210c8e3b3e58991ca31cafdbc395884b7d880364",
-  "tx_hash": "0xb8fdb0a82d0403921fd0c11c7846500bdb5c032ad2e615dd1e8f42439f38f516",
+  "state_root": "0x28913fc520eaf50c72fad929d0f57c94ad487bfd63278a57cb40ef370a7697a0",
+  "tx_hash": "0xf18153579e86b4d81617bf9d3b34e1ca2d0433296927f4b04d5c5219d2d82d46",
   "tx_index": 0
 }
 ```
@@ -367,11 +390,11 @@ $ cldi receipt 0xb8fdb0a82d0403921fd0c11c7846500bdb5c032ad2e615dd1e8f42439f38f51
 查询合约中的`count`值：
 
 ```
-$ cldi call -t 0x138e2c0098ab9a5c38a7bc4a16a186f58fc4058a 0x06661abd
-result: 0x0000000000000000000000000000000000000000000000000000000000000000
+cldi> call 0xa4582f4966bdef3a2839e2f256a714426508ddb7 0x06661abd
+0x0000000000000000000000000000000000000000000000000000000000000000
 ```
 
-`-t`参数为合约地址。
+第一个参数为合约地址。
 
 第二个参数为要调用的`count()`方法的函数签名。
 
@@ -382,16 +405,17 @@ result: 0x0000000000000000000000000000000000000000000000000000000000000000
 向合约发送交易，调用`add`方法改变`count`的值：
 
 ```
-$ cldi send -t 0x138e2c0098ab9a5c38a7bc4a16a186f58fc4058a 0x4f2be91f
+cldi> send 0xa4582f4966bdef3a2839e2f256a714426508ddb7 0x4f2be91f
+0x24f0bc60340c49e875a8701e80849725a0a10e1bf47990e8c9cb399e31acea05
 ```
 
-`-t`参数为合约地址。
+第一个参数为合约地址。
 
 第二个参数为要调用的`add()`方法的函数签名。
 
 等待交易上链之后，再次查询就可以发现合约状态有了变化：
 
 ```
-$ cldi call -t 0x138e2c0098ab9a5c38a7bc4a16a186f58fc4058a 0x06661abd
-result: 0x0000000000000000000000000000000000000000000000000000000000000001
+cldi> call 0xa4582f4966bdef3a2839e2f256a714426508ddb7 0x06661abd
+0x0000000000000000000000000000000000000000000000000000000000000001
 ```
