@@ -150,22 +150,22 @@ OPTIONS:
     -h, --help                    Print help information
 ```
 
-设置密码为`123456`，加密算法选择`SM`。
+为了演示方便，这里不设置密码，加密算法也使用默认值。
 
 ```
-$ cldi account generate --name admin -p 123456 --crypto SM
+$ cldi account generate --name admin
 {
   "crypto_type": "SM",
-  "address": "0x5cf02ee90ef8b6443aed53f604dc237c3f617b34",
-  "public_key": "0x4e66a9a95137b9fd4ca9f3e4881e7296cb4a5b0b3fbfc9e49155c17f98165dae8836d76a40a12a698138d914da026a4441837d3f0004068149e43981216f8139",
-  "encrypted_sk": "0x86d0fbb2f69f302e557a84fb1815ddb5e1951c85cb5b35ec75f69f9585436d75"
+  "address": "0xc8ca9cc77a7f822fdd0baef7a7740f9dba493455",
+  "public_key": "0x0d9edfd3889ec752e92fb1aa53fdfc26512c6a0ea39deb12510e7ac4d0915c4d4f0a18a3c1cf2a5950319d429af38b13483e2ccc9bafd698f5ce2c7ef558ddf6",
+  "secret_key": "0x50dc0c1655419938d83d924a3c3b4cbbd57de5df901ce4772272445605a52d43"
 }
 ```
 
 ### 启动链
 
 ```
-$ helm install test-chain cita-cloud/cita-cloud-local-cluster --set config.superAdmin=0x5cf02ee90ef8b6443aed53f604dc237c3f617b34
+$ helm install test-chain cita-cloud/cita-cloud-local-cluster --set config.superAdmin=0xc8ca9cc77a7f822fdd0baef7a7740f9dba493455
 NAME: test-chain
 LAST DEPLOYED: Thu Mar 24 02:48:52 2022
 NAMESPACE: default
@@ -180,7 +180,7 @@ REVISION: 1
 ### 查看运行情况
 
 ```
-$ kubectl get po
+$ kubectl get pod
 NAME                                               READY   STATUS    RESTARTS   AGE
 test-chain-0                                       7/7     Running   0          8m3s
 test-chain-1                                       7/7     Running   0          8m3s
@@ -243,7 +243,7 @@ $ cldi -r localhost:50004 -e localhost:50002 get block-number
 ```
 $ cldi -r localhost:50004 -e localhost:50002 get system-config
 {
-  "admin": "0x5cf02ee90ef8b6443aed53f604dc237c3f617b34",
+  "admin": "0xc8ca9cc77a7f822fdd0baef7a7740f9dba493455",
   "admin_pre_hash": "0x000000000000000000000000000000000000000000000000000000000000000000",
   "block_interval": 3,
   "block_interval_pre_hash": "0x000000000000000000000000000000000000000000000000000000000000000000",
@@ -289,28 +289,26 @@ TEST SUITE: None
 ### 创建账户
 
 ```
-$ cldi account generate --name user -p 123456 --crypto SM
+$ cldi account generate --name user
 {
   "crypto_type": "SM",
-  "address": "0xff96259e65869d6ed5677da696fa0357b09ae1ab",
-  "public_key": "0xeef14096351438124bba8088f24ae122ba30f8dd9c366259aad793fc6bdea18bf2603981712c93d294f78caa45ac14975ce8b9b4bab89dabcda49733dccb3bc5",
-  "encrypted_sk": "0x404e108f771689bc829717126f3194aa9c5458635955f46da9ea17196c2fc371"
+  "address": "0xf4b80a27b7d526028183e705604b865c1458c838",
+  "public_key": "0x71ebc3701780b4ac6a6ae0817e2fa402fb26082e6eade00f117015a1063a5c3af6e1f74c26c01f87af5ddea20fb28ff6d1a20f5438416afe95e9247ab2e517ce",
+  "secret_key": "0x2757242a6138e9617b30ec63f6a240b880d25851d86d9d15849f2d45061d3288"
 }
 ```
 
-### 解锁账户
-
-后续采用`cldi`交互式模式。
-
-解锁刚刚创建的`user`账户
+### 选择操作使用的账户
 
 ```
-$ cldi
-cldi> account unlock user -p 123456
-cldi> -u user
+$ cldi -u user -r localhost:50004 -e localhost:50002
+cldi> 
 ```
 
-`-u`选择使用该账户，可以以该账户的身份发送交易。
+`-u`选择使用该账户，后续将以该账户的身份发送交易。
+
+进入`cldi`的交互式模式。
+
 
 ## 发送交易
 
@@ -351,7 +349,6 @@ d826f88f: reset()
 ### 创建合约
 
 ```
-cldi> -r localhost:50004 -e localhost:50002
 cldi> create 0x608060405234801561001057600080fd5b5060f58061001f6000396000f3006080604052600436106053576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306661abd1460585780634f2be91f146080578063d826f88f146094575b600080fd5b348015606357600080fd5b50606a60a8565b6040518082815260200191505060405180910390f35b348015608b57600080fd5b50609260ae565b005b348015609f57600080fd5b5060a660c0565b005b60005481565b60016000808282540192505081905550565b600080819055505600a165627a7a72305820faa1d1f51d7b5ca2b200e0f6cdef4f2d7e44ee686209e300beb1146f40d32dee0029
 0xf18153579e86b4d81617bf9d3b34e1ca2d0433296927f4b04d5c5219d2d82d46
 ```
