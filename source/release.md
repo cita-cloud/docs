@@ -1,6 +1,98 @@
 # 版本发布
 ## 最新版本
 
+### v6.4.0
+
+更新概览：本次版本在稳定性和运维方面做了逐多优化，如果你想要多方共同参与创建联盟链，同时又不想暴露自己的私钥，那么你可以关心gitops这一新功能；如果你担心自己的机器哪天会爆炸，那么你可以关注cloud-op新的快照功能；如果你想要想要节省硬盘运维开销，那么你可以关注execuotr-evm的full mode模式，这比过去的archive mode在硬盘占用上有不少的提升。
+主要更新内容如下：
+1. 集成测试的搭建
+2. cita-cloud集成gitops
+3. 运维工具cloud-op提供快照功能
+4. 提供输出完整区块的RPC接口，同时cloud-cli完成支持
+5. execuotr-evm支持full mode和archive mode切换
+6. charts增加微服务资源限制
+7. controller正确处理节点重连和关机情况
+8. network-tls的TLS证书支持多级证书体系
+9. cita-cloud增加了健康检查(livness check)
+10. executor_evm的evm升级到London
+
+#### Controller
+
+##### [Feature]
+[feat] add inner block growth check @Pencil-Yao  
+[feat] add rpc get_block_detail_by_number @JLerxky  
+[feat] add health check @Pencil-Yao  
+[feat] add health check  @rink1969
+##### [Fix]
+[fix] repeat node set @Pencil-Yao  
+##### [Optimization]
+[optim] handle repeat & idle node @Pencil-Yao  
+[optim] hanle the same origin node  @Pencil-Yao  
+[optim] record package limit in utxo db  @NaughtyDogOfSchrodinger
+
+#### consensus_raft
+##### [Feature]
+[feat] add health check  @rink1969
+
+#### consensus_bft
+##### [Feature]
+[feat] add health check  @rink1969
+##### [Optimization]
+[optim] optimize handle commit entries @NaughtyDogOfSchrodinger
+
+#### cloud-config
+##### [Feature]
+[feat] add livness probe  @rink1969  
+[feat] Support gitops  @rink1969  
+[feat] add container resource requirements  @rink1969
+##### [Fix]
+[fix] panic when create-dev  @rink1969  
+[fix] update node, protect rewrite file in used  @rink1969
+
+#### executor_evm
+##### [Feature]
+[feat] add health check  @rink1969  
+[feat]  add base_fee opcode  @JLerxky  
+[feat] support switch between full mode and archive mode  @Pencil-Yao
+
+#### storage_rocksdb
+##### [Feature]
+[feat] add health check  @rink1969
+
+#### kms_sm
+##### [Feature]
+[feat] add health check  @rink1969
+
+#### network_tls
+##### [Feature]
+[feat] add health check  @rink1969
+##### [Optimization]
+[optim] update dependence tokio-rustls and unit-test   @Pencil-Yao
+
+#### network_p2p
+##### [Feature]
+[feat] add health check  @rink1969
+kms_eth
+##### [Feature]
+[feat] add health check  @rink1969
+
+#### cloud-cli
+##### [Feature]
+[feat] add get_block_detail @JLerxky  
+[feat] add set-package-limit and set-block-limit sub-command @NaughtyDogOfSchrodinger
+##### [Optimization]
+[optim] use cloud proto @JLerxky
+
+#### 兼容性问题
+1. 数据兼容
+   v6.4.0 与 v6.3.3 以及 v6.3.4 数据完全兼容。旧有的 v6.3.3 以及 v6.3.4 链跑出来的数据，只需要停链然后使用新的 v6.4.0 镜像启动，就可以正常出块。
+
+2. 版本兼容
+   v6.4.0 与 v6.3.3 以及 v6.3.4 版本的节点可以混合组成网络，并正常出块
+
+3. 配置变更
+   v6.4.0 与 v6.3.3 以及 v6.3.4 的配置未发生修改或减少
+
 ### v6.3.3
 
 本次版本在稳定性和运维方面做了优化，主要更新内容如下：
