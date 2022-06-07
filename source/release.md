@@ -1,6 +1,44 @@
 # 版本发布
 ## 最新版本
+### v6.4.1
+本次版本更新主要在系统稳定性方面做了优化，并修复了一些bug
+主要更新内容如下：
+1. 业务监控指标对接监控平台
+2. check_proposal_proof bug修复
+3. libsm错误处理问题修复
+4. 实验性支持consensus_overlord
 
+#### controller
+##### [Feature]  
+[feat] support consensus_overlord @rink1969
+
+#### consensus_bft
+##### [Fix]  
+[fix] fix commit_block proof inconsistent  @JLerxky
+
+#### cloud-config
+##### [Feature]
+[feat] support consensus_overlord  @rink1969
+[feat] adapt for libsm @NaughtyDogOfSchrodinger
+
+#### executor_evm
+##### [Optimization]
+[optim] add debug info in release  @rink1969
+
+#### storage_rocksdb
+##### [Feature]
+[feat] adapt for libsm @NaughtyDogOfSchrodinger
+
+#### kms_sm
+##### [Fix]
+[fix] adapt for fix panic in libsm @NaughtyDogOfSchrodinger
+
+#### cloud-cli
+##### [Feature]
+[feat] upgrade libsm; support overlord @rink1969
+
+
+## 历史版本
 ### v6.4.0
 
 更新概览：本次版本在稳定性和运维方面做了逐多优化，如果你想要多方共同参与创建联盟链，同时又不想暴露自己的私钥，那么你可以关心gitops这一新功能；如果你担心自己的机器哪天会爆炸，那么你可以关注cloud-op新的快照功能；如果你想要想要节省硬盘运维开销，那么你可以关注execuotr-evm的full mode模式，这比过去的archive mode在硬盘占用上有不少的提升。
@@ -93,8 +131,6 @@ kms_eth
 3. 配置变更
    v6.4.0 与 v6.3.3 以及 v6.3.4 的配置未发生修改或减少
 
-
-## 历史版本
 
 ### v6.3.3
 
