@@ -1,6 +1,6 @@
 # 架构设计
 
-`CITA-Cloud`总体设计上采用微服务架构，划分为`Controller`，`Network`，`Consensus`，`Storage`，`Executor`，`KMS`六个微服务。
+`CITA-Cloud`总体设计上采用微服务架构，划分为`Controller`，`Network`，`Consensus`，`Storage`，`Executor`，`Crypto`六个微服务。
 
 ![](_static/images/micro_service.png)
 
@@ -141,7 +141,7 @@ enum Regions {
     TRANSACTION_HASH2BLOCK_HEIGHT = 7;
     BLOCK_HASH2BLOCK_HEIGHT = 8;  // In SQL db, reuse 4
     TRANSACTION_INDEX = 9;
-    COMPAT_BLOCK = 10;
+    COMPACT_BLOCK = 10;
     FULL_BLOCK = 11;
     BUTTON = 12;
 }
@@ -167,9 +167,9 @@ enum Regions {
 
 `TRANSACTION_INDEX` 保存 交易哈希 -> 交易在所在区块中的序号 的对应关系。
 
-`COMPAT_BLOCK` 保存 区块高度 -> 紧凑区块 的对应关系。
+`COMPACT_BLOCK` 保存 区块高度 -> 紧凑区块 的对应关系。
 
-`COMPAT_BLOCK` 保存 区块高度 -> 完整区块 的对应关系。
+`FULL_BLOCK` 保存 区块高度 -> 完整区块 的对应关系。
 
 定制开发者可以根据自己的需要调整`region`列表。
 
@@ -229,9 +229,9 @@ rpc Delete(ExtKey) returns (common.StatusCode);
 1. 大数据量。比如，分布式数据库。
 2. 更多功能。比如，冷热数据分离，备份等。
 
-## KMS
+## Crypto
 
-`KMS`微服务，主要提供私钥加密存储，以及其他微服务需要的密码学服务。
+`Crypto`微服务，主要提供其他微服务需要的密码学服务。
 
 目前提供区块链最基础的签名和哈希服务。
 
@@ -259,24 +259,7 @@ rpc GetCryptoInfo(common.Empty) returns (GetCryptoInfoResponse);
 ### 签名
 
 ```
-message GenerateKeyPairRequest {
-    string Description = 1;
-}
-
-message GenerateKeyPairResponse {
-    uint64 key_id = 1;
-    bytes address = 2;
-}
-
-// Generate a KeyPair
-rpc GenerateKeyPair(GenerateKeyPairRequest) returns (GenerateKeyPairResponse);
-```
-
-本接口生成一个账户的公私钥对，私钥加密后持久化保存在微服务内部，返回账户的序号和对应的账户地址。
-
-```
 message SignMessageRequest {
-    uint64 key_id = 1;
     bytes msg = 2;
 }
 

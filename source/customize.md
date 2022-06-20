@@ -8,7 +8,7 @@
 
 ## 定制链
 
-`CITA-Cloud`划分为`Controller`，`Network`，`Consensus`，`Storage`，`Executor`，`KMS`六个微服务，详情参见`架构设计`章节。
+`CITA-Cloud`划分为`Controller`，`Network`，`Consensus`，`Storage`，`Executor`，`Crypto`六个微服务，详情参见`架构设计`章节。
 
 用户可以从现有的组件（参见`组件`章节）中，根据自己的场景选择6个组件，每个组件必须对应一个前述的微服务，即可组合成一条链。类似于：
 
