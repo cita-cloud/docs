@@ -4,13 +4,13 @@ skinparam actorStyle awesome
 actor user
 package Node {
   user -- (Controller)
-  user -- (KMS)
+  user -- (Crypto)
   (Controller) <--> (Network)
   (Controller) <--> (Consensus)
   (Controller) <--> (Storage)
   (Controller) <--> (Executor)
   (Network) <.> (Consensus)
-  (Controller) <.> (KMS)
+  (Controller) <.> (Crypto)
 }
 
 (Other_Nodes) <--> (Network)

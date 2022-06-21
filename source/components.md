@@ -113,7 +113,7 @@
 
 授权： 开源，`Apache-2.0 License`
 
-### kms_sm
+### crypto_sm
 
 介绍：国密算法的实现，使用`sm2`签名算法和`sm3`哈希算法。
 
@@ -121,9 +121,9 @@
 * 符合中国国家密码标准。
 * 高效，纯`Rust`实现，采用多种优化技术。
 
-[代码仓库](https://github.com/cita-cloud/kms_sm)
+[代码仓库](https://github.com/cita-cloud/crypto_sm)
 
-[镜像仓库](https://hub.docker.com/r/citacloud/kms_sm/tags)
+[镜像仓库](https://hub.docker.com/r/citacloud/crypto_sm/tags)
 
 成熟度： 4
 
@@ -131,16 +131,16 @@
 
 授权： 开源，`Apache-2.0 License`
 
-### kms_eth
+### crypto_eth
 
 介绍： 兼容以太坊算法的实现，使用`secp256k1`签名算法和`keccak`哈希算法。
 
 特点：
 * 兼容以太坊。
 
-[代码仓库](https://github.com/cita-cloud/kms_eth)
+[代码仓库](https://github.com/cita-cloud/crypto_eth)
 
-[镜像仓库](https://hub.docker.com/r/citacloud/kms_eth/tags)
+[镜像仓库](https://hub.docker.com/r/citacloud/crypto_eth/tags)
 
 成熟度： 4
 
@@ -198,6 +198,25 @@
 成熟度： 4
 
 状态： 维护中
+
+授权： 开源，`Apache-2.0 License`
+
+### consensus_overlord
+
+介绍： 基于[overlord](https://github.com/nervosnetwork/overlord)实现。
+
+特点：
+* 拜占庭容错。
+* 成熟实现。
+* 线性消息复杂度。
+
+[代码仓库](https://github.com/cita-cloud/consensus_overlord)
+
+[镜像仓库](https://hub.docker.com/r/citacloud/consensus_overlord/tags)
+
+成熟度： 2
+
+状态： 开发中
 
 授权： 开源，`Apache-2.0 License`
 
