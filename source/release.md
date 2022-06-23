@@ -1,6 +1,64 @@
 # 版本发布
 ## 最新版本
 
+### v6.5.0
+
+主要更新内容如下：
+1. 将kms微服务替换成crypto微服务
+2. 提供交易池内交易查询的功能
+3. cldi 执行 get_block 返回 proof 信息
+4. 增加对于单个交易quota限制和block的quota总量限制
+5. 微服务常量统一管理
+6. controller微服务的health_check增加出块检查
+7. 修复WAL文件损坏的问题
+8. 修复cloud-config添加新节点后原有节点配置未更新的问题
+
+#### Controller
+##### [Feature]
+[feat] kms to crypto @rink1969
+[feat] health check block number increase @rink1969
+[feat] get pool tx @JLerxky
+
+##### [Refactor]
+[refactor] add quota limit @NaughtyDogOfSchrodinger
+[refactor] fix dead lock @NaughtyDogOfSchrodinger
+[refactor] Uniform constant @NaughtyDogOfSchrodinger
+
+##### [Chore]
+[chore] optiom quota limit & code type @Pencil-Yao
+
+#### Consensus_bft
+##### [Feature]
+[feat] kms to crypto @rink1969
+
+#### Storage_rocksdb
+##### [Feature]
+[feat] kms to crypto @rink1969
+[feat] add panic hook and health check load/store @rink1969
+
+#### Cloud-cli
+##### [Feature]
+[feat] get pool tx @JLerxky
+[feat] get block proof  @JLerxky
+
+##### [Refactor]
+[refactor] add quota limit  @NaughtyDogOfSchrodinger
+
+#### Cloud-config
+##### [Feature]
+[feat]  kms to crypto  @rink1969
+
+##### [Fix]
+[fix] refresh chain config for old nodes @rink1969
+
+##### [Refactor]
+[refactor] adapt for add quota limit @NaughtyDogOfSchrodinger
+
+#### 兼容性问题
+1. 升级到该版本会导致crypto服务起不来，需要导出私钥，并修改配置文件
+
+## 历史版本
+
 ### v6.4.1
 
 本次版本更新主要在系统稳定性方面做了优化，并修复了一些`bug`。
@@ -54,8 +112,6 @@
 
 1. `WAL`损坏问题。
 2. 增加删除节点会报错。
-
-## 历史版本
 
 ### v6.4.0
 
