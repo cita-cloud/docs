@@ -1,6 +1,172 @@
 # 版本发布
 ## 最新版本
 
+### v6.6.0
+
+主要更新内容如下：
+1. 将network_tls微服务废弃，启用network_zenoh微服务
+2. consensus_overlord微服务完善
+  - bft升级overlord
+3. controller微服务
+  - 优化同步过程
+  - 调整proof not influence proposal_hash
+  - 批量广播交易、优化tps
+  - 适配network_zenoh
+4. grpc封装高层client
+  - 实现retry功能、增加keepalive设置
+5. call支持指定块高
+6. 健康检查
+  - network检查一定时间内是否有已连接的节点
+7. 依赖库升级
+  - tonic升级到0.7、prost升级到0.10
+  - 其它依赖升到当前最新版本
+
+#### Controller
+##### [Feature]
+[feat] set tcp and http2 keep alive  @rink1969
+[hard-fork!] feat: proof not influence proposal_hash @Pencil-Yao 
+
+##### [Fix]
+[fix] optim: set false sync state when height not grow @Pencil-Yao 
+[fix] fix check proposal failed @rink1969
+[fix] optim: set true sync state when send sync req @Pencil-Yao 
+[fix] mv quota limit form controller config to system config @rink1969
+
+##### [Refactor]
+[refactor] switch to retryclient @Jayanring
+[refactor] change origin @JLerxky
+
+##### [Chore]
+[chore] chore: broadcast increased status @Pencil-Yao
+[chore] change multicast to broadcast @JLerxky
+[chore] add healthcheck info @ rink1969
+[chore] optim: tps! @Pencil-Yao
+[chore] chore: upgrade tonic and prost @NaughtyDogOfSchrodinger
+
+#### network_zenoh
+##### [new] Release v6.6.0
+
+#### Consensus_bft
+##### [Fix]
+[fix] fix check proposal failed @rink1969
+[fix] fix wrong lock round @rink1969
+[fix] optim: add NewViewRes to optimize newview step @Pencil-Yao
+[fix] fix: leader not send newview @Pencil-Yao
+
+##### [Refactor]
+[refactor] switch to retryclient @Jayanring
+
+##### [Chore]
+[chore] chore: optim newview process @Pencil-Yao
+[chore] chore: upgrade tonic and prost @NaughtyDogOfSchrodinger
+
+#### Consensus_overload
+##### [new] Release v6.6.0
+
+#### consensus_raft
+##### [Refactor]
+[refactor] refactor: handle internal error @NaughtyDogOfSchrodinger
+[refactor] switch to retryclient @Jayanring
+
+##### [Chore]
+[chore] chore: upgrade tonic and prost @NaughtyDogOfSchrodinger
+
+#### executor_evm
+##### [Feature]
+[feat] add height in call request @NaughtyDogOfSchrodinger
+
+##### [Chore]
+[chore] chore: upgrade tonic and prost @NaughtyDogOfSchrodinger
+
+#### crypto_eth
+
+##### [Refactor]
+[refactor] update tonic and prost @Jayanring
+
+#### crypto_sm
+##### [Refactor]
+[refactor] update tonic and prost @Jayanring
+
+#### Storage_rocksdb
+##### [Feature]
+[feat] switch to retryclient @Jayanring
+
+##### [Chore]
+[chore] chore: upgrade tonic and prost @NaughtyDogOfSchrodinger
+
+#### network_tls[Archived]
+
+#### cita_cloud_proto
+##### [Feature]
+[feat] add height in CallRequest @NaughtyDogOfSchrodinger
+
+##### [Refactor]
+[refactor] add client retry @rink1969
+[refactor] add retry for NetworkMsgHandlerServiceClient @rink1969
+[refactor] connect lazy @rink1969
+[refactor] add evm client @rink1969
+
+##### [Chore]
+[chore] chore: upgrade tonic and prost @NaughtyDogOfSchrodinger
+
+#### cloud-util
+##### [Refactor]
+[refactor] switch to retryclient @Jayanring
+
+##### [Chore]
+[chore] chore: upgrade tonic and prost @NaughtyDogOfSchrodinger
+Cloud-cli
+
+##### [Refactor]
+[refactor] refactor: adapt for call with height @NaughtyDogOfSchrodinger
+[refactor] remove p2p tls related code @Jayanring
+[refactor] display timestamp when get block @Jayanring
+[refactor] ignore empty net-info when getting peers-info @JLerxky
+
+##### [Chore]
+[chore] chore: upgrae tonic and prost @NaughtyDogOfSchrodinger
+
+##### [Fix]
+[fix] fix: watch_cmd is pending in bench send @JLerxky
+[fix] fix send default quota @Jayanring
+
+#### Cloud-config
+##### [Fix]
+[fix] fix default quota limit in init-node @rink1969
+
+##### [Refactor]
+[refactor] support network_zenoh @JLerxky
+[refactor] change svc clusterip; rename yamls @rink1969
+[refactor] mv quota limit from node config to chain config @rink1969
+
+##### [Chore]
+[chore] env_dev add overlord config @JLerxky
+[chore] judge the is_stdout in the write_log4rs @JLerxky
+[chore] remove redundant moduleconfig @Jayanring
+[chore] remove p2p tls related code @Jayanring
+[chore] add debug info for release @rink1969
+[chore] change default consensus from raft to bft @rink1969
+[chore] set default output to stdout @rink1969
+[chore] remove sh -c in command @rink1969
+
+#### Integration-test
+##### [Feature]
+[feat] check tx in pool @rink1969
+[feat] feat: add build image action @acechef
+[feat] enhance chaos test @rink1969
+[feat] add sync node @JLerxky
+
+##### [Refactor]
+[refactor] change 'timestamp' to 'time' @JLerxky
+[refactor] remove tls type test chain @JLerxky
+
+##### [Chore]
+[chore] increase delay after stop node @rink1969
+[chore] update get_peers_info @JLerxky
+[chore] add test chain type @JLerxky
+
+## 历史版本
+
 ### v6.5.0
 
 主要更新内容如下：
@@ -56,8 +222,6 @@
 
 #### 兼容性问题
 1. 升级到该版本会导致crypto服务起不来，需要导出私钥，并修改配置文件
-
-## 历史版本
 
 ### v6.4.1
 
