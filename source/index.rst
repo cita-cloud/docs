@@ -11,8 +11,10 @@ CITA-Cloud是云原生的区块链定制框架，使企业用户能够快速构�
 
 - `Github主页 <https://github.com/cita-cloud>`_
 - `官方网站 <https://www.citahub.com/#/cita-cloud>`_
-- `技术论坛 <https://talk.citahub.com/c/24-category/24>`_
 - `rfcs <https://github.com/cita-cloud/rfcs>`_
+- `技术博客 <https://tech.citahub.com>`_
+- `技术论坛 <https://talk.citahub.com/c/24-category/24>`_
+
 
 .. toctree::
    :hidden:
