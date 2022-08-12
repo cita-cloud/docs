@@ -22,18 +22,7 @@
 
 收的部分采用了控制反转，收到的网络消息根据消息头中的`module`字段分发到其他微服务，并通过回调其他微服务的`gRPC`接口的方式在微服务间传递网络消息。
 
-因此只有一个注册接口，用于其他需要网络服务的微服务注册信息。
-
-```
-// 注册网络服务接口
-rpc RegisterNetworkMsgHandler(RegisterInfo) returns (common.StatusCode);
-
-// 注册网络服务所需的信息
-message RegisterInfo {
-    string module_name = 1;  // 微服务名称
-    string hostname = 2;     // 网络消息分发时，回调地址的域名
-    string port = 3;         // 网络消息分发时，回调地址的端口
-}
+在6.6.0版本中废弃了注册接口，改为使用配置的方式获取其他需要网络服务的微服务`gRPC`接口信息。
 
 // 网络消息分发时，回调的 gRPC 接口
 // 注册网络服务的其他微服务必须实现该接口
@@ -375,6 +364,7 @@ message CallRequest {
     bytes from = 2;
     bytes method = 3;
     repeated bytes args = 4;
+    uint64 height = 5;
 }
 
 message CallResponse {
@@ -385,6 +375,8 @@ rpc Call(CallRequest) returns (CallResponse);
 ```
 
 合约查询功能，调用合约中的指定方法，返回调用该方法的返回值。
+
+其中`height`用于查询指定高度的状态。如果不设置该项，则表示默认查询最新状态。
 
 ### 发展方向
 
@@ -511,6 +503,48 @@ rpc Reconfigure(common.ConsensusConfiguration) returns (common.StatusCode);
 单独就这个微服务来说，可以认为是一个提案管理系统。用户通过发送交易接口，提交原始交易数据，`Controller`管理这些原始交易数据。通过计算原始交易数据的哈希，组装成区块，并形成`Consensus`需要的提案，管理这些提案。这里所说的管理，包括持久化，同步，以及验证其合法性。
 
 `Blockchain.proto`文件中定义了一套交易和区块的数据结构，但是前面所述的从原始交易数据如何产生最终`Consensus`需要的提案，并且这个过程还是要可验证的，这些都由具体实现决定。
+
+`Controller`微服务给上层用户提供`RPC`接口有：
+
+```
+service RPCService {
+    // flag means latest or pending.
+    // true means pending, false means latest.
+    rpc GetBlockNumber(Flag) returns (BlockNumber);
+
+    rpc SendRawTransaction(blockchain.RawTransaction) returns (common.Hash);
+
+    rpc SendRawTransactions(blockchain.RawTransactions) returns (common.Hashes);
+
+    rpc GetBlockByHash(common.Hash) returns (blockchain.CompactBlock);
+
+    rpc GetBlockByNumber(BlockNumber) returns (blockchain.CompactBlock);
+
+    rpc GetBlockDetailByNumber(BlockNumber) returns (blockchain.Block);
+
+    rpc GetTransaction(common.Hash) returns (blockchain.RawTransaction);
+
+    rpc GetSystemConfig(common.Empty) returns (SystemConfig);
+
+    rpc GetVersion(common.Empty) returns (SoftwareVersion);
+
+    rpc GetBlockHash(BlockNumber) returns (common.Hash);
+
+    rpc GetTransactionBlockNumber(common.Hash) returns (BlockNumber);
+
+    rpc GetTransactionIndex(common.Hash) returns (TransactionIndex);
+
+    rpc GetPeerCount(common.Empty) returns (PeerCount);
+
+    // add new node
+    rpc AddNode(common.NodeNetInfo) returns (common.StatusCode);
+
+    // get peers info
+    rpc GetPeersInfo(common.Empty) returns (common.TotalNodeInfo);
+}
+```
+
+这些接口还比较底层，用于查询链的各种信息。`SDK`或者中间件会封装更高层的接口，方面用户查询完整的信息。
 
 ### 发展方向
 

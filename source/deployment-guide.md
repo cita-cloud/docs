@@ -64,7 +64,7 @@
 
 具体使用方法，请参考[代码仓库](https://github.com/cita-cloud/charts)中的`README`。
 
-### Operator
+### Node Operator
 
 区块链类似于数据库，但与数据库又有一些不同的地方。相同的是都是有状态的服务，不同的是区块链在备份，迁移，升级，扩容等运维操作时都有特殊的要求。
 
@@ -74,16 +74,6 @@
 
 因此，比较简单的配置部署工作，`Charts`工程就足以支撑。一旦涉及到比较复杂的运维操作，则需要一些定制开发。而`Operator`在`k8s`领域就是用来扩展自定义功能的。
 
-我们的`Operator`以`CRD`的形式自定义了`Account`/`Chain`/`Node`等高层的资源类型，并提供了对这些自定义资源的操作方法。进一步简化了配置部署工作，同时也为将来提供复杂的运维功能打下了坚实的基础。
+`Node Operator`以`CRD`的形式自定义了`Backup`/`Restore`等资源类型，提供了备份，恢复，消块，快照等针对链节点的复杂运维操作。
 
-基于`Operator`的工具有以下几个部分：
-1. `Operator`本身[cita-cloud-operator](https://github.com/cita-cloud/cita-cloud-operator)。
-2. 代理服务端[operator-proxy](https://github.com/cita-cloud/operator-proxy)。
-3. 代理客户端`cco-cli`。
-
-注意：
-* `Operator`已经包含了配置功能，无需再单独使用配置工具。
-* [cita-cloud-operator](https://github.com/cita-cloud/cita-cloud-operator)作为一个标准的`Operator`可以单独使用。
-* 代理服务端和客户端`cco-cli`进一步降低了操作难度，无需用户编写`yaml`文件。
-
-具体使用方法，请参考[代码仓库](https://github.com/cita-cloud/operator-proxy)中的`README`。
+具体使用方法，请参考[代码仓库](https://github.com/cita-cloud/cita-node-operator)中的`README`。

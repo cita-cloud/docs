@@ -58,12 +58,11 @@ minikube start --registry-mirror=https://hub-mirror.c.163.com --image-repository
 使用方法参见[文档](https://cita-cloud.github.io/cloud-cli/)。
 
 ```
-$ wget https://github.com/cita-cloud/cloud-cli/releases/download/v0.4.0/cldi-x86_64-unknown-linux-musl.tar.gz
+$ wget https://github.com/cita-cloud/cloud-cli/releases/download/v0.4.3/cldi-x86_64-unknown-linux-musl.tar.gz
 $ tar zxvf cldi-x86_64-unknown-linux-musl.tar.gz
 $ sudo mv ./cldi /usr/local/bin/
 $ cldi -h
-$ cldi -h
-cldi 0.4.0
+cldi 0.4.3
 Rivtower Technologies <contact@rivtower.com>
 The command line interface to interact with CITA-Cloud
 
@@ -105,14 +104,8 @@ $ helm repo add cita-cloud https://cita-cloud.github.io/charts
 $ helm repo update
 $ helm search repo cita-cloud/
 NAME                                            CHART VERSION   APP VERSION     DESCRIPTION
-cita-cloud/cita-cloud-aliyun-lb                 6.4.0           6.4.0           Setup CITA-Cloud node SLB in aliyun
-cita-cloud/cita-cloud-config                    6.4.0           6.4.0           Create a job to change config of CITA-Cloud blo...
-cita-cloud/cita-cloud-huaweiyun-lb              6.4.0           6.4.0           A Helm chart for Kubernetes
-cita-cloud/cita-cloud-local-cluster             6.4.0           6.4.0           Setup CITA-Cloud blockchain in one k8s cluster
-cita-cloud/cita-cloud-multi-cluster-node        6.4.0           6.4.0           Setup CITA-Cloud node in multi k8s cluster
-cita-cloud/cita-cloud-nodeport                  6.4.0           6.4.0           A Helm chart for Kubernetes
-cita-cloud/cita-cloud-porter-lb                 6.4.0           6.4.0           Setup porter Loadbalancer for CITA-Cloud node
-cita-cloud/cita-cloud-pvc                       6.4.0           6.4.0           Create PVC for CITA-Cloud
+cita-cloud/cita-cloud-local-cluster             6.6.0           6.6.0           Setup CITA-Cloud blockchain in one k8s cluster
+cita-cloud/cita-cloud-pvc                       6.6.0           6.6.0           Create PVC for CITA-Cloud
 ```
 
 ### 创建PVC
@@ -211,21 +204,13 @@ docker@minikube:~$ tail -10f /tmp/hostpath-provisioner/default/local-pvc/test-ch
 
 我们可以通过`-r`和`-e`来告诉`cldi`如何访问链：
 
-默认链会开启`nodeport`，端口分别为30004和30005。
-
-参数为:
-
-```
--r `minikube ip`:30004 -e `minikube ip`:30005
-```
-
-注意：这里minikube可能出现`Service`端口映射问题。可以换一种操作方式。
+使用如下命令映射节点0的`rpc`端口到本地。
 
 ```
 $ kubectl port-forward pod/test-chain-0 50002:50002 50004:50004
 ```
 
-参数为：
+对应的`cli`参数为：
 
 ```
 -r localhost:50004 -e localhost:50002

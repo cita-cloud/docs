@@ -20,60 +20,23 @@
 
 ## 原厂组件
 
-### network_p2p
+### network_zenoh
 
-介绍： 基于网络库[tentacle](https://github.com/nervosnetwork/tentacle)实现。
+介绍： 基于网络库[zenoh](https://zenoh.io/)实现。
 
 特点： 
-* 支持[secio](https://github.com/libp2p/specs/blob/master/secio/README.md)，通信加密保证安全。
-* 支持多路复用(`yamux`)，可以自定义协议。
-* 支持节点发现，节点之间会自动交换连接的节点信息。
+* 基于[QUIC](https://zhuanlan.zhihu.com/p/32553477)网络协议，弱网络下更稳定，延迟更低。
+* 支持`TLS`，通信加密保证安全。
+* 支持`Pub/Sub`模式，提供更高层的接口，提供与底层网络连接无关的节点标识。
+* 支持消息送达保证，更加稳定可靠。
 
-[代码仓库](https://github.com/cita-cloud/network_p2p)
+[代码仓库](https://github.com/cita-cloud/network_zenoh)
 
-[镜像仓库](https://hub.docker.com/r/citacloud/network_p2p/tags)
-
-成熟度： 4
-
-状态： 维护中
-
-授权： 开源，`Apache-2.0 License`
-
-### network_tls
-
-介绍： 基于[tokio-rustls](https://crates.io/crates/tokio-rustls)实现。
-
-特点：
-* 支持`TLS1.3`，通信加密保证安全。
-* 使用标准的`x509`证书，方便复用已有的基础设施。
-* 支持白名单，便于权限管理。
-
-[代码仓库](https://github.com/cita-cloud/network_tls)
-
-[镜像仓库](https://hub.docker.com/r/citacloud/network_tls/tags)
+[镜像仓库](https://hub.docker.com/r/citacloud/network_zenoh/tags)
 
 成熟度： 4
 
 状态： 维护中
-
-授权： 开源，`Apache-2.0 License`
-
-### network_quic
-
-介绍： 基于[QUIC](https://zhuanlan.zhihu.com/p/32553477)网络协议的实现。
-
-特点：
-* 高效，基于`UDP`协议，开销更小。
-* 安全，默认支持`TLS`，通信加密。
-* 可靠，弱网络下效果更高。
-
-[代码仓库](https://github.com/cita-cloud/network_quic)
-
-[镜像仓库](https://hub.docker.com/r/citacloud/network_quic/tags)
-
-成熟度： 2
-
-状态： 开发中
 
 授权： 开源，`Apache-2.0 License`
 
@@ -92,24 +55,6 @@
 成熟度： 4
 
 状态： 维护中
-
-授权： 开源，`Apache-2.0 License`
-
-### storage_sled
-
-介绍：基于[sled](https://github.com/spacejam/sled)的实现。
-
-特点：
-* 高效，读写效率高。
-* 目前尚未稳定。
-
-[代码仓库](https://github.com/cita-cloud/storage_sled)
-
-[镜像仓库](https://hub.docker.com/r/citacloud/storage_sled/tags)
-
-成熟度： 2
-
-状态： 开发中
 
 授权： 开源，`Apache-2.0 License`
 
@@ -214,9 +159,9 @@
 
 [镜像仓库](https://hub.docker.com/r/citacloud/consensus_overlord/tags)
 
-成熟度： 2
+成熟度： 4
 
-状态： 开发中
+状态： 维护中
 
 授权： 开源，`Apache-2.0 License`
 
@@ -262,6 +207,69 @@
 授权： 开源，`Apache-2.0 License`
 
 废弃原因：被`network_tls`替代。因为区块链的去中心化属性，网络通信加密是比较基础的需求。
+
+### network_p2p
+
+介绍： 基于网络库[tentacle](https://github.com/nervosnetwork/tentacle)实现。
+
+特点： 
+* 支持[secio](https://github.com/libp2p/specs/blob/master/secio/README.md)，通信加密保证安全。
+* 支持多路复用(`yamux`)，可以自定义协议。
+* 支持节点发现，节点之间会自动交换连接的节点信息。
+
+[代码仓库](https://github.com/cita-cloud/network_p2p)
+
+[镜像仓库](https://hub.docker.com/r/citacloud/network_p2p/tags)
+
+成熟度： 4
+
+状态： 废弃
+
+授权： 开源，`Apache-2.0 License`
+
+废弃原因：被`network_zenoh`替代。
+
+### network_tls
+
+介绍： 基于[tokio-rustls](https://crates.io/crates/tokio-rustls)实现。
+
+特点：
+* 支持`TLS1.3`，通信加密保证安全。
+* 使用标准的`x509`证书，方便复用已有的基础设施。
+* 支持白名单，便于权限管理。
+
+[代码仓库](https://github.com/cita-cloud/network_tls)
+
+[镜像仓库](https://hub.docker.com/r/citacloud/network_tls/tags)
+
+成熟度： 4
+
+状态： 废弃
+
+授权： 开源，`Apache-2.0 License`
+
+废弃原因：被`network_zenoh`替代。
+
+### network_quic
+
+介绍： 基于[QUIC](https://zhuanlan.zhihu.com/p/32553477)网络协议的实现。
+
+特点：
+* 高效，基于`UDP`协议，开销更小。
+* 安全，默认支持`TLS`，通信加密。
+* 可靠，弱网络下效果更高。
+
+[代码仓库](https://github.com/cita-cloud/network_quic)
+
+[镜像仓库](https://hub.docker.com/r/citacloud/network_quic/tags)
+
+成熟度： 2
+
+状态： 废弃
+
+授权： 开源，`Apache-2.0 License`
+
+废弃原因：被`network_zenoh`替代。
 
 #### storage_sqlite
 
