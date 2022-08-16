@@ -544,6 +544,35 @@ service RPCService {
 }
 ```
 
+其中`SendRawTransaction`为发送交易接口。
+
+如果发送交易失败，会在响应消息中将`gRPC`的`Status`设置为`InvalidArgument`，并将链返回的内部错误以字符串的形式嵌入其中。
+
+发送普通交易可能的错误有：
+
+结构错误：
+* NoTransaction/NoneRawTx    --  交易结构错误，非支持的`NormalTx`和`UtxoTx`
+* NoneWitness                --  交易结构中缺少签名信息
+* EncodeError                --  编码错误
+* NoneTransaction            --  交易结构中缺少`Transaction`
+
+内容错误：
+* InvalidVersion             --  交易结构中`version`非法
+* InvalidTo                  --  交易结构中`to`非法
+* InvalidNonce               --  交易结构中`nonce`非法
+* InvalidValue               --  交易结构中`value`非法
+* InvalidChainId             --  交易结构中`chain id`非法
+* HashLenError               --  交易结构中`transaction_hash`长度不符
+* HashCheckError             --  交易结构中`transaction_hash`与交易内容不符
+* SigCheckError              --  交易签名非法
+
+运行时错误：
+* EmergencyBrake             --  紧急制动打开，不接受交易
+* InvalidValidUntilBlock     --  交易结构中`valid unitl block`非法
+* QuotaUsedExceed            --  交易结构中`quota`超过上限
+* HistoryDupTx               --  与历史区块中的交易重复
+* DupTransaction             --  与交易池中的交易重复
+
 这些接口还比较底层，用于查询链的各种信息。`SDK`或者中间件会封装更高层的接口，方面用户查询完整的信息。
 
 ### 发展方向
