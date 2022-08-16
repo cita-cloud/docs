@@ -208,7 +208,7 @@
 
 废弃原因：被`network_tls`替代。因为区块链的去中心化属性，网络通信加密是比较基础的需求。
 
-### network_p2p
+#### network_p2p
 
 介绍： 基于网络库[tentacle](https://github.com/nervosnetwork/tentacle)实现。
 
@@ -229,7 +229,7 @@
 
 废弃原因：被`network_zenoh`替代。
 
-### network_tls
+#### network_tls
 
 介绍： 基于[tokio-rustls](https://crates.io/crates/tokio-rustls)实现。
 
@@ -250,7 +250,7 @@
 
 废弃原因：被`network_zenoh`替代。
 
-### network_quic
+#### network_quic
 
 介绍： 基于[QUIC](https://zhuanlan.zhihu.com/p/32553477)网络协议的实现。
 
