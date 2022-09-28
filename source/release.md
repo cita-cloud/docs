@@ -11,16 +11,15 @@
   - 添加nft性能测试
   - 添加同步节点升级为共识节点测试
   - 添加raft共识节点更改测试
-5. cldi新功能
-  - 获取指定高度system-config
-  - 添加解析proof功能
-6. 修复consensus_raft更改validators异常
+5. 支持获取指定高度system-config
+6. cldi添加解析proof功能
+7. 修复consensus_raft更改validators异常
   - 修复移除leader后异常
   - 支持增删多节点
   - 支持一次性更换一批节点
-7. 反亲和性
-8. 修复共识微服务单独重启问题
-9. 守护节点
+8. 反亲和性
+9. 修复共识微服务单独重启问题
+10. 守护节点
 
 #### Controller
 ##### [Feature]
