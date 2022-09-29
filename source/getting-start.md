@@ -58,11 +58,11 @@ minikube start --registry-mirror=https://hub-mirror.c.163.com --image-repository
 使用方法参见[文档](https://cita-cloud.github.io/cloud-cli/)。
 
 ```
-$ wget https://github.com/cita-cloud/cloud-cli/releases/download/v0.4.3/cldi-x86_64-unknown-linux-musl.tar.gz
+$ wget https://github.com/cita-cloud/cloud-cli/releases/download/v0.5.0/cldi-x86_64-unknown-linux-musl.tar.gz
 $ tar zxvf cldi-x86_64-unknown-linux-musl.tar.gz
 $ sudo mv ./cldi /usr/local/bin/
 $ cldi -h
-cldi 0.4.3
+cldi 0.5.0
 Rivtower Technologies <contact@rivtower.com>
 The command line interface to interact with CITA-Cloud
 
@@ -104,8 +104,8 @@ $ helm repo add cita-cloud https://cita-cloud.github.io/charts
 $ helm repo update
 $ helm search repo cita-cloud/
 NAME                                            CHART VERSION   APP VERSION     DESCRIPTION
-cita-cloud/cita-cloud-local-cluster             6.6.0           6.6.0           Setup CITA-Cloud blockchain in one k8s cluster
-cita-cloud/cita-cloud-pvc                       6.6.0           6.6.0           Create PVC for CITA-Cloud
+cita-cloud/cita-cloud-local-cluster             6.6.1           6.6.1           Setup CITA-Cloud blockchain in one k8s cluster
+cita-cloud/cita-cloud-pvc                       6.6.1           6.6.1           Create PVC for CITA-Cloud
 ```
 
 ### 创建PVC

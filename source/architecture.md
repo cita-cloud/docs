@@ -519,13 +519,21 @@ service RPCService {
 
     rpc GetBlockByHash(common.Hash) returns (blockchain.CompactBlock);
 
+    rpc GetHeightByHash(common.Hash) returns (BlockNumber);
+
     rpc GetBlockByNumber(BlockNumber) returns (blockchain.CompactBlock);
+
+    rpc GetStateRootByNumber (BlockNumber) returns (common.StateRoot);
+
+    rpc GetProofByNumber (BlockNumber) returns (common.Proof);
 
     rpc GetBlockDetailByNumber(BlockNumber) returns (blockchain.Block);
 
     rpc GetTransaction(common.Hash) returns (blockchain.RawTransaction);
 
     rpc GetSystemConfig(common.Empty) returns (SystemConfig);
+
+    rpc GetSystemConfigByNumber(BlockNumber) returns (SystemConfig);
 
     rpc GetVersion(common.Empty) returns (SoftwareVersion);
 
