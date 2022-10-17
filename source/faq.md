@@ -15,3 +15,12 @@
 | 解决方法   | 备份 ./data/wal_chain 目录后，将./data/wal_chain 目录内除 index 文件之外的其它文件删除重启当前节点 |
 
 
+
+| Syntax | Description                                                            |
+|--------|------------------------------------------------------------------------|
+| 问题现象   | raft节点日志文件损坏或者删除，重启报panic：Thread main panicked at to_commit 87 is out of range [last_index 5]rs:715                     |
+| 出现频率   | 必现                                                                     |
+| 链      | 选择raft共识的链                                                             |
+| 影响版本   | 所有版本                                                                 |
+| 问题原因   | raft算法认为日志损坏属于异常情况，需要人工介入处理                           |
+| 解决方法   | 将日志损坏的节点从validator列表中删除，加入新节点，或者清理损坏的节点日志，重新加入validator列表 |
