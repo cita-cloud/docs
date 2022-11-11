@@ -22,85 +22,127 @@
 #### Controller
 
 ##### [Feature]
+
 [feat] update deps @rink1969
 
 ##### [Fix]
+
 [fix] fix wal load @rink1969
 
 #### Network_zenoh
 
 ##### [Feature]
+
 [feat] update_zenoh @JLerxky
+
 [feat] print_latency @JLerxky
+
 [feat] update_deps @rink1969
 
 #### Consensus_bft
+
 ##### [Feature]
+
 [feat] update_deps @rink1969
 
 #### Consensus_overload
+
 ##### [Feature]
+
 [feat] update_deps @rink1969
 
 ##### [Chore]
+
 [chore] fix_check_block @rink1969
 
 #### Consensus_raft
+
 ##### [Feature]
+
 [feat] refactor storage @Jayanring 
+
 [feat] update deps @rink1969
 
 #### Executor_evm
+
 ##### [Feature]
+
 [feat] expose estimate-quota @Jayanring 
+
 [feat] update_deps @rink1969
 
 #### Crypto_eth
+
 ##### [Feature]
+
 [feat] update_deps @rink1969
 
 #### Crypto_sm
+
 ##### [Feature]
+
 [feat] update_deps @rink1969
 
 #### Storage_rocksdb
+
 ##### [Feature]
+
 [feat] update_deps @rink1969
 
 #### Cita_cloud_proto
+
 ##### [Feature]
+
 [feat] update deps @rink1969
+
 [feat] estimate-quota @Jayanring
 
 #### Cloud-util
+
 ##### [Feature]
+
 [feat] update deps @rink1969
 
 #### Cloud-config
+
 ##### [Feature]
+
 [feat] update deps @rink1969
 
 #### Cloud-cli
+
 ##### [Feature]
+
 [feat] add_trouble_shooting @rink1969
+
 [feat] update_deps @rink1969
+
 [feat] add-estimate-quota @Jayanring
 
 #### Cloud-op
+
 ##### [Feature]
+
 [feat] add clear consensus data option @Jayanring
+
 [feat] state recover add reserve consensus option @Jayanring
+
 [feat] update_deps @rink1969
 
 ##### [Fix]
+
 [fix] fix-lockid @Jayanring
 
 #### Integration-test
+
 ##### [Feature]
+
 [feat] add operator test @acechef
 
 #### Cita-node-operator
+
 ##### [Fix]
+
 [fix] fix backup @acechef
 
 #### 兼容性
@@ -137,204 +179,324 @@
 10. 守护节点
 
 #### Controller
+
 ##### [Feature]
+
 [feat] add metrics @Jayanring
+
 [feat] feat: handle sigterm @JLerxky
+
 [feat] get block add stateroot proof @Jayanring
+
 [feat] get system-config by block-number @Jayanring
 
 ##### [Fix]
+
 [fix] fix match_data panic when init @Jayanring
 
 ##### [Optimize]
+
 [optim] optim: controller server single restart @Pencil-Yao
+
 [optim] optim: misbehave handling logical @Pencil-Yao
+
 [optim] optim: server not ready info print @Pencil-Yao
+
 [optim] deny change of chain_id and block_limit @Jayanring
 
 ##### [Chore]
+
 [chore] fix: change image registry @acechef
+
 [chore] read node_address from file @Jayanring
+
 [chore] fix clippy @Jayanring
 
 #### Network_zenoh
+
 ##### [Feature]
+
 [feat] add metrics @Jayanring
+
 [feat] feat: add handle_signals @JLerxky
+
 [feat] feat: send health check msg @JLerxky
 
 ##### [Chore]
+
 [chore] fix: change image registry @acechef
+
 [chore] read node_address from file @Jayanring
 
 #### Consensus_bft
+
 ##### [Feature]
+
 [feat] add metrics @Jayanring
+
 [feat] feat: add handle_signals @JLerxky
 
 ##### [Optimize]
 [optim] optim: consensus-server single restart @Pencil-Yao
+
 [optim] optim: use timeout replace interval @Pencil-Yao
 
 ##### [Chore]
+
 [chore] fix: change image registry @acechef
+
 [chore] expose LeaderVote @Jayanring
+
 [chore] read node_address from file @Jayanring
 
 #### Consensus_overload
+
 ##### [Feature]
+
 [feat] add metrics @Jayanring
+
 [feat] feat: add handle_signals @JLerxky
 
 ##### [Optimize]
+
 [optim] optim: consensus-server single restart @Pencil-Yao
 
 ##### [Chore]
+
 [chore] fix: change image registry @acechef
+
 [chore] remove unused config items @rink1969
 
 #### Consensus_raft
+
 ##### [Feature]
+
 [feat] add metrics @Jayanring
+
 [feat] feat: add handle_signals @JLerxky
+
 [feat] feat: support replacing all validators at one time @Jayanring
 
 ##### [Fix]
+
 [fix] fix consensus stop when remove leader @Jayanring
 
 ##### [Optimize]
+
 [optim] optim: consensus-server single restart @Pencil-Yao
 
 ##### [Chore]
+
 [chore] fix: change image registry @acechef
+
 [chore] read node_address from file @Jayanring
 
 #### Executor_evm
+
 ##### [Feature]
+
 [feat] add metrics @Jayanring
+
 [feat] feat: add handle_signals @JLerxky
 
 ##### [Fix]
+
 [fix] fix: receipt legacy block hash @Pencil-Yao
+
 [fix] fix: docker image build @Pencil-Yao
+
 [fix] fix: quota_uesd is 0 @Pencil-Yao
 
 ##### [Chore]
+
 [chore] fix: change image registry @acechef
+
 [chore] CloudBlock add stateroot @Jayanring
 
 #### Crypto_eth
+
 ##### [Feature]
+
 [feat] add metrics @Jayanring
+
 [feat] feat: add handle_signals @JLerxky
 
 ##### [Chore]
+
 [chore] fix: change image registry @acechef
 
 #### Crypto_sm
+
 ##### [Feature]
+
 [feat] add metrics @Jayanring
+
 [feat] feat: add handle_signals @JLerxky
 
 ##### [Chore]
+
 [chore] fix: change image registry @acechef
 
 #### Storage_rocksdb
+
 ##### [Feature]
+
 [feat] add metrics @Jayanring
+
 [feat] feat: add handle_signals @JLerxky
 
 ##### [Chore]
+
 [chore] fix: change image registry @acechef
+
 [chore] get block add state_root proof @Jayanring
 
 #### Cita_cloud_proto
+
 ##### [Feature]
+
 [feat] get system-config by number @Jayanring
+
 [feat] get block add stateroot proof @Jayanring
 
 #### Cloud-util
+
 ##### [Feature]
+
 [feat] add metrics @Jayanring
+
 [feat] feat: add handle_signals @JLerxky
 
 ##### [Fix]
+
 [fix] fix metrics AlreadyReg @Jayanring
+
 [fix] fix duplicate register when restart @Jayanring
 
 ##### [Chore]
+
 [chore] use regex @Jayanring
+
 [chore] chore: modify exporter log info @Jayanring
 
 #### Cloud-config
+
 ##### [Feature]
+
 [feat] --init-node add --disable-metrics option @Jayanring
+
 [feat] set pod_anti_affinity @rink1969
 
 ##### [Fix]
+
 [fix] fix env_k8s metrics port @Jayanring
+
 [fix] fix crypto log config file @rink1969
+
 [fix] fix create-dev node_address path @Jayanring
+
 [fix] add mount account cm @rink1969
+
 [fix] fix: Permission denied @k4nzdroid
 
 ##### [Chore]
+
 [chore] fix: change image registry @acechef
+
 [chore] add common name @rink1969
+
 [chore] use addr in account configmap @rink1969
 
 #### Integration-test
+
 ##### [Feature]
+
 [feat] add nft performance test @rink1969
+
 [feat] set sync node to validator @JLerxky
+
 [feat] add only one validator test to raft @JLerxky
 
 ##### [Fix]
+
 [fix] fix remove last validator @JLerxky
+
 [fix] fix pip install PyYaml @JLerxky
+
 [fix] fix pyyaml load @JLerxky
+
 [fix] fix: use validator_address @JLerxky
+
 [fix] fix: use exec_bad when expect a bad result @JLerxky
+
 [fix] fix watch sync node @JLerxky
+
 [fix] fix: add kubectl timeout @acechef
+
 [fix] fix get system-config not up to date @JLerxky
 
 ##### [Optimize]
+
 [optim] update update-validators @JLerxky
+
 [optim] optim: use retry exec @JLerxky
+
 [optim] check quota used @JLerxky
+
 [optim] change log level @NaughtyDogOfSchrodinger
 
 ##### [Chore]
+
 [chore] fix: change image registry @acechef
+
 [chore] use harbor image @JLerxky
+
 [chore] fix: modify update_chain_config.sh @acechef
+
 [chore] keep same args with nft bench @rink1969
+
 [chore] remove set-block-limit.py @JLerxky
+
 [chore] fix: update Dockerfile @acechef
+
 [chore] update height_bad_result @JLerxky
+
 [chore] update chain config @JLerxky
+
 [chore] sort script @JLerxky
+
 [chore] print bad receipt @JLerxky
+
 [chore] update yaml @JLerxky
 
 #### Cloud_cli
+
 ##### [Feature]
+
 [feat] get system config by height @Jayanring
+
 [feat] get block add state_root proof @Jayanring
+
 [feat] parse proof @Jayanring
 
 ##### [Fix]
+
 [fix] fix: build image error @acechef
 
 ##### [Optimize]
+
 [optim] identify validators @Jayanring
+
 [optim] remove admin set-block-kimit @Jayanring
+
 [optim] optim watch @JLerxky
+
 [optim] add get_compact_block_by_number @JLerxky
 
 ##### [Chore]
+
 [chore] add non root user @miaojun
+
 [chore] fix: change image registry @acechef
 
 ### v6.6.0
@@ -358,147 +520,225 @@
   - 其它依赖升到当前最新版本
 
 #### Controller
+
 ##### [Feature]
+
 [feat] set tcp and http2 keep alive  @rink1969
+
 [hard-fork!] feat: proof not influence proposal_hash @Pencil-Yao 
 
 ##### [Fix]
+
 [fix] optim: set false sync state when height not grow @Pencil-Yao 
+
 [fix] fix check proposal failed @rink1969
+
 [fix] optim: set true sync state when send sync req @Pencil-Yao 
+
 [fix] mv quota limit form controller config to system config @rink1969
 
 ##### [Refactor]
+
 [refactor] switch to retryclient @Jayanring
+
 [refactor] change origin @JLerxky
 
 ##### [Chore]
+
 [chore] chore: broadcast increased status @Pencil-Yao
+
 [chore] change multicast to broadcast @JLerxky
+
 [chore] add healthcheck info @ rink1969
+
 [chore] optim: tps! @Pencil-Yao
+
 [chore] chore: upgrade tonic and prost @NaughtyDogOfSchrodinger
 
 #### Network_zenoh
+
 ##### [new] Release v6.6.0
 
 #### Consensus_bft
+
 ##### [Fix]
+
 [fix] fix check proposal failed @rink1969
+
 [fix] fix wrong lock round @rink1969
+
 [fix] optim: add NewViewRes to optimize newview step @Pencil-Yao
+
 [fix] fix: leader not send newview @Pencil-Yao
 
 ##### [Refactor]
+
 [refactor] switch to retryclient @Jayanring
 
 ##### [Chore]
+
 [chore] chore: optim newview process @Pencil-Yao
+
 [chore] chore: upgrade tonic and prost @NaughtyDogOfSchrodinger
 
 #### Consensus_overload
+
 ##### [new] Release v6.6.0
 
 #### Consensus_raft
+
 ##### [Refactor]
+
 [refactor] refactor: handle internal error @NaughtyDogOfSchrodinger
+
 [refactor] switch to retryclient @Jayanring
 
 ##### [Chore]
+
 [chore] chore: upgrade tonic and prost @NaughtyDogOfSchrodinger
 
 #### Executor_evm
+
 ##### [Feature]
+
 [feat] add height in call request @NaughtyDogOfSchrodinger
 
 ##### [Chore]
+
 [chore] chore: upgrade tonic and prost @NaughtyDogOfSchrodinger
 
 #### Crypto_eth
 
 ##### [Refactor]
+
 [refactor] update tonic and prost @Jayanring
 
 #### Crypto_sm
+
 ##### [Refactor]
+
 [refactor] update tonic and prost @Jayanring
 
 #### Storage_rocksdb
+
 ##### [Feature]
+
 [feat] switch to retryclient @Jayanring
 
 ##### [Chore]
+
 [chore] chore: upgrade tonic and prost @NaughtyDogOfSchrodinger
 
 #### Network_tls[Archived]
 
 #### Cita_cloud_proto
+
 ##### [Feature]
+
 [feat] add height in CallRequest @NaughtyDogOfSchrodinger
 
 ##### [Refactor]
+
 [refactor] add client retry @rink1969
+
 [refactor] add retry for NetworkMsgHandlerServiceClient @rink1969
+
 [refactor] connect lazy @rink1969
+
 [refactor] add evm client @rink1969
 
 ##### [Chore]
+
 [chore] chore: upgrade tonic and prost @NaughtyDogOfSchrodinger
 
 #### Cloud-util
+
 ##### [Refactor]
+
 [refactor] switch to retryclient @Jayanring
 
 ##### [Chore]
+
 [chore] chore: upgrade tonic and prost @NaughtyDogOfSchrodinger
-Cloud-cli
+
+#### Cloud-cli
 
 ##### [Refactor]
+
 [refactor] refactor: adapt for call with height @NaughtyDogOfSchrodinger
+
 [refactor] remove p2p tls related code @Jayanring
+
 [refactor] display timestamp when get block @Jayanring
+
 [refactor] ignore empty net-info when getting peers-info @JLerxky
 
 ##### [Chore]
+
 [chore] chore: upgrae tonic and prost @NaughtyDogOfSchrodinger
 
 ##### [Fix]
+
 [fix] fix: watch_cmd is pending in bench send @JLerxky
+
 [fix] fix send default quota @Jayanring
 
 #### Cloud-config
+
 ##### [Fix]
+
 [fix] fix default quota limit in init-node @rink1969
 
 ##### [Refactor]
+
 [refactor] support network_zenoh @JLerxky
+
 [refactor] change svc clusterip; rename yamls @rink1969
+
 [refactor] mv quota limit from node config to chain config @rink1969
 
 ##### [Chore]
+
 [chore] env_dev add overlord config @JLerxky
+
 [chore] judge the is_stdout in the write_log4rs @JLerxky
+
 [chore] remove redundant moduleconfig @Jayanring
+
 [chore] remove p2p tls related code @Jayanring
+
 [chore] add debug info for release @rink1969
+
 [chore] change default consensus from raft to bft @rink1969
+
 [chore] set default output to stdout @rink1969
+
 [chore] remove sh -c in command @rink1969
 
 #### Integration-test
+
 ##### [Feature]
+
 [feat] check tx in pool @rink1969
+
 [feat] feat: add build image action @acechef
+
 [feat] enhance chaos test @rink1969
+
 [feat] add sync node @JLerxky
 
 ##### [Refactor]
+
 [refactor] change 'timestamp' to 'time' @JLerxky
+
 [refactor] remove tls type test chain @JLerxky
 
 ##### [Chore]
+
 [chore] increase delay after stop node @rink1969
+
 [chore] update get_peers_info @JLerxky
+
 [chore] add test chain type @JLerxky
 
 ### v6.5.0
@@ -514,47 +754,70 @@ Cloud-cli
 8. 修复cloud-config添加新节点后原有节点配置未更新的问题
 
 #### Controller
+
 ##### [Feature]
+
 [feat] kms to crypto @rink1969
+
 [feat] health check block number increase @rink1969
+
 [feat] get pool tx @JLerxky
 
 ##### [Refactor]
+
 [refactor] add quota limit @NaughtyDogOfSchrodinger
+
 [refactor] fix dead lock @NaughtyDogOfSchrodinger
+
 [refactor] Uniform constant @NaughtyDogOfSchrodinger
 
 ##### [Chore]
+
 [chore] optiom quota limit & code type @Pencil-Yao
 
 #### Consensus_bft
+
 ##### [Feature]
+
 [feat] kms to crypto @rink1969
 
 #### Storage_rocksdb
+
 ##### [Feature]
+
 [feat] kms to crypto @rink1969
+
 [feat] add panic hook and health check load/store @rink1969
 
 #### Cloud-cli
+
 ##### [Feature]
+
 [feat] get pool tx @JLerxky
+
 [feat] get block proof  @JLerxky
 
 ##### [Refactor]
 [refactor] add quota limit  @NaughtyDogOfSchrodinger
 
+
 #### Cloud-config
+
 ##### [Feature]
+
 [feat]  kms to crypto  @rink1969
 
 ##### [Fix]
+
 [fix] refresh chain config for old nodes @rink1969
 
+
 ##### [Refactor]
+
 [refactor] adapt for add quota limit @NaughtyDogOfSchrodinger
 
 #### 兼容性问题
+
 1. 升级到该版本会导致crypto服务起不来，需要导出私钥，并修改配置文件
 
 ### v6.4.1
@@ -568,32 +831,47 @@ Cloud-cli
 4. 实验性支持consensus_overlord
 
 #### Controller
+
 ##### [Feature]
+
 [feat] support consensus_overlord @rink1969
 
 #### Consensus_bft
+
 ##### [Fix]
+
 [fix] fix commit_block proof inconsistent  @JLerxky
 
 #### Cloud-config
+
 ##### [Feature]
+
 [feat] support consensus_overlord  @rink1969
+
 [feat] adapt for libsm @NaughtyDogOfSchrodinger
 
 #### Executor_evm
+
 ##### [Optimization]
+
 [optim] add debug info in release  @rink1969  
 
 #### Storage_rocksdb
+
 ##### [Feature]
+
 [feat] adapt for libsm @NaughtyDogOfSchrodinger
 
 #### Kms_sm
+
 ##### [Fix]
+
 [fix] adapt for fix panic in libsm @NaughtyDogOfSchrodinger
 
 #### Cloud-cli
+
 ##### [Feature]
+
 [feat] upgrade libsm; support overlord @rink1969
 
 #### 兼容性问题
@@ -629,68 +907,113 @@ Cloud-cli
 #### Controller
 
 ##### [Feature]
+
 [feat] add inner block growth check @Pencil-Yao  
+
 [feat] add rpc get_block_detail_by_number @JLerxky  
+
 [feat] add health check @Pencil-Yao  
+
 [feat] add health check  @rink1969
+
 ##### [Fix]
+
 [fix] repeat node set @Pencil-Yao  
+
 ##### [Optimization]
+
 [optim] handle repeat & idle node @Pencil-Yao  
+
 [optim] hanle the same origin node  @Pencil-Yao  
+
 [optim] record package limit in utxo db  @NaughtyDogOfSchrodinger
 
 #### Consensus_raft
+
 ##### [Feature]
+
 [feat] add health check  @rink1969
 
 #### Consensus_bft
+
 ##### [Feature]
+
 [feat] add health check  @rink1969
+
 ##### [Optimization]
+
 [optim] optimize handle commit entries @NaughtyDogOfSchrodinger
 
 #### Cloud-config
+
 ##### [Feature]
+
 [feat] add livness probe  @rink1969  
+
 [feat] Support gitops  @rink1969  
+
 [feat] add container resource requirements  @rink1969
+
 ##### [Fix]
+
 [fix] panic when create-dev  @rink1969  
+
 [fix] update node, protect rewrite file in used  @rink1969
 
 #### Executor_evm
+
 ##### [Feature]
+
 [feat] add health check  @rink1969  
+
 [feat]  add base_fee opcode  @JLerxky  
+
 [feat] support switch between full mode and archive mode  @Pencil-Yao
 
 #### Storage_rocksdb
+
 ##### [Feature]
+
 [feat] add health check  @rink1969
 
 #### Kms_sm
+
 ##### [Feature]
+
 [feat] add health check  @rink1969
 
 #### Network_tls
+
 ##### [Feature]
+
 [feat] add health check  @rink1969
+
 ##### [Optimization]
+
 [optim] update dependence tokio-rustls and unit-test   @Pencil-Yao
 
 #### Network_p2p
+
 ##### [Feature]
+
 [feat] add health check  @rink1969
-kms_eth
+
+#### kms_eth
+
 ##### [Feature]
+
 [feat] add health check  @rink1969
 
 #### Cloud-cli
+
 ##### [Feature]
+
 [feat] add get_block_detail @JLerxky  
+
 [feat] add set-package-limit and set-block-limit sub-command @NaughtyDogOfSchrodinger
+
 ##### [Optimization]
+
 [optim] use cloud proto @JLerxky
 
 #### 兼容性问题
