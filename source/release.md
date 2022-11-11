@@ -1,6 +1,121 @@
 # 版本发布
 ## 最新版本
 
+### v6.6.2
+
+主要更新内容如下：
+
+1. network_zenoh升级上游zenoh版本。
+2. network_zenoh在健康检查时增加打印消息时延信息。
+3. 重构raft日志模块。
+4. 定位raft删除单个节点日志后panic的问题。
+5. cloud-op增加消块时是否删除共识日志的开关。
+6. cldi文档增加升级报错的说明。
+7. executor_evm增加估算quota的接口。
+8. cldi增加估算quota的子命令。
+9. 增加可靠性测试。
+10. 集成测试增加运维操作相关的用例。
+11. 优化集成测试的日志输出。
+12. 修复operator备份和快照操作中的问题。
+13. 实验性增加缓存中间件。
+
+#### Controller
+
+##### [Feature]
+[feat] update deps @rink1969
+
+##### [Fix]
+[fix] fix wal load @rink1969
+
+#### Network_zenoh
+
+##### [Feature]
+[feat] update_zenoh @JLerxky
+[feat] print_latency @JLerxky
+[feat] update_deps @rink1969
+
+#### Consensus_bft
+##### [Feature]
+[feat] update_deps @rink1969
+
+#### Consensus_overload
+##### [Feature]
+[feat] update_deps @rink1969
+
+##### [Chore]
+[chore] fix_check_block @rink1969
+
+#### Consensus_raft
+##### [Feature]
+[feat] refactor storage @Jayanring 
+[feat] update deps @rink1969
+
+#### Executor_evm
+##### [Feature]
+[feat] expose estimate-quota @Jayanring 
+[feat] update_deps @rink1969
+
+#### Crypto_eth
+##### [Feature]
+[feat] update_deps @rink1969
+
+#### Crypto_sm
+##### [Feature]
+[feat] update_deps @rink1969
+
+#### Storage_rocksdb
+##### [Feature]
+[feat] update_deps @rink1969
+
+#### Cita_cloud_proto
+##### [Feature]
+[feat] update deps @rink1969
+[feat] estimate-quota @Jayanring
+
+#### Cloud-util
+##### [Feature]
+[feat] update deps @rink1969
+
+#### Cloud-config
+##### [Feature]
+[feat] update deps @rink1969
+
+#### Cloud-cli
+##### [Feature]
+[feat] add_trouble_shooting @rink1969
+[feat] update_deps @rink1969
+[feat] add-estimate-quota @Jayanring
+
+#### Cloud-op
+##### [Feature]
+[feat] add clear consensus data option @Jayanring
+[feat] state recover add reserve consensus option @Jayanring
+[feat] update_deps @rink1969
+
+##### [Fix]
+[fix] fix-lockid @Jayanring
+
+#### Integration-test
+##### [Feature]
+[feat] add operator test @acechef
+
+#### Cita-node-operator
+##### [Fix]
+[fix] fix backup @acechef
+
+#### 兼容性
+1. 与上一个版本数据兼容。
+2. 不能与上个版本混用。因为网络微服务升级，新老版本之间网络不通。
+
+#### 已知问题
+1. cloud-op消块后没有配套回退system config中的quota_limite。导致消块后重新同步时，如果遇到修改quota_limit的交易，将会无法同步。影响范围：v6.5.0 - v6.6.1
+2. 选择consensus_overlord的链重启后重新执行wal中记录的区块时，可能会报错，导致节点无法继续出块。影响范围：共识为overlord的链。
+
+请使用以上版本的链尽快升级到最新版本。
+
+
+## 历史版本
+
 ### v6.6.1
 
 主要更新内容如下：
@@ -221,8 +336,6 @@
 ##### [Chore]
 [chore] add non root user @miaojun
 [chore] fix: change image registry @acechef
-
-## 历史版本
 
 ### v6.6.0
 

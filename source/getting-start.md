@@ -58,41 +58,39 @@ minikube start --registry-mirror=https://hub-mirror.c.163.com --image-repository
 使用方法参见[文档](https://cita-cloud.github.io/cloud-cli/)。
 
 ```
-$ wget https://github.com/cita-cloud/cloud-cli/releases/download/v0.5.0/cldi-x86_64-unknown-linux-musl.tar.gz
+$ wget https://github.com/cita-cloud/cloud-cli/releases/download/v0.5.1/cldi-x86_64-unknown-linux-musl.tar.gz
 $ tar zxvf cldi-x86_64-unknown-linux-musl.tar.gz
 $ sudo mv ./cldi /usr/local/bin/
 $ cldi -h
-cldi 0.5.0
-Rivtower Technologies <contact@rivtower.com>
 The command line interface to interact with CITA-Cloud
 
-USAGE:
-    cldi [OPTIONS] [SUBCOMMAND]
+Usage: cldi [OPTIONS] [COMMAND]
 
-OPTIONS:
-    -c, --context <context>       context setting
-    -r <controller-addr>          controller address
-    -e <executor-addr>            executor address
-    -u <account-name>             account name
-        --crypto <crypto-type>    The crypto type of the target chain [possible values: SM, ETH]
-    -h, --help                    Print help information
-    -V, --version                 Print version information
+Commands:
+  get          Get data from chain
+  send         Send transaction
+  call         Call executor
+  create       create an EVM contract
+  context      Context commands
+  account      Account commands
+  admin        The admin commands for managing chain
+  rpc          Other RPC commands
+  ethabi       Ethereum ABI coder.
+  bench        Simple benchmarks
+  watch        Watch blocks
+  completions  Generate completions for current shell. Add the output script to `.profile` or `.bashrc` etc. to make it effective.
+  help         Print this message or the help of the given subcommand(s)
 
-SUBCOMMANDS:
-    get            Get data from chain
-    send           Send transaction
-    call           Call executor
-    create         create an EVM contract
-    context        Context commands
-    account        Account commands
-    admin          The admin commands for managing chain
-    rpc            Other RPC commands
-    ethabi         Ethereum ABI coder.
-    bench          Simple benchmarks
-    watch          Watch blocks
-    completions    Generate completions for current shell. Add the output script to `.profile`
-                       or `.bashrc` etc. to make it effective.
-    help           Print this message or the help of the given subcommand(s)
+Options:
+  -c, --context <context>           context setting
+  -r <controller-addr>              controller address
+  -e <executor-addr>                executor address
+  -u <account-name>                 account name
+  -p <password>                     password to unlock the account
+      --crypto <crypto-type>        The crypto type of the target chain [possible values: SM, ETH]
+      --consensus <consensus-type>  The consensus type of the target chain [possible values: BFT, OVERLORD, RAFT]
+  -h, --help                        Print help information
+  -V, --version                     Print version information
 ```
 
 ## 运行链
@@ -104,8 +102,8 @@ $ helm repo add cita-cloud https://cita-cloud.github.io/charts
 $ helm repo update
 $ helm search repo cita-cloud/
 NAME                                            CHART VERSION   APP VERSION     DESCRIPTION
-cita-cloud/cita-cloud-local-cluster             6.6.1           6.6.1           Setup CITA-Cloud blockchain in one k8s cluster
-cita-cloud/cita-cloud-pvc                       6.6.1           6.6.1           Create PVC for CITA-Cloud
+cita-cloud/cita-cloud-local-cluster             6.6.2           6.6.2           Setup CITA-Cloud blockchain in one k8s cluster
+cita-cloud/cita-cloud-pvc                       6.6.2           6.6.2           Create PVC for CITA-Cloud
 ```
 
 ### 创建PVC
@@ -160,10 +158,11 @@ $ cldi account generate --name admin
 ```
 $ helm install test-chain cita-cloud/cita-cloud-local-cluster --set config.superAdmin=0xc8ca9cc77a7f822fdd0baef7a7740f9dba493455
 NAME: test-chain
-LAST DEPLOYED: Thu Mar 24 02:48:52 2022
+LAST DEPLOYED: Fri Nov 11 09:32:42 2022
 NAMESPACE: default
 STATUS: deployed
 REVISION: 1
+TEST SUITE: None
 ```
 
 该命令会创建一条有4个节点，名为`test-chain`的链。
@@ -232,15 +231,19 @@ $ cldi -r localhost:50004 -e localhost:50002 get system-config
   "admin_pre_hash": "0x000000000000000000000000000000000000000000000000000000000000000000",
   "block_interval": 3,
   "block_interval_pre_hash": "0x000000000000000000000000000000000000000000000000000000000000000000",
+  "block_limit": 100,
+  "block_limit_pre_hash": "0x000000000000000000000000000000000000000000000000000000000000000000",
   "chain_id": "0x63586a3c0255f337c77a777ff54f0040b8c388da04f23ecee6bfd4953a6512b4",
   "chain_id_pre_hash": "0x000000000000000000000000000000000000000000000000000000000000000000",
   "emergency_brake": false,
   "emergency_brake_pre_hash": "0x000000000000000000000000000000000000000000000000000000000000000000",
+  "quota_limit": 1073741824,
+  "quota_limit_pre_hash": "0x000000000000000000000000000000000000000000000000000000000000000000",
   "validators": [
-    "0x40283e85bfbe778a0ef0ee80688861ccc2c557a2",
-    "0x7b9e332f91fe894da0260fe2207f021d2d24008c",
-    "0x014146185e3b32e64f0d06021aa6fff8639d134a",
-    "0x6028b1113a9ac5f79d2fdfb37ca135812d675691"
+    "0x2ce5738ce0f7d085e152ed4248b592bb0d4df137",
+    "0xb00c64ec36cc1f284a6889563a83eb5f33242b19",
+    "0xfba37afb62146ee1e663f2182e9f933435e02114",
+    "0x8729a46516bab7613fb15213ed7b7de08850c053"
   ],
   "validators_pre_hash": "0x000000000000000000000000000000000000000000000000000000000000000000",
   "version": 0,
@@ -254,20 +257,6 @@ $ cldi -r localhost:50004 -e localhost:50002 get system-config
 $ helm uninstall test-chain
 release "test-chain" uninstalled
 ```
-
-### 删除链
-
-```
-$ helm install clean cita-cloud/cita-cloud-config --set config.action.type=clean
-NAME: clean
-LAST DEPLOYED: Thu Mar 24 02:47:45 2022
-NAMESPACE: default
-STATUS: deployed
-REVISION: 1
-TEST SUITE: None
-```
-
-注意：该命令将永久性的删除链的所有数据，请谨慎操作。
 
 ## 账户操作
 
