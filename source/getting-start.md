@@ -1,6 +1,6 @@
 # 快速入门
 
-本章介绍的是使用`minikube`作为运行环境，使用默认推荐的组件，快速搭建一条链的操作方法。
+本章介绍的是使用`k3s`作为运行环境，快速搭建一条链的操作方法。
 
 关于更加深入的`定制`操作，请参阅`定制`章节。
 
@@ -22,34 +22,14 @@
 
 安装方法参见[官方文档](https://docs.docker.com/engine/install/)。
 
-#### Helm
+#### k3s
 
-`Helm`是`Kubernetes`的包管理器，是寻找、共享和使用为`Kubernetes`构建的软件的最佳方式。
+安装方法参见[Rancher官方文档](https://docs.rancher.cn/docs/k3s/quick-start/_index/#%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC)。
 
-安装方法参见[文档](https://helm.sh/docs/intro/install/)。
-
-#### minikube
-
-安装方法参见[官方文档](https://minikube.sigs.k8s.io/docs/start/)。
-
-安装完成后用下面的命令启动`minikube`，国内需要在启动`minikube`时设置一些镜像参数。
-
-注意不能使用`root`权限启动`minikube`。
-
+完成之后设置环境变量：
 ```
-minikube start --registry-mirror=https://hub-mirror.c.163.com --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers --vm-driver=docker --alsologtostderr -v=8 --base-image registry.cn-hangzhou.aliyuncs.com/google_containers/kicbase:v0.0.17
+export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 ```
-耐心等待，看到以下信息代表启动成功。
-
-```
-* Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
-```
-
-#### kubectl
-
-`kubectl`是`Kubernetes`集群的命令行工具，通过`kubectl`能够对集群本身进行管理，并能够在集群上进行容器化应用的安装部署。
-
-安装方法参见[官方文档](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)。
 
 #### cloud-cli
 
@@ -95,33 +75,6 @@ Options:
 
 ## 运行链
 
-### 添加Charts仓库
-
-```
-$ helm repo add cita-cloud https://cita-cloud.github.io/charts
-$ helm repo update
-$ helm search repo cita-cloud/
-NAME                                            CHART VERSION   APP VERSION     DESCRIPTION
-cita-cloud/cita-cloud-local-cluster             6.6.2           6.6.2           Setup CITA-Cloud blockchain in one k8s cluster
-cita-cloud/cita-cloud-pvc                       6.6.2           6.6.2           Create PVC for CITA-Cloud
-```
-
-### 创建PVC
-`PVC`(`PersistentVolumeClaim`)是对`PV`的申请(`Claim`)。`PVC`通常由普通用户创建和维护。需要为`Pod`分配存储资源时，用户可以创建一个`PVC`，指明使用的`StorageClass`，`Kubemetes`会动态创建并绑定相关的`PV`。
-
-这里使用的是`minikube`自带的名为`standard`的`StorageClass`。
-
-```
-$ helm install local-pvc cita-cloud/cita-cloud-pvc --set scName=standard
-$ kubectl get pvc
-NAME        STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS    AGE
-local-pvc   Bound    pvc-fd3eaebd-3413-4205-b88a-dbc6cee9a057   10Gi       RWO            standard        18m
-```
-
-对应的路径在`minikube`虚拟机内的`/tmp/hostpath-provisioner/default/local-pvc`。
-
-注意：如果`minikube`版本为 `v1.20.0`，这里会有一个bug。详细情况和解决方法参见[链接](https://tonybai.com/2021/05/14/a-bug-of-minikube-1-20/)。
-
 ### 生成超级管理员账户
 
 使用 `cldi` 创建账户
@@ -153,46 +106,86 @@ $ cldi account generate --name admin
 }
 ```
 
+### 生成链的配置
+
+设置环境变量：
+
+```bash
+# 设置docker镜像仓库
+export DOCKER_REGISTRY=docker.io
+export DOCKER_REPO=citacloud
+
+# 设置链的版本
+export RELEASE_VERSION=v6.6.2
+
+# 设置链的类型和名称
+export CHIAN_TYPE=bft
+# export CHIAN_TYPE=raft
+# export CHIAN_TYPE=overlord
+export CHAIN_NAME=test-$CHIAN_TYPE
+
+# 设置基础环境的Storage Class，这里使用k3s自带的local-path
+export SC=local-path
+
+# 设置链运行的命名空间
+export NAME_SPACE=cita
+```
+
+生成链的配置文件：
+
+```bash
+# 生成初始的4个共识节点配置
+# 注意：`--admin`参数必须设置为自己生成的账户地址，此处仅为演示，切勿在正式环境中使用演示值。
+docker run -it --rm -v $(pwd):/data -w /data $DOCKER_REGISTRY/$DOCKER_REPO/cloud-config:$RELEASE_VERSION cloud-config create-k8s --chain-name $CHAIN_NAME --admin 0xc8ca9cc77a7f822fdd0baef7a7740f9dba493455 --nodelist localhost:40000:node0:k8s,localhost:40001:node1:k8s,localhost:40002:node2:k8s,localhost:40003:node3:k8s --controller_tag $RELEASE_VERSION --consensus_image consensus_$CHIAN_TYPE --consensus_tag $RELEASE_VERSION --crypto_tag $RELEASE_VERSION --network_tag $RELEASE_VERSION --storage_tag $RELEASE_VERSION --executor_tag $RELEASE_VERSION
+
+
+# 生成所有节点配置的yaml文件
+docker run -it --rm -v $(pwd):/data -w /data $DOCKER_REGISTRY/$DOCKER_REPO/cloud-config:$RELEASE_VERSION cloud-config update-yaml --chain-name $CHAIN_NAME --storage-class $SC --docker-registry $DOCKER_REGISTRY --docker-repo $DOCKER_REPO --domain node0
+docker run -it --rm -v $(pwd):/data -w /data $DOCKER_REGISTRY/$DOCKER_REPO/cloud-config:$RELEASE_VERSION cloud-config update-yaml --chain-name $CHAIN_NAME --storage-class $SC --docker-registry $DOCKER_REGISTRY --docker-repo $DOCKER_REPO --domain node1
+docker run -it --rm -v $(pwd):/data -w /data $DOCKER_REGISTRY/$DOCKER_REPO/cloud-config:$RELEASE_VERSION cloud-config update-yaml --chain-name $CHAIN_NAME --storage-class $SC --docker-registry $DOCKER_REGISTRY --docker-repo $DOCKER_REPO --domain node2
+docker run -it --rm -v $(pwd):/data -w /data $DOCKER_REGISTRY/$DOCKER_REPO/cloud-config:$RELEASE_VERSION cloud-config update-yaml --chain-name $CHAIN_NAME --storage-class $SC --docker-registry $DOCKER_REGISTRY --docker-repo $DOCKER_REPO --domain node3
+```
+
 ### 启动链
 
-```
-$ helm install test-chain cita-cloud/cita-cloud-local-cluster --set config.superAdmin=0xc8ca9cc77a7f822fdd0baef7a7740f9dba493455
-NAME: test-chain
-LAST DEPLOYED: Fri Nov 11 09:32:42 2022
-NAMESPACE: default
-STATUS: deployed
-REVISION: 1
-TEST SUITE: None
-```
+```bash
+# 创建命名空间
+kubectl create ns $NAME_SPACE
 
-该命令会创建一条有4个节点，名为`test-chain`的链。
-
-注意：`superAdmin`参数必须设置为自己生成的账户地址，此处仅为演示，切勿在正式环境中使用演示值。
+# 部署所有节点
+kubectl apply -f $CHAIN_NAME-node0/yamls/ -n $NAME_SPACE
+kubectl apply -f $CHAIN_NAME-node1/yamls/ -n $NAME_SPACE
+kubectl apply -f $CHAIN_NAME-node2/yamls/ -n $NAME_SPACE
+kubectl apply -f $CHAIN_NAME-node3/yamls/ -n $NAME_SPACE
+```
 
 ### 查看运行情况
 
-```
-$ kubectl get pod
+```bash
+$ kubectl get pod -n $NAME_SPACE
 NAME                                               READY   STATUS    RESTARTS   AGE
-test-chain-0                                       7/7     Running   0          8m3s
-test-chain-1                                       7/7     Running   0          8m3s
-test-chain-2                                       7/7     Running   0          8m3s
-test-chain-3                                       7/7     Running   0          8m3s
+test-bft-node0-0                                   6/6     Running   0          8m3s
+test-bft-node1-0                                   6/6     Running   0          8m3s
+test-bft-node2-0                                   6/6     Running   0          8m3s
+test-bft-node3-0                                   6/6     Running   0          8m3s
 ```
 
 查看日志：
 
-```
-$ minikube ssh
-docker@minikube:~$ tail -10f /tmp/hostpath-provisioner/default/local-pvc/test-chain-0/logs/controller-service.log
-2022-03-24T02:57:41.562867997+00:00 INFO controller::node_manager - update node: 0x6028b1113a9ac5f79d2fdfb37ca135812d675691
-2022-03-24T02:57:43.863863944+00:00 INFO controller::controller - chain_check_proposal: add remote proposal(0x90543745dee079d9a37d2b5bd1e026ad092089c1f3fd88ebbc16b10b3d1926f3)
-2022-03-24T02:57:43.864261069+00:00 INFO controller::controller - chain_check_proposal: finished
-2022-03-24T02:57:44.441848936+00:00 INFO controller::chain - height: 103 hash 0x90543745dee079d9a37d2b5bd1e026ad092089c1f3fd88ebbc16b10b3d1926f3
-2022-03-24T02:57:44.672342679+00:00 INFO controller::node_manager - update node: 0x6028b1113a9ac5f79d2fdfb37ca135812d675691
-2022-03-24T02:57:44.672366020+00:00 INFO controller::controller - update global status node(0x6028b1113a9ac5f79d2fdfb37ca135812d675691) height(103)
-2022-03-24T02:57:44.673242652+00:00 INFO controller::chain - exec_block(103): status: Success, executed_block_hash: 0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421
-2022-03-24T02:57:44.783682991+00:00 INFO controller::chain - finalize_block: 103, block_hash: 0x90543745dee079d9a37d2b5bd1e026ad092089c1f3fd88ebbc16b10b3d1926f3
+```bash
+$ kubectl logs -f $CHAIN_NAME-node0-0 -c controller -n $NAME_SPACE
+2022-11-16T07:47:40.586458114+00:00 INFO controller::chain - finalize_block height: 23363
+2022-11-16T07:47:41.615000522+00:00 INFO controller::health_check - healthcheck entry!
+2022-11-16T07:47:41.615016195+00:00 INFO controller::health_check - healthcheck: block increase 23359 23363 1668584861615
+2022-11-16T07:47:43.072274837+00:00 INFO controller::chain - add_proposal: tx poll len 0
+2022-11-16T07:47:43.073818092+00:00 INFO controller::chain - proposal 23364 block_hash 0x98b1ed689464622d6b48ce8aaf26b3429d3e1dbbba9c6699ca2d0ea1d710f66b prevhash 0x6be134f00d78f7129e29b6db9b7a55a387472acc929ec7809645319c5c0455a5
+2022-11-16T07:47:45.931514828+00:00 INFO controller::controller - chain_check_proposal: add remote proposal(0x4fe40496e71bf7a1d3344c6778c2cd9bea547763772fd276ab086ea3ceafe95c)
+2022-11-16T07:47:45.935420225+00:00 INFO controller::controller - chain_check_proposal: finished
+2022-11-16T07:47:46.014057182+00:00 INFO controller::node_manager - update node: NodeAddress(0a423460911494e1)
+2022-11-16T07:47:46.014086372+00:00 INFO controller::controller - update global status node(NodeAddress(0a423460911494e1)) height(23364)
+2022-11-16T07:47:46.015283211+00:00 INFO controller::chain - commit_block height: 23364 hash 0x4fe40496e71bf7a1d3344c6778c2cd9bea547763772fd276ab086ea3ceafe95c
+2022-11-16T07:47:46.020220810+00:00 INFO controller::chain - exec_block(23364): status: Success, state_root: 0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421
+2022-11-16T07:47:46.023409938+00:00 INFO controller::chain - finalize_block height: 23364
 ```
 
 ## 基本操作
@@ -205,8 +198,8 @@ docker@minikube:~$ tail -10f /tmp/hostpath-provisioner/default/local-pvc/test-ch
 
 使用如下命令映射节点0的`rpc`端口到本地。
 
-```
-$ kubectl port-forward pod/test-chain-0 50002:50002 50004:50004
+```bash
+$ kubectl port-forward -n $NAME_SPACE pod/$CHAIN_NAME-node0-0 50002:50002 50004:50004
 ```
 
 对应的`cli`参数为：
@@ -219,7 +212,7 @@ $ kubectl port-forward pod/test-chain-0 50002:50002 50004:50004
 
 ```
 $ cldi -r localhost:50004 -e localhost:50002 get block-number
-246
+24806
 ```
 
 ### 查看系统配置
@@ -253,9 +246,11 @@ $ cldi -r localhost:50004 -e localhost:50002 get system-config
 
 ### 停止链
 
-```
-$ helm uninstall test-chain
-release "test-chain" uninstalled
+```bash
+kubectl delete -f $CHAIN_NAME-node0/yamls/ -n $NAME_SPACE
+kubectl delete -f $CHAIN_NAME-node1/yamls/ -n $NAME_SPACE
+kubectl delete -f $CHAIN_NAME-node2/yamls/ -n $NAME_SPACE
+kubectl delete -f $CHAIN_NAME-node3/yamls/ -n $NAME_SPACE
 ```
 
 ## 账户操作
