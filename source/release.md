@@ -1,6 +1,87 @@
 # 版本发布
 ## 最新版本
 
+### v6.6.3
+
+主要更新内容如下：
+#### 底链微服务
+- controller微服务
+  - GetNodeStatus接口替换GetVersion/GetPeerCount/GetPeersInfo接口
+- raft微服务
+  - raft节点switch over后共识panic问题修复
+- network微服务
+  - network 添加 connected info
+- cldi
+  - cldi命令超时问题修复
+  - cldi admin update-validators help命令添加
+  - cldi bench send问题修复
+- 公共服务
+  - 拆分cita_cloud_proto为proto文件和rust代码
+  - rust代码部分与cloud-util，cloud-code合并到一个仓库（cloud-common-rs）
+  - status-code添加至proto文件中
+  
+#### 云原生
+- 支持轻量化部署
+- cita-node-operator节点任务串行化
+- cita-node-operator支持对象存储备份与恢复
+
+#### SLA测试
+- sla运维操作脚本
+
+#### 其他
+- 缓存与cldi压力测试对比
+- 缓存文档添加
+
+### 相关commit
+#### Controller
+##### [Feature]
+[feat] get node status @Jayanring
+##### [Chore]
+[chore] use common @JLerxky
+#### network_zenoh
+##### [Feature]
+[feat] connected info and update origin by CHECK msg @JLerxky
+##### [Chore]
+[chore] Use common @JLerxky
+#### consensus_bft
+##### [Chore]
+[chore] use common @JLerxky
+#### consensus_raft
+##### [Chore]
+[chore] use common @JLerxky
+#### executor_evm
+##### [Chore]
+[chore] use common @JLerxky
+#### crypto_eth
+##### [Chore]
+[chore] use common @JLerxky
+#### crypto_sm
+##### [Chore]
+[chore] use common @JLerxky
+#### storage_rocksdb
+##### [Chore]
+[chore] use common @JLerxky
+#### cita_cloud_proto
+##### [Feature]
+[feat] get node status @Jayanring
+##### [Chore]
+[chore] Simplified @JLerxky
+#### cloud-common-rs
+##### [Optimize]
+[optim] metrics parse request info @Jayanring
+#### cloud-config
+##### [Optimize]
+[optim]  import-account store node_address@Jayanring
+#### cloud-cli
+##### [Feature]
+[feat] get node status@Jayanring
+[feat] rpc request timeout@Jayanring
+##### [Chore]
+[chore] use cloud-common-rs@Jayanring
+##### [Fix]
+[fix] add Timeout @rink1969  
+[fix] fix bench send error@NaughtyDogOfSchrodinger
+
 ### v6.6.2
 
 主要更新内容如下：
