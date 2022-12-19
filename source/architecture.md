@@ -535,21 +535,16 @@ service RPCService {
 
     rpc GetSystemConfigByNumber(BlockNumber) returns (SystemConfig);
 
-    rpc GetVersion(common.Empty) returns (SoftwareVersion);
-
     rpc GetBlockHash(BlockNumber) returns (common.Hash);
 
     rpc GetTransactionBlockNumber(common.Hash) returns (BlockNumber);
 
     rpc GetTransactionIndex(common.Hash) returns (TransactionIndex);
 
-    rpc GetPeerCount(common.Empty) returns (PeerCount);
-
     // add new node
     rpc AddNode(common.NodeNetInfo) returns (common.StatusCode);
 
-    // get peers info
-    rpc GetPeersInfo(common.Empty) returns (common.TotalNodeInfo);
+    rpc GetNodeStatus(common.Empty) returns (common.NodeStatus);
 }
 ```
 
