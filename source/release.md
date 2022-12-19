@@ -15,6 +15,8 @@
   - cldi命令超时问题修复
   - cldi admin update-validators help命令添加
   - cldi bench send问题修复
+- cloud-config
+  - 修复import-account没有生成node_address
 - 公共服务
   - 拆分cita_cloud_proto为proto文件和rust代码
   - rust代码部分与cloud-util，cloud-code合并到一个仓库（cloud-common-rs）
@@ -81,6 +83,18 @@
 ##### [Fix]
 [fix] add Timeout @rink1969  
 [fix] fix bench send error@NaughtyDogOfSchrodinger
+
+#### 兼容性
+1. 与上一个版本数据兼容。
+2. 可以与上个版本混用。
+
+#### 已知问题
+1. cloud-config执行import-account命令导入账户，会缺少node_address，导致后续操作失败。影响范围：v6.3.0 - v6.6.2。
+2. cloud-cli执行bench send命令进行性能压测时，如果发送交易时间超过100个区块的时间（默认情况下为5分钟），会导致发送交易失败。影响范围：v0.5.2之前的版本。
+
+如果以上问题影响了正常使用，请尽快升级到最新版本。
+
+## 历史版本
 
 ### v6.6.2
 
@@ -236,8 +250,6 @@
 
 请使用以上版本的链尽快升级到最新版本。
 
-
-## 历史版本
 
 ### v6.6.1
 
