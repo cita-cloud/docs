@@ -138,7 +138,7 @@ $ grpcurl -emit-defaults -plaintext -d '{"block_number": "100"}' \
 
 ### GetBlockByNumber / GetBlockDetailByNumber
 
-查询指定高度的区块。GetBlockByNumber的内容只包括version、header、body（其中是该区块包含的交易哈希），GetBlockDetailByNumber能获取区块的更多信息，包括version、header、body（其中是该区块包含的完整交易）
+查询指定高度的区块。`GetBlockByNumber`的内容只包括`version`、`header`、`body`（其中是该区块包含的交易哈希），`GetBlockDetailByNumber`能获取区块的更多信息，包括`version`、`header`、`body`（其中是该区块包含的完整交易）
 
 * 接口
   
@@ -643,7 +643,7 @@ $ grpcurl -emit-defaults -plaintext -d '{"address": "Req3cucyj4Vkugo9aVQW1VLDpfM
 
 ### EstimateQuota 
 
-估算执行交易需要消耗的quota
+估算执行交易需要消耗的`quota`
 
 * 接口
   
