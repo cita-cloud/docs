@@ -110,24 +110,6 @@
 
 授权： 开源，`Apache-2.0 License`
 
-### consensus_bft
-
-介绍： 基于[CITA-BFT](https://docs.citahub.com/zh-CN/cita/architecture/cons)实现。
-
-特点：
-* 拜占庭容错。
-* 线性消息复杂度。
-
-[代码仓库](https://github.com/cita-cloud/consensus_bft)
-
-[镜像仓库](https://hub.docker.com/r/citacloud/consensus_bft/tags)
-
-成熟度： 4
-
-状态： 维护中
-
-授权： 开源，`Apache-2.0 License`
-
 ### consensus_raft
 
 介绍： 基于[Raft](https://github.com/tikv/raft-rs)实现。
@@ -187,6 +169,26 @@
 
 
 ### 废弃组件
+
+#### consensus_bft
+
+介绍： 基于[CITA-BFT](https://docs.citahub.com/zh-CN/cita/architecture/cons)实现。
+
+特点：
+* 拜占庭容错。
+* 线性消息复杂度。
+
+[代码仓库](https://github.com/cita-cloud/consensus_bft)
+
+[镜像仓库](https://hub.docker.com/r/citacloud/consensus_bft/tags)
+
+成熟度： 4
+
+状态： 废弃
+
+授权： 开源，`Apache-2.0 License`
+
+废弃原因：被`consensus_overlord`替代。两者同为BFT类算法，但是`overlord`在性能方面更有优势。
 
 #### network_direct
 
