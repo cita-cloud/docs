@@ -119,9 +119,8 @@ export DOCKER_REPO=citacloud
 export RELEASE_VERSION=v6.6.3
 
 # 设置链的类型和名称
-export CHIAN_TYPE=bft
+export CHIAN_TYPE=overlord
 # export CHIAN_TYPE=raft
-# export CHIAN_TYPE=overlord
 export CHAIN_NAME=test-$CHIAN_TYPE
 
 # 设置基础环境的Storage Class，这里使用k3s自带的local-path
@@ -163,11 +162,11 @@ kubectl apply -f $CHAIN_NAME-node3/yamls/ -n $NAME_SPACE
 
 ```bash
 $ kubectl get pod -n $NAME_SPACE
-NAME                                               READY   STATUS    RESTARTS   AGE
-test-bft-node0-0                                   6/6     Running   0          8m3s
-test-bft-node1-0                                   6/6     Running   0          8m3s
-test-bft-node2-0                                   6/6     Running   0          8m3s
-test-bft-node3-0                                   6/6     Running   0          8m3s
+NAME                                                    READY   STATUS    RESTARTS   AGE
+test-overlord-node0-0                                   6/6     Running   0          8m3s
+test-overlord-node1-0                                   6/6     Running   0          8m3s
+test-overlord-node2-0                                   6/6     Running   0          8m3s
+test-overlord-node3-0                                   6/6     Running   0          8m3s
 ```
 
 查看日志：
@@ -233,10 +232,10 @@ $ cldi -r localhost:50004 -e localhost:50002 get system-config
   "quota_limit": 1073741824,
   "quota_limit_pre_hash": "0x000000000000000000000000000000000000000000000000000000000000000000",
   "validators": [
-    "0x2ce5738ce0f7d085e152ed4248b592bb0d4df137",
-    "0xb00c64ec36cc1f284a6889563a83eb5f33242b19",
-    "0xfba37afb62146ee1e663f2182e9f933435e02114",
-    "0x8729a46516bab7613fb15213ed7b7de08850c053"
+    "0x99ac6b222e64af1231dec421dbc22af377f178e070c62dfe272dd28ab2f69fd319fad5240068658e9f57831438bad431",
+    "0xb594f9095578711c21f809e0f0cf3c5a2cb93b9b0f260075cea25af5aec2bea4aabe5e302fb31e289f550412fabe923b"
+    "0xad93329676dfe026a591fdd6243d630cb28d2cd0e12a7ac2b2e52e1263709112e7e8aed5bfcb010ff207cf6ff58e1143",
+    "0x95efa4fdd194a376885c30339a84c0636cf625254e9e7ee71b60b4a51ade4cb5741973f2839a08ff1d9197cdfff0dfd3"
   ],
   "validators_pre_hash": "0x000000000000000000000000000000000000000000000000000000000000000000",
   "version": 0,
