@@ -45,17 +45,25 @@
 #### Controller
 ##### [Feature]
 [feat] add danger mode for bft to overlord @rink1969
+
 [feat] add is_danger in node_status@rink1969
+
 [feat] tracing @JLerxky
 ##### [Fix]
 [fix] Validator address @Jayanring
+
 [fix] proposal missing pre_proof @Jayanring
+
 [fix] update health probe binary @ rink1969
+
 [fix] check timestamp @ rink1969
+
 [fix] clap help info @Jayanring
-#### [Optim]
+##### [Optim]
 [optim] process_network_msg log print @Jayanring
+
 [optim] Async wal @JLerxky
+
 [optim] check_proposal @Jayanring
 ##### [Chore]
 [chore] check_proposal add warn @JLerxky
@@ -64,36 +72,47 @@
 [feat] use tracing @JLerxky
 ##### [Fix]
 [fix] domain convert to zenoh_id inconsistent @JLerxky
+
 [fix] reconnect if disconnected @JLerxky
+
 [fix] set unicast max_links 4 @JLerxky
+
 [fix] clap help info @JLerxky
 ##### [Optim]
 [optim] health_check_msg and zenoh_id @JLerxky
 ##### [Chore]
 [chore] Upgrade dependencies @JLerxky
+
 [chore] update zenoh @JLerxky
+
 [chore] update Dockerfile @rink1969
 #### consensus_raft
 ##### [Fix]
 [fix] upgrade grpc probe @rink1969
+
 [fix] clap help info @rink1969
 #### executor_evm
 ##### [Refactor]
 [refactor] use tracing @rink1969
 ##### [Fix]
 [fix] tracer init @JLerxky
+
 [fix] upgrade grpc probe @rink1969
+
 [fix] clap help info @Jayanring
 #### crypto_eth
 ##### [Feat]
 [feat] trace  @Jayanring
 ##### [Fix]
-[fix] upgrade grpc probe  @rink1969
+[fix] upgrade grpc probe @rink1969
+
 [fix] clap help info @Jayanring
 #### crypto_sm
 ##### [Fix]
 [fix] Tracing @Jayanring
+
 [fix] upgrade grpc probe @rink1969
+
 [fix] clap help info @Jayanring
 ##### [Chore]
 [chore] update deps @Jayanring
@@ -102,6 +121,7 @@
 [feat] trace @Jayanring
 ##### [Fix]
 [fix] upgrade grpc probe @rink1969
+
 [fix] clap help info @Jayanring
 #### cita_cloud_proto
 ##### [Feature]
@@ -109,19 +129,24 @@
 #### cloud-common-rs
 ##### [Feature]
 [feat] Async wal @JLerxky
+
 [feat] Tracer  @JLerxky 
 ##### [Refactor]
 [refactor] metrics @Jayanring
 #### cloud-config
 ##### [Fix]
 [fix] Host aliases   @JLerxky 
+
 [fix] search @JLerxky 
+
 [fix] add disable-metrics in env-dev and env-k8s @Jayanring
 ##### [Feature]
 [feat] tracing @JLerxky 
+
 [feat] Add is danger  @rink1969
 ##### [Chore]
 [chore] rm node-log @JLerxky 
+
 [chore] mnt timezone file @Jayanring
 #### cloud-cli
 ##### [Optim]
@@ -216,6 +241,7 @@
 #### cloud-cli
 ##### [Feature]
 [feat] get node status@Jayanring
+
 [feat] rpc request timeout@Jayanring
 ##### [Chore]
 [chore] use cloud-common-rs@Jayanring
