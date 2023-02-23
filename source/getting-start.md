@@ -38,10 +38,12 @@ export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 使用方法参见[文档](https://cita-cloud.github.io/cloud-cli/)。
 
 ```
-$ wget https://github.com/cita-cloud/cloud-cli/releases/download/v0.5.2/cldi-x86_64-unknown-linux-musl.tar.gz
+$ wget https://github.com/cita-cloud/cloud-cli/releases/download/v0.5.3/cldi-x86_64-unknown-linux-musl.tar.gz
 $ tar zxvf cldi-x86_64-unknown-linux-musl.tar.gz
 $ sudo mv ./cldi /usr/local/bin/
 $ cldi -h
+cldi 0.5.3
+Rivtower Technologies <contact@rivtower.com>
 The command line interface to interact with CITA-Cloud
 
 Usage: cldi [OPTIONS] [COMMAND]
@@ -80,7 +82,6 @@ Options:
 使用 `cldi` 创建账户
 ```
 $ cldi account generate -h
-cldi-account-generate
 generate a new account
 
 USAGE:
@@ -116,7 +117,7 @@ export DOCKER_REGISTRY=docker.io
 export DOCKER_REPO=citacloud
 
 # 设置链的版本
-export RELEASE_VERSION=v6.6.3
+export RELEASE_VERSION=v6.6.4
 
 # 设置链的类型和名称
 export CHIAN_TYPE=overlord
