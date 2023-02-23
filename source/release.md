@@ -1,6 +1,145 @@
 # 版本发布
 ## 最新版本
 
+### v6.6.4
+
+主要更新内容如下：
+#### 底链微服务
+- bft微服务
+  - 废弃该共识
+- raft微服务
+  - 修复consensus重启后raft会卡住的问题
+- controller微服务
+  - 添加danger模式
+  - commit block耗时长的问题（wal的IO操作引起的）
+  - check_proposal添加检查
+  - get_node_status优化，整合network信息
+- network微服务
+  - 升级依赖的zenoh库
+  - 修复network zid panic的问题
+- cloud-config
+  - 增加关闭健康检查的选项
+  - 为链节点微服务添加work node时区映射
+- cache组件
+  - 输出性能测试报告
+- cldi
+  - 修复release问题
+- console/provider组件
+  - console组件与rivspace联调中
+  - provider组件开发中
+- 其他
+  - 优化微服务输出的日志，让定位问题更加方便
+  - 更新微服务镜像中的grpc-health-check至最新版本
+  - 修复u64::from_be_bytes函数调用相关问题
+  - 修复微服务帮助信息没有version的问题
+  - 集成测试混沌测试用例加强
+  
+#### 云原生
+- cita-node-operator支持新的备份恢复CRD(Duplicate和Recover)
+- cita-node-operator与开源版operator相关问题修复与联调
+
+#### SLA测试
+- 正在迁移SLA环境
+
+### 相关commit
+#### Controller
+##### [Feature]
+[feat] add danger mode for bft to overlord @rink1969
+[feat] add is_danger in node_status@rink1969
+[feat] tracing @JLerxky
+##### [Fix]
+[fix] Validator address @Jayanring
+[fix] proposal missing pre_proof @Jayanring
+[fix] update health probe binary @ rink1969
+[fix] check timestamp @ rink1969
+[fix] clap help info @Jayanring
+#### [Optim]
+[optim] process_network_msg log print @Jayanring
+[optim] Async wal @JLerxky
+[optim] check_proposal @Jayanring
+##### [Chore]
+[chore] check_proposal add warn @JLerxky
+#### network_zenoh
+##### [Feature]
+[feat] use tracing @JLerxky
+##### [Fix]
+[fix] domain convert to zenoh_id inconsistent @JLerxky
+[fix] reconnect if disconnected @JLerxky
+[fix] set unicast max_links 4 @JLerxky
+[fix] clap help info @JLerxky
+##### [Optim]
+[optim] health_check_msg and zenoh_id @JLerxky
+##### [Chore]
+[chore] Upgrade dependencies @JLerxky
+[chore] update zenoh @JLerxky
+[chore] update Dockerfile @rink1969
+#### consensus_raft
+##### [Fix]
+[fix] upgrade grpc probe @rink1969
+[fix] clap help info @rink1969
+#### executor_evm
+##### [Refactor]
+[refactor] use tracing @rink1969
+##### [Fix]
+[fix] tracer init @JLerxky
+[fix] upgrade grpc probe @rink1969
+[fix] clap help info @Jayanring
+#### crypto_eth
+##### [Feat]
+[feat] trace  @Jayanring
+##### [Fix]
+[fix] upgrade grpc probe  @rink1969
+[fix] clap help info @Jayanring
+#### crypto_sm
+##### [Fix]
+[fix] Tracing @Jayanring
+[fix] upgrade grpc probe @rink1969
+[fix] clap help info @Jayanring
+##### [Chore]
+[chore] update deps @Jayanring
+#### storage_rocksdb
+##### [Feature]
+[feat] trace @Jayanring
+##### [Fix]
+[fix] upgrade grpc probe @rink1969
+[fix] clap help info @Jayanring
+#### cita_cloud_proto
+##### [Feature]
+[feat] add is_danger in node status @rink1969
+#### cloud-common-rs
+##### [Feature]
+[feat] Async wal @JLerxky
+[feat] Tracer  @JLerxky 
+##### [Refactor]
+[refactor] metrics @Jayanring
+#### cloud-config
+##### [Fix]
+[fix] Host aliases   @JLerxky 
+[fix] search @JLerxky 
+[fix] add disable-metrics in env-dev and env-k8s @Jayanring
+##### [Feature]
+[feat] tracing @JLerxky 
+[feat] Add is danger  @rink1969
+##### [Chore]
+[chore] rm node-log @JLerxky 
+[chore] mnt timezone file @Jayanring
+#### cloud-cli
+##### [Optim]
+[optim] node_status @Jayanring
+##### [Feature]
+[feat] add lib @JLerxky 
+##### [Chore]
+[chore] remove bft @Jayanring
+
+#### 兼容性
+1. 与上一个版本数据兼容。
+2. 因为网络微服务实现升级，不能与上个版本混用。
+
+#### 已知问题
+无
+
+## 历史版本
+
 ### v6.6.3
 
 主要更新内容如下：
@@ -93,8 +232,6 @@
 2. cloud-cli执行bench send命令进行性能压测时，如果发送交易时间超过100个区块的时间（默认情况下为5分钟），会导致发送交易失败。影响范围：v0.5.2之前的版本。
 
 如果以上问题影响了正常使用，请尽快升级到最新版本。
-
-## 历史版本
 
 ### v6.6.2
 
