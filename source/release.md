@@ -1,6 +1,185 @@
 # 版本发布
 ## 最新版本
 
+### 6.6.5
+
+主要更新内容如下：
+
+#### 底链微服务
+
+1. 新增storage_opendal微服务
+  - 对接多种存储后端
+  - 冷热数据分层管理
+2. 新增executor_noop微服务
+  - 适用只存证 layer 1 
+3. controller_crdt调研
+  - crdt_macro
+4. consensus_raft
+  - fix: get term error & fix: cover conflict entry
+  - recommit entry && transfer leader timeout depend on block interval
+5. controller
+  - optimize get_proposal
+  - optimize finalize_block
+  - optimize log
+6. cloud-config
+  - 结合kustomize
+7. cldi
+  - 在node status里增加init block number
+8. 其他
+  - 修复共识与controller高度不一致的问题
+  - Jaeger 使用远程采样配置
+  - panic hook修复
+  - 优化日志
+
+#### 云原生
+
+- cita-node-operator 同步上游
+
+#### 集成测试
+
+- 统计同步时间
+- 添加namespace环境变量
+
+#### Controller
+
+##### [Feature]
+
+[feat] add init height in node status @rink1969
+
+##### [Fix]
+
+[fix] fix skip reenter error when checking executor @JLerxky
+
+[fix] fix update sc @JLerxky
+
+##### [Optim]
+
+[optim] optim: skip and log ReenterBlock @JLerxky
+
+[optim] update auth and pool after block is persisted @JLerxky
+
+[optim] optim: log @Jayanring
+
+[optim] move update systemconfig after exec block; ignore update if empty blo… @rink1969
+
+[optim] update auth even empty block @rink1969
+
+[optim] optimize get_proposal @rink1969
+
+##### [Chore]
+
+[chore] update keepalive config @rink1969
+
+[chore] replace panic hook @Jayanring
+
+[chore] chore: debug print error @Jayanring
+
+#### network_zenoh
+
+##### [Chore]
+
+[chore] replace panic hook @Jayanring]
+
+#### consensus_overlord
+
+##### [Chore]
+
+[chore] replace panic hook @Jayanring
+
+[chore] chore: debug print error @Jayanring
+
+#### consensus_raft
+
+##### [Feature]
+
+[feat] recommit entry && transfer leader timeout depend on block interval  @Jayanring
+
+##### [Fix]
+
+[fix] fix: get term error & fix: cover conflict entry @Jayanring
+
+[fix] replace panic hook @Jayanring
+
+[fix] chore: debug print error @Jayanring
+
+#### executor_evm
+
+##### [Chore]
+
+[chore] replace panic hook @Jayanring
+
+#### crypto_eth
+
+##### [Chore]
+
+[chore] replace panic hook with common-rs @rink1969
+
+[chore] get inner err info @rink1969
+
+#### crypto_sm
+
+##### [Chore]
+
+[chore] replace panic hook with common-rs @rink1969
+
+#### storage_rocksdb
+
+##### [Optim]
+
+[optim] optim: not store global hash @Jayanring
+
+##### [Chore]
+
+[chore] replace panic hook @Jayanring
+
+[chore] chore: debug print error @Jayanring
+
+#### cita_cloud_proto
+
+##### [Feature]
+
+[feat] add init height in node status @rink1969
+
+#### cloud-common-rs
+
+##### [Feature]
+
+[feat] add jaeger sampler @Jayanring
+
+[feat] add init height in node status @rink1969
+
+[feat] add panic hook @rink1969
+
+##### [Fix]
+
+[fix] fix: get local offset @Jayanring
+
+##### [Optim]
+
+[optim] optim wal clear_file @JLerxky
+
+#### cloud-config
+
+##### [Feature]
+
+[feat] gen kustomization @rink1969
+
+##### [Fix]
+
+[fix] fix debug @rink1969
+
+##### [Chore]
+
+[chore] remove /etc/timezone @rink1969
+
+#### cloud-cli
+
+##### [Feature]
+
+[feat] add init height in node status @rink1969
+
+## 历史版本
+
 ### v6.6.4
 
 主要更新内容如下：
@@ -162,8 +341,6 @@
 
 #### 已知问题
 无
-
-## 历史版本
 
 ### v6.6.3
 
