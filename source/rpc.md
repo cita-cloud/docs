@@ -828,3 +828,69 @@ $ grpcurl -emit-defaults -plaintext -d '{"to": "13TPTHVrw0WmEi/XdSVt5Wa4S4E=", "
 ```
 
 * * *
+
+## grpc reflection
+
+`Controller`和`Executor`两个微服务都支持了`reflection`（反射），在使用时可以查询服务提供的接口和消息的结构，依此构造`grpc`请求，而不用指定`proto`文件。示例如下：
+
+```
+# 查看提供的服务
+$ grpcurl -plaintext 127.0.0.1:50004 list
+controller.Consensus2ControllerService
+controller.RPCService
+evm.RPCService
+executor.ExecutorService
+grpc.reflection.v1alpha.ServerReflection
+
+# 查看服务中的接口
+$ grpcurl -plaintext 127.0.0.1:50004 describe controller.RPCService
+controller.RPCService is a service:
+service RPCService {
+  // add new node
+  rpc AddNode ( .common.NodeNetInfo ) returns ( .common.StatusCode );
+  rpc GetBlockByHash ( .common.Hash ) returns ( .blockchain.CompactBlock );
+  rpc GetBlockByNumber ( .controller.BlockNumber ) returns ( .blockchain.CompactBlock );
+  rpc GetBlockDetailByNumber ( .controller.BlockNumber ) returns ( .blockchain.Block );
+  rpc GetBlockHash ( .controller.BlockNumber ) returns ( .common.Hash );
+  // flag means latest or pending.
+  // true means pending, false means latest.
+  rpc GetBlockNumber ( .controller.Flag ) returns ( .controller.BlockNumber );
+  rpc GetCrossChainProof ( .common.Hash ) returns ( .controller.CrossChainProof );
+  rpc GetHeightByHash ( .common.Hash ) returns ( .controller.BlockNumber );
+  rpc GetNodeStatus ( .common.Empty ) returns ( .common.NodeStatus );
+  rpc GetProofByNumber ( .controller.BlockNumber ) returns ( .common.Proof );
+  rpc GetStateRootByNumber ( .controller.BlockNumber ) returns ( .common.StateRoot );
+  rpc GetSystemConfig ( .common.Empty ) returns ( .controller.SystemConfig );
+  rpc GetSystemConfigByNumber ( .controller.BlockNumber ) returns ( .controller.SystemConfig );
+  rpc GetTransaction ( .common.Hash ) returns ( .blockchain.RawTransaction );
+  rpc GetTransactionBlockNumber ( .common.Hash ) returns ( .controller.BlockNumber );
+  rpc GetTransactionIndex ( .common.Hash ) returns ( .controller.TransactionIndex );
+  rpc SendRawTransaction ( .blockchain.RawTransaction ) returns ( .common.Hash );
+  rpc SendRawTransactions ( .blockchain.RawTransactions ) returns ( .common.Hashes );
+}
+
+# 以GetBlockByNumber接口为例，查看它的参数BlockNumber的结构
+$ grpcurl -plaintext 127.0.0.1:50004 describe .controller.BlockNumber
+controller.BlockNumber is a message:
+message BlockNumber {
+  uint64 block_number = 1;
+}
+
+# 依此构造grpc请求，不用指定proto文件
+$ grpcurl -emit-defaults -plaintext -d '{"block_number": "100"}' 127.0.0.1:50004 controller.RPCService/GetBlockByNumber
+{
+  "version": 0,
+  "header": {
+    "prevhash": "ShGkXUKqJ9HZPmQo5Z94o7bPhWeBXNoE7AYr0I8m/6w=",
+    "timestamp": "1687337523507",
+    "height": "100",
+    "transactionsRoot": "GrIdg1XPoX+OYRlIMegajyK+yMco/vt0ftA161CCqis=",
+    "proposer": "x+nzQBPukPmVH7VqMNFqh+F03Cg="
+  },
+  "body": {
+    "txHashes": [
+      
+    ]
+  }
+}
+```
