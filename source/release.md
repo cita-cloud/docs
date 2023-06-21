@@ -7,33 +7,33 @@
 
 #### 底链微服务
 
-1. 支持陆羽跨链插件的证明和验证
+- 支持陆羽跨链插件的证明和验证
   - 完成controller、executor、cli、proto配套修改
-2. 性能优化
+- 性能优化
   - Proposal中使用CompactBlock，降低传输数据量
   - crypto用作库，不再作为独立微服务，降低调用耗时
-3. Controller
+- Controller
   - 代码重构，优化代码结构
   - 移除wal，上个版本修改：未执行成功的区块由consensus重新commit，controller中的wal不再需要
   - 同步缺失的交易，Proposal不再包含完整交易，因此缺失某些交易时要从其他节点获取
-4. Storage_opendal替换原Storage_rocksdb
+- Storage_opendal替换原Storage_rocksdb
   - 冷热数据分离。热数据存在本地，冷数据存到云存储，可以使得本地存储数据量较小且相对固定。第一层内存，第二层rocksdb，第三层云存储（可选），可以配置前两层保存的容量（单位：高度）以及向第三层备份的间隔。
   - 共享第三层。多个节点共享第三层云存储，新节点无需恢复大量的冷数据，而只需通过恢复热数据即可快速加入。
   - 支持更多类型的云存储，亚马逊s3、Azure blob、阿里云oss、华为云ods、腾讯云cos
   - 第三层启动检查，如果配置了第三层，启动时会检查其可用性
   - 备份优化，第二层高度为h，则第三层会备份到高度h-1，防止分叉块被备份到多节点共享的云存储中
-5. 调整grpc消息的大小限制，tonic升级后限制了消息的大小，导致发批量交易报错
-6. Cloud-config
+- 调整grpc消息的大小限制，tonic升级后限制了消息的大小，导致发批量交易报错
+- Cloud-config
   - 移除crypto相关配置，storage_opendal配置替换storage_rocksdb配置
   - 修复执行init_node错误，“.”文件夹导致，忽略“.”开头的文件
-7. consensus_raft
+- consensus_raft
   - 修复持久化entry和snapshot失败，调用flush将缓冲区数据立即写入硬盘
-8. executor_evm
+- executor_evm
   - 更新cita-database
-9. cloud-cli
+- cloud-cli
   - 修复单元测试偶尔失败
   - dockerfile添加pkg-config、libssl-dev依赖
-10. rollup
+- rollup
   - 缓存接入DAS，并添加适配器，适配多种DAS
   - 缓存validator配合修改
   - 缓存适配cita-cloud v6.7.0
@@ -238,25 +238,25 @@
 
 #### 底链微服务
 
-1. 新增storage_opendal微服务
+- 新增storage_opendal微服务
   - 对接多种存储后端
   - 冷热数据分层管理
-2. 新增executor_noop微服务
+- 新增executor_noop微服务
   - 适用只存证 layer 1 
-3. controller_crdt调研
+- controller_crdt调研
   - crdt_macro
-4. consensus_raft
+- consensus_raft
   - fix: get term error & fix: cover conflict entry
   - recommit entry && transfer leader timeout depend on block interval
-5. controller
+- controller
   - optimize get_proposal
   - optimize finalize_block
   - optimize log
-6. cloud-config
+- cloud-config
   - 结合kustomize
-7. cldi
+- cldi
   - 在node status里增加init block number
-8. 其他
+- 其他
   - 修复共识与controller高度不一致的问题
   - Jaeger 使用远程采样配置
   - panic hook修复
@@ -449,7 +449,6 @@
 #### SLA测试
 - 正在迁移SLA环境
 
-### 相关commit
 #### Controller
 ##### [Feature]
 [feat] add danger mode for bft to overlord @rink1969
@@ -604,7 +603,6 @@
 - 缓存与cldi压力测试对比
 - 缓存文档添加
 
-### 相关commit
 #### Controller
 ##### [Feature]
 [feat] get node status @Jayanring
