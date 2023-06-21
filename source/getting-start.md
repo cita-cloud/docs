@@ -38,8 +38,8 @@ export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 使用方法参见[文档](https://cita-cloud.github.io/cloud-cli/)。
 
 ```
-$ wget https://github.com/cita-cloud/cloud-cli/releases/download/v0.5.4/cldi-x86_64-unknown-linux-musl.tar.gz
-$ tar zxvf cldi-x86_64-unknown-linux-musl.tar.gz
+$ wget https://github.com/cita-cloud/cloud-cli/releases/download/v0.5.5/cldi-x86_64-unknown-linux-gnu.tar.gz
+$ tar zxvf cldi-x86_64-unknown-linux-gnu.tar.gz
 $ sudo mv ./cldi /usr/local/bin/
 $ cldi -h
 cldi 0.5.5
