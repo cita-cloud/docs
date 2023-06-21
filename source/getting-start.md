@@ -42,7 +42,7 @@ $ wget https://github.com/cita-cloud/cloud-cli/releases/download/v0.5.4/cldi-x86
 $ tar zxvf cldi-x86_64-unknown-linux-musl.tar.gz
 $ sudo mv ./cldi /usr/local/bin/
 $ cldi -h
-cldi 0.5.4
+cldi 0.5.5
 Rivtower Technologies <contact@rivtower.com>
 The command line interface to interact with CITA-Cloud
 
@@ -60,6 +60,7 @@ Commands:
   ethabi       Ethereum ABI coder.
   bench        Simple benchmarks
   watch        Watch blocks
+  verify       Verify commands
   completions  Generate completions for current shell. Add the output script to `.profile` or `.bashrc` etc. to make it effective.
   help         Print this message or the help of the given subcommand(s)
 
@@ -71,8 +72,9 @@ Options:
   -p <password>                     password to unlock the account
       --crypto <crypto-type>        The crypto type of the target chain [possible values: SM, ETH]
       --consensus <consensus-type>  The consensus type of the target chain [possible values: BFT, OVERLORD, RAFT]
-  -h, --help                        Print help information
-  -V, --version                     Print version information
+  -t <connect-timeout>              connect timeout
+  -h, --help                        Print help
+  -V, --version                     Print version
 ```
 
 ## 运行链
@@ -117,7 +119,7 @@ export DOCKER_REGISTRY=docker.io
 export DOCKER_REPO=citacloud
 
 # 设置链的版本
-export RELEASE_VERSION=v6.6.5
+export RELEASE_VERSION=v6.7.0
 
 # 设置链的类型和名称
 export CHIAN_TYPE=overlord
@@ -136,7 +138,7 @@ export NAME_SPACE=cita
 ```bash
 # 生成初始的4个共识节点配置
 # 注意：`--admin`参数必须设置为自己生成的账户地址，此处仅为演示，切勿在正式环境中使用演示值。
-docker run -it --rm -v $(pwd):/data -w /data $DOCKER_REGISTRY/$DOCKER_REPO/cloud-config:$RELEASE_VERSION cloud-config create-k8s --chain-name $CHAIN_NAME --admin 0xc8ca9cc77a7f822fdd0baef7a7740f9dba493455 --nodelist localhost:40000:node0:k8s,localhost:40001:node1:k8s,localhost:40002:node2:k8s,localhost:40003:node3:k8s --controller_tag $RELEASE_VERSION --consensus_image consensus_$CHIAN_TYPE --consensus_tag $RELEASE_VERSION --crypto_tag $RELEASE_VERSION --network_tag $RELEASE_VERSION --storage_tag $RELEASE_VERSION --executor_tag $RELEASE_VERSION
+docker run -it --rm -v $(pwd):/data -w /data $DOCKER_REGISTRY/$DOCKER_REPO/cloud-config:$RELEASE_VERSION cloud-config create-k8s --chain-name $CHAIN_NAME --admin 0xc8ca9cc77a7f822fdd0baef7a7740f9dba493455 --nodelist localhost:40000:node0:k8s,localhost:40001:node1:k8s,localhost:40002:node2:k8s,localhost:40003:node3:k8s --controller_tag $RELEASE_VERSION --consensus_image consensus_$CHIAN_TYPE --consensus_tag $RELEASE_VERSION --network_tag $RELEASE_VERSION --storage_tag $RELEASE_VERSION --executor_tag $RELEASE_VERSION
 
 
 # 生成所有节点配置的yaml文件
@@ -164,10 +166,10 @@ kubectl apply -f $CHAIN_NAME-node3/yamls/ -n $NAME_SPACE
 ```bash
 $ kubectl get pod -n $NAME_SPACE
 NAME                                                    READY   STATUS    RESTARTS   AGE
-test-overlord-node0-0                                   6/6     Running   0          8m3s
-test-overlord-node1-0                                   6/6     Running   0          8m3s
-test-overlord-node2-0                                   6/6     Running   0          8m3s
-test-overlord-node3-0                                   6/6     Running   0          8m3s
+test-overlord-node0-0                                   5/5     Running   0          8m3s
+test-overlord-node1-0                                   5/5     Running   0          8m3s
+test-overlord-node2-0                                   5/5     Running   0          8m3s
+test-overlord-node3-0                                   5/5     Running   0          8m3s
 ```
 
 查看日志：

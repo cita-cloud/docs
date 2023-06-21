@@ -1,6 +1,8 @@
 # RPC
 
-`CITA-Cloud`为用户提供功能丰富的`RPC`接口，并在不断更新完善中。这些`RPC`接口主要分为两部分，分别由`Controller`和`Executor`提供，`Controller`主要提供区块链信息数据查询、发送交易、添加节点相关接口，`Executor`主要提供合约、账户、交易执行相关接口。示例中使用`grpcurl`调用这些接口，`bytes`类型的参数需要传入`base64`编码后的值，返回结果中的`bytes`类型也是`base64`编码后的值。
+`CITA-Cloud`为用户提供功能丰富的`RPC`接口，并在不断更新完善中。这些`RPC`接口主要分为两部分，分别由`Controller`和`Executor`提供，`Controller`主要提供区块链信息数据查询、发送交易、添加节点相关接口，`Executor`主要提供合约、账户、交易执行相关接口。
+
+示例中使用`grpcurl`调用这些接口，`bytes`类型的参数需要传入`base64`编码后的值，返回结果中的`bytes`类型也是`base64`编码后的值。
 
 ## Controller RPC
 
@@ -146,7 +148,7 @@ $ grpcurl -emit-defaults -plaintext -d '{"block_number": "100"}' \
 
 * 参数
 
-   `uint64 block_number`: 指定高度
+  `uint64 block_number`: 指定高度
 
 * 示例
 
@@ -206,7 +208,7 @@ $ grpcurl -emit-defaults -plaintext -d '{"block_number": "75"}' \
 
 * 参数
 
-   `uint64 block_number`: 指定高度
+  `uint64 block_number`: 指定高度
 
 * 示例
 
@@ -232,7 +234,7 @@ $ grpcurl -emit-defaults -plaintext -d '{"block_number": "100"}' \
 
 * 参数
 
-   `uint64 block_number`: 指定高度
+  `uint64 block_number`: 指定高度
 
 * 示例
 
@@ -258,7 +260,7 @@ $ grpcurl -emit-defaults -plaintext -d '{"block_number": "100"}' \
 
 * 参数
 
-   `uint64 block_number`: 指定高度
+  `uint64 block_number`: 指定高度
 
 * 示例
 
@@ -284,7 +286,7 @@ $ grpcurl -emit-defaults -plaintext -d '{"block_number": "10"}' \
 
 * 参数
 
-   `bytes hash`: 区块哈希值
+  `bytes hash`: 区块哈希值
 
 * 示例
 
@@ -310,7 +312,7 @@ $ grpcurl -emit-defaults -plaintext -d '{"hash": "xs6WmcxhL7apHujKixeYw7Yk+B2W3d
 
 * 参数
 
-   `bytes hash`: 区块哈希值
+  `bytes hash`: 区块哈希值
 
 * 示例
 
@@ -381,7 +383,7 @@ $ grpcurl -emit-defaults -plaintext -d '{"normal_tx": {"transaction": { "version
 
 * 参数
 
-   `bytes hash`: 交易哈希值
+  `bytes hash`: 交易哈希值
 
 * 示例
 
@@ -423,7 +425,7 @@ $ grpcurl -emit-defaults -plaintext -d '{"hash": "2+3XKgIA+DFzKULl23LTC6JjBXFjSh
 
 * 参数
 
-   `bytes hash`: 交易哈希值
+  `bytes hash`: 交易哈希值
 
 * 示例
 
@@ -449,7 +451,7 @@ $ grpcurl -emit-defaults -plaintext -d '{"hash": "2+3XKgIA+DFzKULl23LTC6JjBXFjSh
 
 * 参数
 
-   `bytes hash`: 交易哈希值
+  `bytes hash`: 交易哈希值
 
 * 示例
 
@@ -497,6 +499,62 @@ $ grpcurl -emit-defaults -plaintext -d '{ "multiAddress": "/dns4/127.0.0.1/tcp/4
 
 * * *
 
+### GetCrossChainProof 
+
+获取跨链证明
+
+* 接口
+  
+  rpc GetCrossChainProof(common.Hash) returns (CrossChainProof);
+
+* 参数
+
+  `bytes hash`: 交易哈希值
+
+* 示例
+
+```
+$ grpcurl -emit-defaults -plaintext -d '{"hash": "2+3XKgIA+DFzKULl23LTC6JjBXFjShffE5gznUWbSrw="}' \
+-proto ~/cita-cloud/cloud-common-rs/cloud-proto/protos/protos/controller.proto \
+-import-path ~/cita-cloud/cloud-common-rs/cloud-proto/protos/protos \
+127.0.0.1:50004 controller.RPCService/GetCrossChainProof
+{
+  "version": 0,
+  "chainId": "Y1hqPAJV8zfHend/9U8AQLjDiNoE8j7O5r/UlTplErQ=",
+  "proposal": {
+    "preStateRoot": "z7OLj3I0Wge52dht/Wehgj6L4hbArs+GY9/QsHi8rZI=",
+    "proposal": {
+      "version": 0,
+      "header": {
+        "prevhash": "YLJ/O9MiaUoRVB5j1V+4fMgyTvn0MCIWqmB4JiUoGIc=",
+        "timestamp": "1687334197360",
+        "height": "50",
+        "transactionsRoot": "O1JV/1UTJGnyxPrnRbHxx5YajCBlizbCBLwDN9LOOak=",
+        "proposer": "x+nzQBPukPmVH7VqMNFqh+F03Cg="
+      },
+      "body": {
+        "txHashes": [
+          "do38caZae78ZfQqz0IDHdbG8oeIxrFRylRv3+svh9eg="
+        ]
+      }
+    }
+  },
+  "receiptProof": {
+    "receipt": "+QEqglIIuQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMDAgKB2jfxxplp7vxl9CrPQgMd1sbyh4jGsVHKVG/f6y+H16A==",
+    "receiptProof": "wA==",
+    "rootsInfo": {
+      "height": "50",
+      "stateRoot": "bXg4C9xF4cXv2V8a9YwPgq0WjCdytJkkTFqbuZg6toI=",
+      "receiptRoot": "tO1g3jO9tjU/XimtDqtgodzV3V3b2DWpfmumE8m1kI4="
+    }
+  },
+  "proof": "",
+  "stateRoot": "2ZVY1e/4V/DQh3a3+ydvI3HDUXqpbKyNMjE9qlGPJgw="
+}
+```
+
+* * *
+
 ## Executor RPC
 
 ### GetTransactionReceipt 
@@ -509,7 +567,7 @@ $ grpcurl -emit-defaults -plaintext -d '{ "multiAddress": "/dns4/127.0.0.1/tcp/4
 
 * 参数
 
-   `bytes hash`: 交易哈希值
+  `bytes hash`: 交易哈希值
 
 * 示例
 
@@ -547,7 +605,7 @@ $ grpcurl -emit-defaults -plaintext -d '{"hash": "2+3XKgIA+DFzKULl23LTC6JjBXFjSh
 
 * 参数
 
-   `bytes address`: 账户地址
+  `bytes address`: 账户地址
 
 * 示例
 
@@ -573,7 +631,7 @@ $ grpcurl -emit-defaults -plaintext -d '{"address": "a2WNQSBYfQH91o2+oFKuwqHBPew
 
 * 参数
 
-   `bytes address`: 账户地址
+  `bytes address`: 账户地址
 
 * 示例
 
@@ -599,7 +657,7 @@ $ grpcurl -emit-defaults -plaintext -d '{"address": "a2WNQSBYfQH91o2+oFKuwqHBPew
 
 * 参数
 
-   `bytes address`: 合约地址
+  `bytes address`: 合约地址
 
 * 示例
 
@@ -625,7 +683,7 @@ $ grpcurl -emit-defaults -plaintext -d '{"address": "Req3cucyj4Vkugo9aVQW1VLDpfM
 
 * 参数
 
-   `bytes address`: 合约地址
+  `bytes address`: 合约地址
 
 * 示例
 
@@ -671,6 +729,66 @@ $ grpcurl -emit-defaults -plaintext -d '{"to": "Req3cucyj4Vkugo9aVQW1VLDpfM=", "
 127.0.0.1:50002 evm.RPCService/EstimateQuota
 {
   "bytesQuota": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoRY="
+}
+```
+
+* * *
+
+### GetReceiptProof
+
+获取交易的`ReceiptProof`
+
+* 接口
+  
+  rpc GetReceiptProof(common.Hash) returns (ReceiptProof);
+
+* 参数
+
+  `bytes hash`: 交易哈希值
+
+* 示例
+
+```
+$ grpcurl -emit-defaults -plaintext -d '{"hash": "do38caZae78ZfQqz0IDHdbG8oeIxrFRylRv3+svh9eg="}' \
+-proto ~/cita-cloud/cloud-common-rs/cloud-proto/protos/protos/vm/evm.proto \
+-import-path ~/cita-cloud/cloud-common-rs/cloud-proto/protos/protos \
+127.0.0.1:50002 evm.RPCService/GetReceiptProof
+{
+  "receipt": "+QEqglIIuQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMDAgKB2jfxxplp7vxl9CrPQgMd1sbyh4jGsVHKVG/f6y+H16A==",
+  "receiptProof": "wA==",
+  "rootsInfo": {
+    "height": "50",
+    "stateRoot": "bXg4C9xF4cXv2V8a9YwPgq0WjCdytJkkTFqbuZg6toI=",
+    "receiptRoot": "tO1g3jO9tjU/XimtDqtgodzV3V3b2DWpfmumE8m1kI4="
+  }
+}
+```
+
+* * *
+
+### GetRootsInfo
+
+获取指定高度的`RootsInfo`
+
+* 接口
+  
+  rpc GetRootsInfo(BlockNumber) returns (RootsInfo);
+
+* 参数
+
+  `uint64 block_number`: 指定高度
+
+* 示例
+
+```
+$ grpcurl -emit-defaults -plaintext -d '{"block_number": "50"}' \
+-proto ~/cita-cloud/cloud-common-rs/cloud-proto/protos/protos/vm/evm.proto \
+-import-path ~/cita-cloud/cloud-common-rs/cloud-proto/protos/protos \
+127.0.0.1:50002 evm.RPCService/GetRootsInfo
+{
+  "height": "50",
+  "stateRoot": "bXg4C9xF4cXv2V8a9YwPgq0WjCdytJkkTFqbuZg6toI=",
+  "receiptRoot": "tO1g3jO9tjU/XimtDqtgodzV3V3b2DWpfmumE8m1kI4="
 }
 ```
 

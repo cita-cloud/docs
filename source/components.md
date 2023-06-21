@@ -6,7 +6,7 @@
 
 构建物使用微服务名称，以便于相互替换。
 
-比如`storage_rocksdb`，是基于`rocksdb`实现的`Storage`微服务，其构建物为可执行文件`storage`。
+比如`network_zenoh`，是基于`zenoh`实现的`Network`微服务，其构建物为可执行文件`network`。
 
 组件分为两类：
 
@@ -40,17 +40,21 @@
 
 授权： 开源，`Apache-2.0 License`
 
-### storage_rocksdb
+### storage_opendal
 
-介绍： 基于[rocksdb](https://zhuanlan.zhihu.com/p/51285080)的实现。
+介绍： 基于[opendal](https://github.com/apache/incubator-opendal)的实现。
 
 特点：
+* 冷热数据分离。热数据存在本地，冷数据存到云存储，可以使得本地存储数据量较小且相对固定。
+* 共享第三层。多个节点共享第三层云存储，新节点无需恢复大量的冷数据，而只需通过恢复热数据即可快速加入。
+
+第二层存储为`rocksdb`，特点：
 * 高效，`KV`数据库，读写效率高。
 * 可靠，多数区块链项目都使用`rocksdb`作为存储引擎，稳定性好。
 
-[代码仓库](https://github.com/cita-cloud/storage_rocksdb)
+[代码仓库](https://github.com/cita-cloud/storage_opendal)
 
-[镜像仓库](https://hub.docker.com/r/citacloud/storage_rocksdb/tags)
+[镜像仓库](https://hub.docker.com/r/citacloud/storage_opendal/tags)
 
 成熟度： 4
 
@@ -272,6 +276,26 @@
 授权： 开源，`Apache-2.0 License`
 
 废弃原因：被`network_zenoh`替代。
+
+### storage_rocksdb
+
+介绍： 基于[rocksdb](https://zhuanlan.zhihu.com/p/51285080)的实现。
+
+特点：
+* 高效，`KV`数据库，读写效率高。
+* 可靠，多数区块链项目都使用`rocksdb`作为存储引擎，稳定性好。
+
+[代码仓库](https://github.com/cita-cloud/storage_rocksdb)
+
+[镜像仓库](https://hub.docker.com/r/citacloud/storage_rocksdb/tags)
+
+成熟度： 4
+
+状态： 废弃
+
+授权： 开源，`Apache-2.0 License`
+
+废弃原因：被`storage_opendal`替代，`storage_opendal`提供更全面的功能，`rocksdb`仍作为其中的第二层存储。
 
 #### storage_sqlite
 
