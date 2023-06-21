@@ -1,6 +1,237 @@
 # 版本发布
 ## 最新版本
 
+### 6.7.0
+
+主要更新内容如下：
+
+#### 底链微服务
+
+1. 支持陆羽跨链插件的证明和验证
+  - 完成controller、executor、cli、proto配套修改
+2. 性能优化
+  - Proposal中使用CompactBlock，降低传输数据量
+  - crypto用作库，不再作为独立微服务，降低调用耗时
+3. Controller
+  - 代码重构，优化代码结构
+  - 移除wal，上个版本修改：未执行成功的区块由consensus重新commit，controller中的wal不再需要
+  - 同步缺失的交易，Proposal不再包含完整交易，因此缺失某些交易时要从其他节点获取
+4. Storage_opendal替换原Storage_rocksdb
+  - 冷热数据分离。热数据存在本地，冷数据存到云存储，可以使得本地存储数据量较小且相对固定。第一层内存，第二层rocksdb，第三层云存储（可选），可以配置前两层保存的容量（单位：高度）以及向第三层备份的间隔。
+  - 共享第三层。多个节点共享第三层云存储，新节点无需恢复大量的冷数据，而只需通过恢复热数据即可快速加入。
+  - 支持更多类型的云存储，亚马逊s3、Azure blob、阿里云oss、华为云ods、腾讯云cos
+  - 第三层启动检查，如果配置了第三层，启动时会检查其可用性
+  - 备份优化，第二层高度为h，则第三层会备份到高度h-1，防止分叉块被备份到多节点共享的云存储中
+5. 调整grpc消息的大小限制，tonic升级后限制了消息的大小，导致发批量交易报错
+6. Cloud-config
+  - 移除crypto相关配置，storage_opendal配置替换storage_rocksdb配置
+  - 修复执行init_node错误，“.”文件夹导致，忽略“.”开头的文件
+7. consensus_raft
+  - 修复持久化entry和snapshot失败，调用flush将缓冲区数据立即写入硬盘
+8. executor_evm
+  - 更新cita-database
+9. cloud-cli
+  - 修复单元测试偶尔失败
+  - dockerfile添加pkg-config、libssl-dev依赖
+10. rollup
+  - 缓存接入DAS，并添加适配器，适配多种DAS
+  - 缓存validator配合修改
+  - 缓存适配cita-cloud v6.7.0
+
+#### 云原生
+
+- 同步上游版本至v2.7.1
+- 添加字段：DeleteConsensusData，用于恢复或消块时是否删除共识数据
+- 相关Bugfix修复
+
+#### 集成测试
+
+- 补充完善测试用例
+
+#### Controller
+
+##### [Feature]
+
+[feat] feat: support cross chain proof @Pencil-Yao 
+
+##### [Fix]
+
+[fix] set grpc server max_decoding_message_size to max @JLerxky
+
+##### [Optim]
+
+[optim] rmove wal @JLerxky 
+
+[optim] change block in proposal to compact block @rink1969
+
+[optim] sync tx when miss raw tx @rink1969 
+
+[optim] use crypto as lib @rink1969 
+
+[optim] optim: use simple method replace of get_full_block @Pencil-Yao 
+
+##### [Chore]
+
+[chore] add step comments @JLerxky 
+
+[chore] rm crypto port @rink1969 
+
+##### [Refactor]
+
+[refactor] refactor: extract the grpc mod @JLerxky 
+
+[refactor] refactor and optim @JLerxky 
+
+#### network_zenoh
+
+##### [Fix]
+
+[fix] set grpc server max_decoding_message_size to max @JLerxky
+
+#### consensus_overlord
+
+无更新
+
+#### consensus_raft
+
+##### [Fix]
+
+[fix] fix: flush file @Jayanring
+
+#### executor_evm
+
+##### [Feature]
+
+[feature] [breaking]feat: support cross chain proof @Pencil-Yao
+
+##### [Fix]
+
+[fix] fix: re-enter use state_root not app_hash @Pencil-Yao
+
+[fix] set grpc server max_decoding_message_size to max @JLerxky
+
+[fix] fix: re-enter block receipt is null @Pencil-Yao
+
+##### [Chore]
+
+[chore] chore: update cita-database @Pencil-Yao
+
+#### storage_opendal
+
+##### [Feature]
+
+[feature] public layer3 @Jayanring 
+
+[feature] feat: support more cloud storage @Jayanring 
+
+##### [Fix]
+
+[fix] fix: test
+
+[fix] fix layer 2 3 different height key @Jayanring
+
+[fix] enable rocksdb dafault features @Jayanring 
+
+[fix] set grpc server max_decoding_message_size to max @JLerxky 
+
+##### [Optim]
+
+[optim] optim: not store global hash @Jayanring 
+
+[optim] optim: async store block data @Jayanring 
+
+[optim] backup 1 height slower @Jayanring 
+
+[optim] check layer3 availability when init @Jayanring 
+
+##### [Chore]
+
+[chore] replace panic hook @Jayanring 
+
+[chore] chore: debug print error @Jayanring 
+
+[chore] remove crypto dep @rink1969
+
+[chore] update opendal @Jayanring 
+
+[chore] remove crypto port @rink1969 
+
+[chore] store data in root dir @rink1969 
+
+[chore] public operator @Jayanring 
+
+##### [Refactor]
+
+[refactor] init @Jayanring 
+
+#### cita_cloud_proto
+
+##### [Feature]
+
+[feat] feat: support cross chain @Pencil-Yao
+
+##### [Optim]
+
+[optim] change block in proposal to compact block @rink1969
+
+#### cloud-common-rs
+
+##### [Feature]
+
+[feat] feat: support cross chain proof @Pencil-Yao 
+
+##### [Optim]
+
+[optim] change block in proposal to compact block @rink1969
+
+[optim] set grpc client max_decoding_message_size to max @JLerxky
+
+#### cloud-config
+
+##### [Feature]
+
+[feat] rm crypto and replace rocksdb with opendal @rink1969 
+
+##### [Fix]
+
+[fix] add features @rink1969 
+
+[fix] fix infinity loop when call init-node @rink1969 
+
+[fix] fix storage config @rink1969 
+
+##### [Chore]
+
+[chore] use crypto as lib @rink1969 
+
+[chore] add cloud storage args @rink1969 
+
+[chore] update readme @rink1969 
+
+#### cloud-cli
+
+##### [Feature]
+
+[feat] feat: support cross chain proof @Pencil-Yao 
+
+##### [Fix]
+
+[fix] fix mock @rink1969
+
+[fix] fix: dockerfile @Pencil-Yao 
+
+##### [Optim]
+
+[optim] optim error msg @JLerxky 
+
+[optim] optim: raft cross chain proof verify @Pencil-Yao 
+
+##### [Chore]
+
+[chore] chore: add dependence for evm @Pencil-Yao
+
+## 历史版本
+
 ### 6.6.5
 
 主要更新内容如下：
@@ -177,8 +408,6 @@
 ##### [Feature]
 
 [feat] add init height in node status @rink1969
-
-## 历史版本
 
 ### v6.6.4
 

@@ -137,7 +137,7 @@ enum Regions {
 }
 ```
 
-`GLOBAL` 保存链相关的全局信息，比如当前链的最新高度，当前链的最新区块`Hash`等，对应的`key`为自定义的固定值。
+`GLOBAL` 保存链相关的全局信息，比如当前链的最新高度，对应的`key`为自定义的固定值。
 
 `TRANSACTIONS` 保存 交易哈希 -> 交易原始数据 的对应关系。
 
@@ -545,6 +545,8 @@ service RPCService {
     rpc AddNode(common.NodeNetInfo) returns (common.StatusCode);
 
     rpc GetNodeStatus(common.Empty) returns (common.NodeStatus);
+
+    rpc GetCrossChainProof(common.Hash) returns (CrossChainProof);
 }
 ```
 
