@@ -1,6 +1,109 @@
 # 版本发布
 ## 最新版本
 
+### 6.7.1
+
+#### 主要更新内容
+
+- RPC支持grpc-web和grpc-reflection
+  - 客户端可以使用http1.1访问底链RPC端口
+  - 客户端无需自己加载proto文件
+- network升级zenoh
+  - 升级依赖的zenoh库版本至0.7.2-rc
+  - 去除原来自己实现的liveness检查，改为使用zenoh库提供的功能
+- Storage_opendal提升健壮性
+  - 清理过时区块时，如果对应区块已经不存在，跳过该区块，而不是一直卡在那里
+  - 并发优化，优化了一些可能会阻塞整个线程池的操作
+- Controller代码优化
+  - 并发优化，优化了一些可能会阻塞整个线程池的操作
+  - 重构交易检查逻辑
+- Cloud-config增加access mode参数
+  - 增加参数，让用户可以设置PVC的access mode。不再写死为RWO，以适应不同公有云厂商的存储产品
+- 镜像多架构适配优化
+  - Grpc probe从固定下载x86版本，改为从官方镜像中COPY，可在镜像编译时自动适配多种架构
+- 优雅退出
+  - 解决微服务异常退出时，端口或者文件锁没有被正确回收的问题
+- controller_hsm
+  - 实验性增加基于状态机的controller微服务实现
+- Cloud-cli
+  - 修复多平台编译问题
+- Crypto
+  - 并发优化，优化了一些可能会阻塞整个线程池的操作
+
+#### Controller
+##### [Feature]
+- Add Tonic reflection and web support to controller grpc server @Jayanring 
+##### [Fix]
+- copy grpc-health-probe from offical image @Jayanring 
+##### [Optim]
+- graceful shutdown && optim concurrency && refactor tx check @JLerxky 
+
+#### network_zenoh
+##### [Optim]
+- update zenoh and use liveliness @JLerxky
+- rm send_msg_check  @JLerxky
+- graceful shutdown @JLerxky
+##### [Fix]
+- fix grpc probe  @Jayanring 
+
+#### consensus_overlord
+##### [Optim]
+- graceful shutdown @JLerxky
+##### [Fix]
+- fix grpc probe  @Jayanring 
+
+#### consensus_raft
+##### [Optim]
+- graceful shutdown @JLerxky
+##### [Fix]
+- fix grpc probe  @Jayanring 
+
+#### executor_evm
+##### [Feature]
+- Add Tonic reflection and web support to controller grpc server @Jayanring 
+##### [Fix]
+- copy grpc-health-probe from offical image @Jayanring 
+##### [Optim]
+- graceful shutdown && refactor executor rpc @JLerxky 
+
+#### storage_opendal
+##### [Fix]
+- fix grpc probe @Jayanring 
+##### [Optim]
+- graceful_shutdown @JLerxky 
+- optim: tx async store and load && use more reference @Jayanring 
+- Refactor backup function to handle NotFound errors in delete_outdate @Jayanring 
+
+#### crypto_eth
+##### [Optim]
+- graceful_shutdown @JLerxky 
+- optim code  @JLerxky 
+
+#### crypto_sm
+##### [Optim]
+- graceful_shutdown @JLerxky 
+- optim code  @JLerxky 
+
+#### cita_cloud_proto
+无
+
+#### cloud-common-rs
+##### [Feature]
+- Support Reflect  @Jayanring 
+##### [Optim]
+- graceful shutdown @JLerxky
+- graceful shutdown when panic @JLerxky
+
+#### cloud-config
+##### [Feature]
+- add arg accessmode for update-yaml  @rink1969 
+
+#### cloud-cli
+##### [Fix]
+- fix windows compile @Pencil-Yao 
+
+## 历史版本
+
 ### 6.7.0
 
 主要更新内容如下：
@@ -229,8 +332,6 @@
 ##### [Chore]
 
 [chore] chore: add dependence for evm @Pencil-Yao
-
-## 历史版本
 
 ### 6.6.5
 
