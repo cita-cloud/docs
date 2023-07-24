@@ -1,0 +1,16 @@
+site_name: CITA-Cloud
+theme:
+  name: 'readthedocs'
+
+nav:
+  - 首页: index.md
+  - 介绍: introduction.md
+  - 架构: architecture.md
+  - 组件: components.md
+  - 部署: deployment-guide.md
+  - 入门: getting-start.md
+  - 定制: customize.md
+  - 接口: rpc.md
+  - 路线: roadmap.md
+  - 版本: release.md
+  - 问答: faq.md
