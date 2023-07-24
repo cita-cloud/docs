@@ -38,11 +38,11 @@ export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 使用方法参见[文档](https://cita-cloud.github.io/cloud-cli/)。
 
 ```
-$ wget https://github.com/cita-cloud/cloud-cli/releases/download/v0.5.5/cldi-x86_64-unknown-linux-gnu.tar.gz
+$ wget https://github.com/cita-cloud/cloud-cli/releases/download/v0.5.6/cldi-x86_64-unknown-linux-gnu.tar.gz
 $ tar zxvf cldi-x86_64-unknown-linux-gnu.tar.gz
 $ sudo mv ./cldi /usr/local/bin/
 $ cldi -h
-cldi 0.5.5
+cldi 0.5.6
 Rivtower Technologies <contact@rivtower.com>
 The command line interface to interact with CITA-Cloud
 
@@ -119,15 +119,16 @@ export DOCKER_REGISTRY=docker.io
 export DOCKER_REPO=citacloud
 
 # 设置链的版本
-export RELEASE_VERSION=v6.7.0
+export RELEASE_VERSION=v6.7.1
 
 # 设置链的类型和名称
 export CHIAN_TYPE=overlord
 # export CHIAN_TYPE=raft
 export CHAIN_NAME=test-$CHIAN_TYPE
 
-# 设置基础环境的Storage Class，这里使用k3s自带的local-path
+# 设置基础环境的Storage Class和PVC access mode，这里使用k3s自带的local-path
 export SC=local-path
+export PVC_MODE=ReadWriteOnce
 
 # 设置链运行的命名空间
 export NAME_SPACE=cita
@@ -142,10 +143,10 @@ docker run -it --rm -v $(pwd):/data -w /data $DOCKER_REGISTRY/$DOCKER_REPO/cloud
 
 
 # 生成所有节点配置的yaml文件
-docker run -it --rm -v $(pwd):/data -w /data $DOCKER_REGISTRY/$DOCKER_REPO/cloud-config:$RELEASE_VERSION cloud-config update-yaml --chain-name $CHAIN_NAME --storage-class $SC --docker-registry $DOCKER_REGISTRY --docker-repo $DOCKER_REPO --domain node0
-docker run -it --rm -v $(pwd):/data -w /data $DOCKER_REGISTRY/$DOCKER_REPO/cloud-config:$RELEASE_VERSION cloud-config update-yaml --chain-name $CHAIN_NAME --storage-class $SC --docker-registry $DOCKER_REGISTRY --docker-repo $DOCKER_REPO --domain node1
-docker run -it --rm -v $(pwd):/data -w /data $DOCKER_REGISTRY/$DOCKER_REPO/cloud-config:$RELEASE_VERSION cloud-config update-yaml --chain-name $CHAIN_NAME --storage-class $SC --docker-registry $DOCKER_REGISTRY --docker-repo $DOCKER_REPO --domain node2
-docker run -it --rm -v $(pwd):/data -w /data $DOCKER_REGISTRY/$DOCKER_REPO/cloud-config:$RELEASE_VERSION cloud-config update-yaml --chain-name $CHAIN_NAME --storage-class $SC --docker-registry $DOCKER_REGISTRY --docker-repo $DOCKER_REPO --domain node3
+docker run -it --rm -v $(pwd):/data -w /data $DOCKER_REGISTRY/$DOCKER_REPO/cloud-config:$RELEASE_VERSION cloud-config update-yaml --chain-name $CHAIN_NAME --storage-class $SC --access-mode=$PVC_MODE --docker-registry $DOCKER_REGISTRY --docker-repo $DOCKER_REPO --domain node0
+docker run -it --rm -v $(pwd):/data -w /data $DOCKER_REGISTRY/$DOCKER_REPO/cloud-config:$RELEASE_VERSION cloud-config update-yaml --chain-name $CHAIN_NAME --storage-class $SC --access-mode=$PVC_MODE --docker-registry $DOCKER_REGISTRY --docker-repo $DOCKER_REPO --domain node1
+docker run -it --rm -v $(pwd):/data -w /data $DOCKER_REGISTRY/$DOCKER_REPO/cloud-config:$RELEASE_VERSION cloud-config update-yaml --chain-name $CHAIN_NAME --storage-class $SC --access-mode=$PVC_MODE --docker-registry $DOCKER_REGISTRY --docker-repo $DOCKER_REPO --domain node2
+docker run -it --rm -v $(pwd):/data -w /data $DOCKER_REGISTRY/$DOCKER_REPO/cloud-config:$RELEASE_VERSION cloud-config update-yaml --chain-name $CHAIN_NAME --storage-class $SC --access-mode=$PVC_MODE --docker-registry $DOCKER_REGISTRY --docker-repo $DOCKER_REPO --domain node3
 ```
 
 ### 启动链
