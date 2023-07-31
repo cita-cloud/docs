@@ -6,29 +6,29 @@
 #### 主要更新内容
 
 - RPC支持grpc-web和grpc-reflection
-  - 客户端可以使用http1.1访问底链RPC端口
-  - 客户端无需自己加载proto文件
+    - 客户端可以使用http1.1访问底链RPC端口
+    - 客户端无需自己加载proto文件
 - network升级zenoh
-  - 升级依赖的zenoh库版本至0.7.2-rc
-  - 去除原来自己实现的liveness检查，改为使用zenoh库提供的功能
+    - 升级依赖的zenoh库版本至0.7.2-rc
+    - 去除原来自己实现的liveness检查，改为使用zenoh库提供的功能
 - Storage_opendal提升健壮性
-  - 清理过时区块时，如果对应区块已经不存在，跳过该区块，而不是一直卡在那里
-  - 并发优化，优化了一些可能会阻塞整个线程池的操作
+    - 清理过时区块时，如果对应区块已经不存在，跳过该区块，而不是一直卡在那里
+    - 并发优化，优化了一些可能会阻塞整个线程池的操作
 - Controller代码优化
-  - 并发优化，优化了一些可能会阻塞整个线程池的操作
-  - 重构交易检查逻辑
+    - 并发优化，优化了一些可能会阻塞整个线程池的操作
+    - 重构交易检查逻辑
 - Cloud-config增加access mode参数
-  - 增加参数，让用户可以设置PVC的access mode。不再写死为RWO，以适应不同公有云厂商的存储产品
+    - 增加参数，让用户可以设置PVC的access mode。不再写死为RWO，以适应不同公有云厂商的存储产品
 - 镜像多架构适配优化
-  - Grpc probe从固定下载x86版本，改为从官方镜像中COPY，可在镜像编译时自动适配多种架构
+    - Grpc probe从固定下载x86版本，改为从官方镜像中COPY，可在镜像编译时自动适配多种架构
 - 优雅退出
-  - 解决微服务异常退出时，端口或者文件锁没有被正确回收的问题
+    - 解决微服务异常退出时，端口或者文件锁没有被正确回收的问题
 - controller_hsm
-  - 实验性增加基于状态机的controller微服务实现
+    - 实验性增加基于状态机的controller微服务实现
 - Cloud-cli
-  - 修复多平台编译问题
+    - 修复多平台编译问题
 - Crypto
-  - 并发优化，优化了一些可能会阻塞整个线程池的操作
+    - 并发优化，优化了一些可能会阻塞整个线程池的操作
 
 #### Controller
 ##### [Feature]
@@ -111,35 +111,35 @@
 #### 底链微服务
 
 - 支持陆羽跨链插件的证明和验证
-  - 完成controller、executor、cli、proto配套修改
+    - 完成controller、executor、cli、proto配套修改
 - 性能优化
-  - Proposal中使用CompactBlock，降低传输数据量
-  - crypto用作库，不再作为独立微服务，降低调用耗时
+    - Proposal中使用CompactBlock，降低传输数据量
+    - crypto用作库，不再作为独立微服务，降低调用耗时
 - Controller
-  - 代码重构，优化代码结构
-  - 移除wal，上个版本修改：未执行成功的区块由consensus重新commit，controller中的wal不再需要
-  - 同步缺失的交易，Proposal不再包含完整交易，因此缺失某些交易时要从其他节点获取
+    - 代码重构，优化代码结构
+    - 移除wal，上个版本修改：未执行成功的区块由consensus重新commit，controller中的wal不再需要
+    - 同步缺失的交易，Proposal不再包含完整交易，因此缺失某些交易时要从其他节点获取
 - Storage_opendal替换原Storage_rocksdb
-  - 冷热数据分离。热数据存在本地，冷数据存到云存储，可以使得本地存储数据量较小且相对固定。第一层内存，第二层rocksdb，第三层云存储（可选），可以配置前两层保存的容量（单位：高度）以及向第三层备份的间隔。
-  - 共享第三层。多个节点共享第三层云存储，新节点无需恢复大量的冷数据，而只需通过恢复热数据即可快速加入。
-  - 支持更多类型的云存储，亚马逊s3、Azure blob、阿里云oss、华为云ods、腾讯云cos
-  - 第三层启动检查，如果配置了第三层，启动时会检查其可用性
-  - 备份优化，第二层高度为h，则第三层会备份到高度h-1，防止分叉块被备份到多节点共享的云存储中
+    - 冷热数据分离。热数据存在本地，冷数据存到云存储，可以使得本地存储数据量较小且相对固定。第一层内存，第二层rocksdb，第三层云存储（可选），可以配置前两层保存的容量（单位：高度）以及向第三层备份的间隔。
+    - 共享第三层。多个节点共享第三层云存储，新节点无需恢复大量的冷数据，而只需通过恢复热数据即可快速加入。
+    - 支持更多类型的云存储，亚马逊s3、Azure blob、阿里云oss、华为云ods、腾讯云cos
+    - 第三层启动检查，如果配置了第三层，启动时会检查其可用性
+    - 备份优化，第二层高度为h，则第三层会备份到高度h-1，防止分叉块被备份到多节点共享的云存储中
 - 调整grpc消息的大小限制，tonic升级后限制了消息的大小，导致发批量交易报错
 - Cloud-config
-  - 移除crypto相关配置，storage_opendal配置替换storage_rocksdb配置
-  - 修复执行init_node错误，“.”文件夹导致，忽略“.”开头的文件
+    - 移除crypto相关配置，storage_opendal配置替换storage_rocksdb配置
+    - 修复执行init_node错误，“.”文件夹导致，忽略“.”开头的文件
 - consensus_raft
-  - 修复持久化entry和snapshot失败，调用flush将缓冲区数据立即写入硬盘
+    - 修复持久化entry和snapshot失败，调用flush将缓冲区数据立即写入硬盘
 - executor_evm
-  - 更新cita-database
+    - 更新cita-database
 - cloud-cli
-  - 修复单元测试偶尔失败
-  - dockerfile添加pkg-config、libssl-dev依赖
+    - 修复单元测试偶尔失败
+    - dockerfile添加pkg-config、libssl-dev依赖
 - rollup
-  - 缓存接入DAS，并添加适配器，适配多种DAS
-  - 缓存validator配合修改
-  - 缓存适配cita-cloud v6.7.0
+    - 缓存接入DAS，并添加适配器，适配多种DAS
+    - 缓存validator配合修改
+    - 缓存适配cita-cloud v6.7.0
 
 #### 云原生
 
@@ -340,28 +340,28 @@
 #### 底链微服务
 
 - 新增storage_opendal微服务
-  - 对接多种存储后端
-  - 冷热数据分层管理
+    - 对接多种存储后端
+    - 冷热数据分层管理
 - 新增executor_noop微服务
-  - 适用只存证 layer 1 
+    - 适用只存证 layer 1 
 - controller_crdt调研
-  - crdt_macro
+    - crdt_macro
 - consensus_raft
-  - fix: get term error & fix: cover conflict entry
-  - recommit entry && transfer leader timeout depend on block interval
+    - fix: get term error & fix: cover conflict entry
+    - recommit entry && transfer leader timeout depend on block interval
 - controller
-  - optimize get_proposal
-  - optimize finalize_block
-  - optimize log
+    - optimize get_proposal
+    - optimize finalize_block
+    - optimize log
 - cloud-config
-  - 结合kustomize
+    - 结合kustomize
 - cldi
-  - 在node status里增加init block number
+    - 在node status里增加init block number
 - 其他
-  - 修复共识与controller高度不一致的问题
-  - Jaeger 使用远程采样配置
-  - panic hook修复
-  - 优化日志
+    - 修复共识与controller高度不一致的问题
+    - Jaeger 使用远程采样配置
+    - panic hook修复
+    - 优化日志
 
 #### 云原生
 
@@ -515,33 +515,33 @@
 主要更新内容如下：
 #### 底链微服务
 - bft微服务
-  - 废弃该共识
+    - 废弃该共识
 - raft微服务
-  - 修复consensus重启后raft会卡住的问题
+    - 修复consensus重启后raft会卡住的问题
 - controller微服务
-  - 添加danger模式
-  - commit block耗时长的问题（wal的IO操作引起的）
-  - check_proposal添加检查
-  - get_node_status优化，整合network信息
+    - 添加danger模式
+    - commit block耗时长的问题（wal的IO操作引起的）
+    - check_proposal添加检查
+    - get_node_status优化，整合network信息
 - network微服务
-  - 升级依赖的zenoh库
-  - 修复network zid panic的问题
+    - 升级依赖的zenoh库
+    - 修复network zid panic的问题
 - cloud-config
-  - 增加关闭健康检查的选项
-  - 为链节点微服务添加work node时区映射
+    - 增加关闭健康检查的选项
+    - 为链节点微服务添加work node时区映射
 - cache组件
-  - 输出性能测试报告
+    - 输出性能测试报告
 - cldi
-  - 修复release问题
+    - 修复release问题
 - console/provider组件
-  - console组件与rivspace联调中
-  - provider组件开发中
+    - console组件与rivspace联调中
+    - provider组件开发中
 - 其他
-  - 优化微服务输出的日志，让定位问题更加方便
-  - 更新微服务镜像中的grpc-health-check至最新版本
-  - 修复u64::from_be_bytes函数调用相关问题
-  - 修复微服务帮助信息没有version的问题
-  - 集成测试混沌测试用例加强
+    - 优化微服务输出的日志，让定位问题更加方便
+    - 更新微服务镜像中的grpc-health-check至最新版本
+    - 修复u64::from_be_bytes函数调用相关问题
+    - 修复微服务帮助信息没有version的问题
+    - 集成测试混沌测试用例加强
   
 #### 云原生
 - cita-node-operator支持新的备份恢复CRD(Duplicate和Recover)
@@ -676,21 +676,21 @@
 主要更新内容如下：
 #### 底链微服务
 - controller微服务
-  - GetNodeStatus接口替换GetVersion/GetPeerCount/GetPeersInfo接口
+    - GetNodeStatus接口替换GetVersion/GetPeerCount/GetPeersInfo接口
 - raft微服务
-  - raft节点switch over后共识panic问题修复
+    - raft节点switch over后共识panic问题修复
 - network微服务
-  - network 添加 connected info
+    - network 添加 connected info
 - cldi
-  - cldi命令超时问题修复
-  - cldi admin update-validators help命令添加
-  - cldi bench send问题修复
+    - cldi命令超时问题修复
+    - cldi admin update-validators help命令添加
+    - cldi bench send问题修复
 - cloud-config
-  - 修复import-account没有生成node_address
+    - 修复import-account没有生成node_address
 - 公共服务
-  - 拆分cita_cloud_proto为proto文件和rust代码
-  - rust代码部分与cloud-util，cloud-code合并到一个仓库（cloud-common-rs）
-  - status-code添加至proto文件中
+    - 拆分cita_cloud_proto为proto文件和rust代码
+    - rust代码部分与cloud-util，cloud-code合并到一个仓库（cloud-common-rs）
+    - status-code添加至proto文件中
   
 #### 云原生
 - 支持轻量化部署
@@ -1265,20 +1265,20 @@
 主要更新内容如下：
 1. 将network_tls微服务废弃，启用network_zenoh微服务
 2. consensus_overlord微服务完善
-  - bft升级overlord
+    - bft升级overlord
 3. controller微服务
-  - 优化同步过程
-  - 调整proof not influence proposal_hash
-  - 批量广播交易、优化tps
-  - 适配network_zenoh
+    - 优化同步过程
+    - 调整proof not influence proposal_hash
+    - 批量广播交易、优化tps
+    - 适配network_zenoh
 4. grpc封装高层client
-  - 实现retry功能、增加keepalive设置
+    - 实现retry功能、增加keepalive设置
 5. call支持指定块高
 6. 健康检查
-  - network检查一定时间内是否有已连接的节点
+    - network检查一定时间内是否有已连接的节点
 7. 依赖库升级
-  - tonic升级到0.7、prost升级到0.10
-  - 其它依赖升到当前最新版本
+    - tonic升级到0.7、prost升级到0.10
+    - 其它依赖升到当前最新版本
 
 #### Controller
 
