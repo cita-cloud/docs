@@ -30,71 +30,73 @@
   - 适配全新的 evm blockNumber
 
 相关Commit
-### Controller_hsm
-#### [Feature]
+#### Controller_hsm
+##### [Feature]
 * controller_hsm release, replace of controller @JLerxky
-#### [Optim]
+##### [Optim]
 * optim sync @JLerxky
 
-### network_zenoh
-#### [Optim]
+#### network_zenoh
+##### [Optim]
 * update zenoh and fix typo @JLerxky
 * update listen endpoint to 0.0.0.0 @JLerxky
 
-### consensus_overlord
-#### [Optim]
+#### consensus_overlord
+##### [Optim]
 * graceful shutdown @JLerxky
-#### [Fix]
+##### [Fix]
 * fix grpc probe  @Jayanring
 
-### consensus_raft
-#### [Optim]
+#### consensus_raft
+##### [Optim]
 * update raft-rs to 0.7.0 @Jayanring
-#### [Fix]
+##### [Fix]
 * fix: EntryConfChangeV2 persist snapshot @Jayanring
 
-### executor_evm
-#### [Fix]
+#### executor_evm
+##### [Fix]
 * fix docker build failed @rink1969
 
-### storage_opendal
-#### [Feature]
+#### storage_opendal
+##### [Feature]
 * tx pool @JLerxky
-#### [Fix]
+##### [Fix]
 * remove outdate hash of tx_pool @JLerxky
-#### [Optim]
+##### [Optim]
 * use moka cache @JLerxky
 * update dependencies @JLerxky
 * enable rocksdb default-features @JLerxky
 
-### crypto_eth
-#### [Optim]
+#### crypto_eth
+##### [Optim]
 * use reference @Jayanring
 
-### crypto_sm
-#### [Optim]
+#### crypto_sm
+##### [Optim]
 * use reference  @Jayanring
 
-### cita_cloud_proto
-#### [Feature]
+#### cita_cloud_proto
+##### [Feature]
 * add TRANSACTIONS_POOL region @JLerxky
 * cloud-common-rs
 * add GetStorageAt method @Pencil-Yao
-#### [Feature]
+##### [Feature]
 * update proto @JLerxky
-#### [Optim]
+##### [Optim]
 * update dependencies @JLerxky
 * evm blockNumber support block tag, block height and block hash @Pencil-Yao
 
-### cloud-config
-#### [Feature]
+#### cloud-config
+##### [Feature]
 * set controller_hsm as default @JLerxky
-#### [Fix]
+##### [Fix]
 * fix: grpc probe name @Jayanring
 
-### cloud-cli
-#### [Fix]
+#### cloud-cli
+##### [Fix]
 * fix windows compile @Pencil-Yao
+
+## 历史版本
 
 ### 6.7.1
 
@@ -195,9 +197,7 @@
 
 #### cloud-cli
 ##### [Fix]
-- fix windows compile @Pencil-Yao 
-
-## 历史版本
+- fix windows compile @Pencil-Yao
 
 ### 6.7.0
 
