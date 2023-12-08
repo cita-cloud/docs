@@ -1,6 +1,101 @@
 # 版本发布
 ## 最新版本
 
+### 6.7.2
+
+#### 主要更新内容
+
+- Controller_hsm 发布
+  - 代替原有的 controller
+  - 优化了区块同步过程
+  - Cloud-config 中默认使用controller_hsm
+- cita_cloud_proto更新
+  - 存储region中增加TRANSACTIONS_POOL类别用于交易持久化
+  - evm proto 添加 GetStorageAt 方法
+  - 优化 evm blockNumber 可以接受 block tag，height 和 block hash
+- Network升级zenoh
+  - zenoh使用fork仓库，用以锁定代码版本
+  - network监听的ip改为0.0.0.0以适应跨集群的访问
+- 修复了Executor的编译失败问题
+- 交易持久化
+  - storage 新增region TransactionsPool，用以实现交易持久化功能
+- Storage 代码优化
+  - 依照opendal作者的建议 L1 层使用 moka 代替 hashmap
+  - 优化存储的 regions
+  - 锁定 opendal 的代码版本，opendal 在最新版本中存在代码错误
+- 修复consensus_raft 的配置变更问题
+  - 当前raft的配置发生的变更的情况下会自动触发快照保存
+- Cloud-cli
+  -  添加 GetStorageAt 方法 
+  - 适配全新的 evm blockNumber
+
+相关Commit
+### Controller_hsm
+#### [Feature]
+* controller_hsm release, replace of controller @JLerxky
+#### [Optim]
+* optim sync @JLerxky
+
+### network_zenoh
+#### [Optim]
+* update zenoh and fix typo @JLerxky
+* update listen endpoint to 0.0.0.0 @JLerxky
+
+### consensus_overlord
+#### [Optim]
+* graceful shutdown @JLerxky
+#### [Fix]
+* fix grpc probe  @Jayanring
+
+### consensus_raft
+#### [Optim]
+* update raft-rs to 0.7.0 @Jayanring
+#### [Fix]
+* fix: EntryConfChangeV2 persist snapshot @Jayanring
+
+### executor_evm
+#### [Fix]
+* fix docker build failed @rink1969
+
+### storage_opendal
+#### [Feature]
+* tx pool @JLerxky
+#### [Fix]
+* remove outdate hash of tx_pool @JLerxky
+#### [Optim]
+* use moka cache @JLerxky
+* update dependencies @JLerxky
+* enable rocksdb default-features @JLerxky
+
+### crypto_eth
+#### [Optim]
+* use reference @Jayanring
+
+### crypto_sm
+#### [Optim]
+* use reference  @Jayanring
+
+### cita_cloud_proto
+#### [Feature]
+* add TRANSACTIONS_POOL region @JLerxky
+* cloud-common-rs
+* add GetStorageAt method @Pencil-Yao
+#### [Feature]
+* update proto @JLerxky
+#### [Optim]
+* update dependencies @JLerxky
+* evm blockNumber support block tag, block height and block hash @Pencil-Yao
+
+### cloud-config
+#### [Feature]
+* set controller_hsm as default @JLerxky
+#### [Fix]
+* fix: grpc probe name @Jayanring
+
+### cloud-cli
+#### [Fix]
+* fix windows compile @Pencil-Yao
+
 ### 6.7.1
 
 #### 主要更新内容
