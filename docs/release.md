@@ -6,30 +6,31 @@
 #### 主要更新内容
 
 - Controller_hsm 发布
-  - 代替原有的 controller
-  - 优化了区块同步过程
-  - Cloud-config 中默认使用controller_hsm
+    - 代替原有的 controller
+    - 优化了区块同步过程
+    - Cloud-config 中默认使用controller_hsm
 - cita_cloud_proto更新
-  - 存储region中增加TRANSACTIONS_POOL类别用于交易持久化
-  - evm proto 添加 GetStorageAt 方法
-  - 优化 evm blockNumber 可以接受 block tag，height 和 block hash
+    - 存储region中增加TRANSACTIONS_POOL类别用于交易持久化
+    - evm proto 添加 GetStorageAt 方法
+    - 优化 evm blockNumber 可以接受 block tag，height 和 block hash
 - Network升级zenoh
-  - zenoh使用fork仓库，用以锁定代码版本
-  - network监听的ip改为0.0.0.0以适应跨集群的访问
+    - zenoh使用fork仓库，用以锁定代码版本
+    - network监听的ip改为0.0.0.0以适应跨集群的访问
 - 修复了Executor的编译失败问题
 - 交易持久化
-  - storage 新增region TransactionsPool，用以实现交易持久化功能
+    - storage 新增region TransactionsPool，用以实现交易持久化功能
 - Storage 代码优化
-  - 依照opendal作者的建议 L1 层使用 moka 代替 hashmap
-  - 优化存储的 regions
-  - 锁定 opendal 的代码版本，opendal 在最新版本中存在代码错误
+    - 依照opendal作者的建议 L1 层使用 moka 代替 hashmap
+    - 优化存储的 regions
+    - 锁定 opendal 的代码版本，opendal 在最新版本中存在代码错误
 - 修复consensus_raft 的配置变更问题
-  - 当前raft的配置发生的变更的情况下会自动触发快照保存
+    - 当前raft的配置发生的变更的情况下会自动触发快照保存
 - Cloud-cli
-  -  添加 GetStorageAt 方法 
-  - 适配全新的 evm blockNumber
+    -  添加 GetStorageAt 方法 
+    - 适配全新的 evm blockNumber
 
 相关Commit
+
 #### Controller_hsm
 ##### [Feature]
 * controller_hsm release, replace of controller @JLerxky

@@ -98,7 +98,9 @@ $ grpcurl -emit-defaults -plaintext -d '' \
 
 * 接口
   
-  rpc GetSystemConfig(common.Empty) returns (SystemConfig) / rpc GetSystemConfigByNumber(BlockNumber) returns (SystemConfig);
+  rpc GetSystemConfig(common.Empty) returns (SystemConfig)
+  
+  rpc GetSystemConfigByNumber(BlockNumber) returns (SystemConfig);
 
 * 参数
 
@@ -144,7 +146,9 @@ $ grpcurl -emit-defaults -plaintext -d '{"block_number": "100"}' \
 
 * 接口
   
-  rpc GetBlockByNumber(BlockNumber) returns (blockchain.CompactBlock); / rpc GetBlockDetailByNumber(BlockNumber) returns (blockchain.Block);
+  rpc GetBlockByNumber(BlockNumber) returns (blockchain.CompactBlock);
+  
+  rpc GetBlockDetailByNumber(BlockNumber) returns (blockchain.Block);
 
 * 参数
 
@@ -342,7 +346,9 @@ $ grpcurl -emit-defaults -plaintext -d '{"hash": "xs6WmcxhL7apHujKixeYw7Yk+B2W3d
 
 ### SendRawTransaction / SendRawTransactions
 
-发送交易，`RawTransaction`有两种类型：普通交易`UnverifiedTransaction normal_tx`和治理交易`UnverifiedUtxoTransaction utxo_tx`，发送的交易除了交易体还包含了`bytes transaction_hash`和`Witness witness`，`witness`中又包含`signature`，`transaction_hash`和`signature`都是需要计算的，因此使用grpcurl调用此接口会比较麻烦，建议使用相关工具（如`cldi`）发送交易。
+发送交易
+
+`RawTransaction`有两种类型：普通交易`UnverifiedTransaction normal_tx`和治理交易`UnverifiedUtxoTransaction utxo_tx`。
 
 * 接口
   
@@ -351,11 +357,14 @@ $ grpcurl -emit-defaults -plaintext -d '{"hash": "xs6WmcxhL7apHujKixeYw7Yk+B2W3d
 * 参数
 
   ```
-  oneof tx {
-        UnverifiedTransaction normal_tx = 1;
-        UnverifiedUtxoTransaction utxo_tx = 2;
-    }
+  message RawTransaction {
+      oneof tx {
+          UnverifiedTransaction normal_tx = 1;
+          UnverifiedUtxoTransaction utxo_tx = 2;
+      }
+  }
   ```
+
   `oneof`类型表示`normal_tx`和`utxo_tx`字段只能有一个有值。
   `RawTransaction`详见[cita_cloud_proto](https://github.com/cita-cloud/cita_cloud_proto/blob/master/protos/blockchain.proto#L75)。
 
@@ -483,6 +492,7 @@ $ grpcurl -emit-defaults -plaintext -d '{"hash": "2+3XKgIA+DFzKULl23LTC6JjBXFjSh
     uint64 origin = 2;
   }
   ```
+
   `multi_address`是添加节点的网络地址信息，`origin`是节点地址的前8个字节转换为64位无符号整型的结果
 
 * 示例
@@ -601,11 +611,21 @@ $ grpcurl -emit-defaults -plaintext -d '{"hash": "2+3XKgIA+DFzKULl23LTC6JjBXFjSh
 
 * 接口
   
-  rpc GetBalance(common.Address) returns (Balance);
+  rpc GetBalance(GetBalanceRequest) returns (Balance);
 
 * 参数
 
-  `bytes address`: 账户地址
+  ```
+  message GetBalanceRequest {
+    common.Address address = 1;
+    BlockNumber block_number = 2;
+  }
+  ```
+
+  `address`: 账户地址
+
+  `block_number`: 查询的区块高度，如果缺失，默认当前最新高度。
+
 
 * 示例
 
@@ -627,11 +647,20 @@ $ grpcurl -emit-defaults -plaintext -d '{"address": "a2WNQSBYfQH91o2+oFKuwqHBPew
 
 * 接口
   
-  rpc GetTransactionCount(common.Address) returns (Nonce);
+  rpc GetTransactionCount(GetTransactionCountRequest) returns (Nonce);
 
 * 参数
 
-  `bytes address`: 账户地址
+  ```
+  message GetTransactionCountRequest {
+    common.Address address = 1;
+    BlockNumber block_number = 2;
+  }
+  ```
+
+  `address`: 账户地址
+
+  `block_number`: 查询的区块高度，如果缺失，默认当前最新高度。
 
 * 示例
 
@@ -653,11 +682,20 @@ $ grpcurl -emit-defaults -plaintext -d '{"address": "a2WNQSBYfQH91o2+oFKuwqHBPew
 
 * 接口
   
-  rpc GetCode(common.Address) returns (ByteCode);
+  rpc GetCode(GetCodeRequest) returns (ByteCode);
 
 * 参数
 
-  `bytes address`: 合约地址
+  ```
+  message GetCodeRequest {
+    common.Address address = 1;
+    BlockNumber block_number = 2;
+  }
+  ```
+
+  `address`: 合约地址
+
+  `block_number`: 查询的区块高度，如果缺失，默认当前最新高度。
 
 * 示例
 
@@ -679,11 +717,20 @@ $ grpcurl -emit-defaults -plaintext -d '{"address": "Req3cucyj4Vkugo9aVQW1VLDpfM
 
 * 接口
   
-  rpc GetAbi(common.Address) returns (ByteAbi);
+  rpc GetAbi(GetAbiRequest) returns (ByteAbi);
 
 * 参数
 
-  `bytes address`: 合约地址
+  ```
+  message GetAbiRequest {
+    common.Address address = 1;
+    BlockNumber block_number = 2;
+  }
+  ```
+
+  `address`: 合约地址
+
+  `block_number`: 查询的区块高度，如果缺失，默认当前最新高度。
 
 * 示例
 
@@ -718,6 +765,7 @@ $ grpcurl -emit-defaults -plaintext -d '{"address": "Req3cucyj4Vkugo9aVQW1VLDpfM
     uint64 height = 5;
   }
   ```
+
   `EstimateQuota`接口实际上只需要`to`、`from`和`method`三个参数，其他参数用默认值即可，不影响计算。`from`是交易发送者的地址，用户调用该接口时可以随意指定，交易发送者会影响交易的执行过程。如果是调用合约交易，则需要则`to`是合约地址，`method`是要调用的合约方法；如果是创建合约交易，则`to`是20字节的0，`method`是合约字节码。
 
 * 示例
@@ -813,7 +861,14 @@ $ grpcurl -emit-defaults -plaintext -d '{"block_number": "50"}' \
     uint64 height = 5;
   }
   ```
-  `to`是合约地址；`from`是交易发送者的地址，用户调用该接口时可以随意指定；`method`是要查询的数据；通过`height`查询该数据在指定高度的值，0(默认值)代表当前高度。
+
+  `to` 合约地址
+  
+  `from` 交易发送者的地址，用户调用该接口时可以随意指定
+  
+  `method` 要查询的方法；
+  
+  `height` 查询该数据在指定高度的值，0(默认值)代表当前高度。
 
 * 示例
 

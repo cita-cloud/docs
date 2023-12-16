@@ -30,7 +30,12 @@
 service NetworkMsgHandlerService {
     rpc ProcessNetworkMsg(NetworkMsg) returns (common.StatusCode);
 }
+```
 
+### 发送网络消息
+发的部分提供了单播(`SendMsg`)和广播(`Broadcast`)两个接口。
+
+```
 // 网络消息结构
 message NetworkMsg {
     string module = 1;  // 接收的微服务名称
@@ -38,12 +43,7 @@ message NetworkMsg {
     uint64 origin = 3;  // 消息的节点标识
     bytes msg = 4;      // 消息数据
 }
-```
 
-### 发送网络消息
-发的部分提供了单播(`SendMsg`)和广播(`Broadcast`)两个接口。
-
-```
 // 发送消息给一个特定的节点
 // 通过消息中的 origin 字段指定接收节点的标识
 rpc SendMsg(NetworkMsg) returns (common.StatusCode);
@@ -133,7 +133,9 @@ enum Regions {
     TRANSACTION_INDEX = 9;
     COMPACT_BLOCK = 10;
     FULL_BLOCK = 11;
-    BUTTON = 12;
+    All_BLOCK_DATA = 12;
+    TRANSACTIONS_POOL = 13;
+    BUTTON = 14;
 }
 ```
 
@@ -161,6 +163,10 @@ enum Regions {
 
 `FULL_BLOCK` 保存 区块高度 -> 完整区块 的对应关系。
 
+`All_BLOCK_DATA` 是一个虚拟的`region`，用于批量保存/读取一个区块相关的所有数据。
+
+`TRANSACTIONS_POOL` 保存尚未打包的交易。
+
 定制开发者可以根据自己的需要调整`region`列表。
 
 ### store
@@ -179,6 +185,7 @@ rpc Store(Content) returns (common.StatusCode);
 其中`region`即前述存储分区的枚举值。
 
 注意:
+
 1. `key`和`value`类型为`bytes`，需要调用方提前进行类型转换。
 2. 其语义是`updata`，同时包含增和改的功能。
 
@@ -209,7 +216,6 @@ message ExtKey {
 
 // given a ext key delete it
 rpc Delete(ExtKey) returns (common.StatusCode);
-}
 ```
 
 ### 发展方向
@@ -241,6 +247,7 @@ rpc GetCryptoInfo(common.Empty) returns (GetCryptoInfoResponse);
 ```
 
 查询结果：
+
 1. `name` 算法组合的名称。
 2. `hash_len` 哈希算法得出的哈希值的字节长度。
 3. `signature_len` 签名算法得出的签名的字节长度。
@@ -557,12 +564,14 @@ service RPCService {
 发送普通交易可能的错误有：
 
 结构错误：
+
 * NoTransaction/NoneRawTx    --  交易结构错误，非支持的`NormalTx`和`UtxoTx`
 * NoneWitness                --  交易结构中缺少签名信息
 * EncodeError                --  编码错误
 * NoneTransaction            --  交易结构中缺少`Transaction`
 
 内容错误：
+
 * InvalidVersion             --  交易结构中`version`非法
 * InvalidTo                  --  交易结构中`to`非法
 * InvalidNonce               --  交易结构中`nonce`非法
@@ -573,6 +582,7 @@ service RPCService {
 * SigCheckError              --  交易签名非法
 
 运行时错误：
+
 * EmergencyBrake             --  紧急制动打开，不接受交易
 * InvalidValidUntilBlock     --  交易结构中`valid unitl block`非法
 * QuotaUsedExceed            --  交易结构中`quota`超过上限
