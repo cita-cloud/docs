@@ -14,6 +14,7 @@
 * 第三方组件。
 
 组件还有以下一些指标：
+
 1. 组件的成熟度：1-5，1表示仅实现必要的功能的最小实现，5表示非常成熟的实现。
 2. 组件的状态：开发中，维护中，废弃。
 3. 组件的授权状态：商业，或者开源。
@@ -24,7 +25,8 @@
 
 介绍： 基于网络库[zenoh](https://zenoh.io/)实现。
 
-特点： 
+特点：
+
 * 基于[QUIC](https://zhuanlan.zhihu.com/p/32553477)网络协议，弱网络下更稳定，延迟更低。
 * 支持`TLS`，通信加密保证安全。
 * 支持`Pub/Sub`模式，提供更高层的接口，提供与底层网络连接无关的节点标识。
@@ -45,10 +47,12 @@
 介绍： 基于[opendal](https://github.com/apache/incubator-opendal)的实现。
 
 特点：
+
 * 冷热数据分离。热数据存在本地，冷数据存到云存储，可以使得本地存储数据量较小且相对固定。
 * 共享第三层。多个节点共享第三层云存储，新节点无需恢复大量的冷数据，而只需通过恢复热数据即可快速加入。
 
 第二层存储为`rocksdb`，特点：
+
 * 高效，`KV`数据库，读写效率高。
 * 可靠，多数区块链项目都使用`rocksdb`作为存储引擎，稳定性好。
 
@@ -67,6 +71,7 @@
 介绍：国密算法的实现，使用`sm2`签名算法和`sm3`哈希算法。
 
 特点：
+
 * 符合中国国家密码标准。
 * 高效，纯`Rust`实现，采用多种优化技术。
 
@@ -85,6 +90,7 @@
 介绍： 兼容以太坊算法的实现，使用`secp256k1`签名算法和`keccak`哈希算法。
 
 特点：
+
 * 兼容以太坊。
 
 [代码仓库](https://github.com/cita-cloud/crypto_eth)
@@ -102,6 +108,7 @@
 介绍： 基于以太坊的`EVM`实现。
 
 特点：
+
 * 兼容以太坊的智能合约生态。
 
 [代码仓库](https://github.com/cita-cloud/executor_evm)
@@ -119,6 +126,7 @@
 介绍： 基于[Raft](https://github.com/tikv/raft-rs)实现。
 
 特点：
+
 * 非拜占庭容错。
 * 成熟实现，稳定可靠。
 
@@ -137,6 +145,7 @@
 介绍： 基于[overlord](https://github.com/nervosnetwork/overlord)实现。
 
 特点：
+
 * 拜占庭容错。
 * 成熟实现。
 * 线性消息复杂度。
@@ -151,19 +160,18 @@
 
 授权： 开源，`Apache-2.0 License`
 
-### controller
+### controller_hsm
 
-介绍： 目前唯一的`Controller`实现。
+介绍： 基于状态机的`Controller`实现。
 
 特点：
-* 先共识后执行。
-* 高性能，流水线式并行。
-* `utxo`模型的系统配置管理。
-* 丰富的治理功能。
 
-[代码仓库](https://github.com/cita-cloud/controller)
+* 代码结构清晰。
+* 无中间状态。
 
-[镜像仓库](https://hub.docker.com/r/citacloud/controller/tags)
+[代码仓库](https://github.com/cita-cloud/controller_hsm)
+
+[镜像仓库](https://hub.docker.com/r/citacloud/controller_hsm/tags)
 
 成熟度： 4
 
@@ -174,13 +182,25 @@
 
 ### 废弃组件
 
+#### controller
+
+介绍：原 `Controller` 唯一的实现。
+
+成熟度： 4
+
+状态： 废弃
+
+授权： 开源，`Apache-2.0 License`
+
+废弃原因：被`controller_hsm`替代。
+
 #### consensus_bft
 
 介绍： 基于[CITA-BFT](https://docs.citahub.com/zh-CN/cita/architecture/cons)实现。
 
 特点：
+
 * 拜占庭容错。
-* 线性消息复杂度。
 
 [代码仓库](https://github.com/cita-cloud/consensus_bft)
 
@@ -199,6 +219,7 @@
 介绍： 基于`tokio`网络库的实现。
 
 特点：
+
 * 网络直连，简单可靠
 * 无通信加密
 
@@ -219,6 +240,7 @@
 介绍： 基于网络库[tentacle](https://github.com/nervosnetwork/tentacle)实现。
 
 特点： 
+
 * 支持[secio](https://github.com/libp2p/specs/blob/master/secio/README.md)，通信加密保证安全。
 * 支持多路复用(`yamux`)，可以自定义协议。
 * 支持节点发现，节点之间会自动交换连接的节点信息。
@@ -240,6 +262,7 @@
 介绍： 基于[tokio-rustls](https://crates.io/crates/tokio-rustls)实现。
 
 特点：
+
 * 支持`TLS1.3`，通信加密保证安全。
 * 使用标准的`x509`证书，方便复用已有的基础设施。
 * 支持白名单，便于权限管理。
@@ -261,6 +284,7 @@
 介绍： 基于[QUIC](https://zhuanlan.zhihu.com/p/32553477)网络协议的实现。
 
 特点：
+
 * 高效，基于`UDP`协议，开销更小。
 * 安全，默认支持`TLS`，通信加密。
 * 可靠，弱网络下效果更高。
@@ -282,6 +306,7 @@
 介绍： 基于[rocksdb](https://zhuanlan.zhihu.com/p/51285080)的实现。
 
 特点：
+
 * 高效，`KV`数据库，读写效率高。
 * 可靠，多数区块链项目都使用`rocksdb`作为存储引擎，稳定性好。
 
@@ -297,11 +322,24 @@
 
 废弃原因：被`storage_opendal`替代，`storage_opendal`提供更全面的功能，`rocksdb`仍作为其中的第二层存储。
 
+### ksm_sm
+
+介绍： 基于国密算法的`kms`微服务实现。
+
+废弃原因：被`crypto_sm`替换。参见[rfc 0005](https://github.com/cita-cloud/rfcs/blob/master/rfcs/0005-kms_to_crypto/0005-kms_to_crypto.md)。
+
+### ksm_eth
+
+介绍： 基于以太坊算法的`kms`微服务实现。
+
+废弃原因：被`crypto_eth`替换。参见[rfc 0005](https://github.com/cita-cloud/rfcs/blob/master/rfcs/0005-kms_to_crypto/0005-kms_to_crypto.md)。
+
 #### storage_sqlite
 
 介绍： 基于[sqlite](https://sql50.readthedocs.io/zh_CN/latest/sqlite_intro.html)的实现。
 
 特点：
+
 * 轻量，嵌入式数据库，开销小。
 * 功能丰富，完整支持`SQL`。
 
@@ -322,6 +360,7 @@
 介绍： 基于[tikv](https://docs.pingcap.com/zh/tidb/stable/tikv-overview)的实现。
 
 特点：
+
 * 扩展能力强，分布式`KV`数据库。
 * 稳定可靠，支持分布式事务操作，得到广泛应用。
 
@@ -342,6 +381,7 @@
 介绍： 实验性兼容`Fabric Chaincode`实现。
 
 特点：
+
 * 兼容`Fabric`的智能合约生态。
 
 [代码仓库](https://github.com/cita-cloud/executor_chaincode)
@@ -367,6 +407,7 @@
 介绍： 增强型兼容`Fabric Chaincode`实现。
 
 特点：
+
 * 兼容`chaincode`合约。
 * 支持了`CouchDB`。
 * 增加了`chaincode`事件相关功能。
@@ -388,6 +429,7 @@
 介绍： 基于高性能国密算法实现。
 
 特点：
+
 * 性能好。
 
 代码仓库： 无
