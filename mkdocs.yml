@@ -8,6 +8,7 @@ nav:
   - 架构: architecture.md
   - 组件: components.md
   - 部署: deployment-guide.md
+  - 生态: ecosystem.md
   - 入门: getting-start.md
   - 定制: customize.md
   - 接口: rpc.md

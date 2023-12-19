@@ -69,7 +69,7 @@ rpc GetNetworkStatus(common.Empty) returns (NetworkStatusResponse);
 
 查询网络连接状态的接口，返回当前连接的节点数量。
 
-注意，这个数量里不包括节点自身。因此，4个子节点的链，正常查询结果是3。
+注意：这个数量里不包括节点自身。因此，4个子节点的链，正常查询结果是3。
 
 
 ```
