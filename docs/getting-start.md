@@ -1,6 +1,6 @@
 # 快速入门
 
-本章介绍的是使用`k3s`作为运行环境，快速搭建一条链的操作方法。
+本章介绍的是使用`K3s`作为运行环境，快速搭建一条链的操作方法。
 
 关于更加深入的`定制`操作，请参阅`定制`章节。
 
@@ -22,7 +22,7 @@
 
 安装方法参见[官方文档](https://docs.docker.com/engine/install/)。
 
-#### k3s
+#### K3s
 
 安装方法参见[Rancher官方文档](https://docs.rancher.cn/docs/k3s/quick-start/_index/#%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC)。
 
@@ -126,7 +126,7 @@ export CHIAN_TYPE=overlord
 # export CHIAN_TYPE=raft
 export CHAIN_NAME=test-$CHIAN_TYPE
 
-# 设置基础环境的Storage Class和PVC access mode，这里使用k3s自带的local-path
+# 设置基础环境的Storage Class和PVC access mode，这里使用K3s自带的local-path
 export SC=local-path
 export PVC_MODE=ReadWriteOnce
 
