@@ -117,6 +117,7 @@ $ grpcurl -emit-defaults -plaintext -d '' \
 {
   "isDanger": false,
   "isSync": false,
+  "waiting_block": 0,
   "version": "6.6.3",
   "selfStatus": {
     "height": "72",
