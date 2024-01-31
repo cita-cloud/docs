@@ -22,6 +22,29 @@
 
 部署一条`CITA-Cloud`产生的链，除了准备好运行环境，还需要事先进行持久化存储和网络的设置。
 
+### 推荐资源需求
+
+单节点资源总量 2C 4G，推荐的资源配置如下：
+
+| 服务 | CPU request | 内存 request | CPU limit | 内存 limit |
+| --- | --- | --- | --- | --- |
+| controller | 500m | 1024Mi | 1000m | 2048Mi |
+| executor | 500m | 10240Mi | 1000m | 2048Mi |
+| storage | 450m | 1024Mi | 900m | 2048Mi |
+| network | 450m | 768Mi | 900m | 1536Mi |
+| consensus | 100m | 256Mi | 200m | 512Mi |
+
+v6.6.3 及以下版本，推荐的资源配置如下：
+
+| 服务 | CPU request | 内存 request | CPU limit | 内存 limit |
+| --- | --- | --- | --- | --- |
+| controller | 450m | 1024Mi | 900m | 2048Mi |
+| executor | 450m | 1024Mi | 900m | 2048Mi |
+| crypto | 400m | 256Mi | 800m | 512Mi |
+| storage | 300m | 1024Mi | 600m | 2048Mi |
+| network | 300m | 512Mi | 600m | 1024Mi |
+| consensus | 100m | 256Mi | 200m | 512Mi |
+
 ## 持久化存储
 
 链的节点是有状态的服务，需要挂载持久化存储保存数据。
