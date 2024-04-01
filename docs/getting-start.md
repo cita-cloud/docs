@@ -38,11 +38,11 @@ export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 使用方法参见[文档](https://cita-cloud.github.io/cloud-cli/)。
 
 ```
-$ wget https://github.com/cita-cloud/cloud-cli/releases/download/v0.6.0/cldi-x86_64-unknown-linux-gnu.tar.gz
-$ tar zxvf cldi-x86_64-unknown-linux-gnu.tar.gz
+$ wget https://github.com/cita-cloud/cloud-cli/releases/download/v0.6.1/cldi-x86_64-unknown-linux-musl.tar.gz
+$ tar zxvf cldi-x86_64-unknown-linux-musl.tar.gz
 $ sudo mv ./cldi /usr/local/bin/
 $ cldi -h
-cldi 0.6.0
+cldi 0.6.1
 Rivtower Technologies <contact@rivtower.com>
 The command line interface to interact with CITA-Cloud
 
@@ -115,11 +115,11 @@ $ cldi account generate --name admin
 
 ```bash
 # 设置docker镜像仓库
-export DOCKER_REGISTRY=docker.io
-export DOCKER_REPO=citacloud
+export DOCKER_REGISTRY=registry.devops.rivtower.com
+export DOCKER_REPO=cita-cloud
 
 # 设置链的版本
-export RELEASE_VERSION=v6.7.2
+export RELEASE_VERSION=v6.7.3
 
 # 设置链的类型和名称
 export CHIAN_TYPE=overlord
@@ -139,7 +139,7 @@ export NAME_SPACE=cita
 ```bash
 # 生成初始的4个共识节点配置
 # 注意：`--admin`参数必须设置为自己生成的账户地址，此处仅为演示，切勿在正式环境中使用演示值。
-docker run -it --rm -v $(pwd):/data -w /data $DOCKER_REGISTRY/$DOCKER_REPO/cloud-config:$RELEASE_VERSION cloud-config create-k8s --chain-name $CHAIN_NAME --admin 0xc8ca9cc77a7f822fdd0baef7a7740f9dba493455 --nodelist localhost:40000:node0:k8s,localhost:40001:node1:k8s,localhost:40002:node2:k8s,localhost:40003:node3:k8s --controller_tag $RELEASE_VERSION --consensus_image consensus_$CHIAN_TYPE --consensus_tag $RELEASE_VERSION --network_tag $RELEASE_VERSION --storage_tag $RELEASE_VERSION --executor_tag $RELEASE_VERSION
+docker run -it --rm -v $(pwd):/data -w /data $DOCKER_REGISTRY/$DOCKER_REPO/cloud-config:$RELEASE_VERSION cloud-config create --chain-name $CHAIN_NAME --admin 0xc8ca9cc77a7f822fdd0baef7a7740f9dba493455 --nodelist localhost:40000:node0:k8s:cita,localhost:40001:node1:k8s:cita,localhost:40002:node2:k8s:cita,localhost:40003:node3:k8s:cita --controller_tag $RELEASE_VERSION --consensus_image consensus_$CHIAN_TYPE --consensus_tag $RELEASE_VERSION --network_tag $RELEASE_VERSION --storage_tag $RELEASE_VERSION --executor_tag $RELEASE_VERSION
 
 
 # 生成所有节点配置的yaml文件
@@ -177,18 +177,17 @@ test-overlord-node3-0                                   5/5     Running   0     
 
 ```bash
 $ kubectl logs -f $CHAIN_NAME-node0-0 -c controller -n $NAME_SPACE
-2022-11-16T07:47:40.586458114+00:00 INFO controller::chain - finalize_block height: 23363
-2022-11-16T07:47:41.615000522+00:00 INFO controller::health_check - healthcheck entry!
-2022-11-16T07:47:41.615016195+00:00 INFO controller::health_check - healthcheck: block increase 23359 23363 1668584861615
-2022-11-16T07:47:43.072274837+00:00 INFO controller::chain - add_proposal: tx poll len 0
-2022-11-16T07:47:43.073818092+00:00 INFO controller::chain - proposal 23364 block_hash 0x98b1ed689464622d6b48ce8aaf26b3429d3e1dbbba9c6699ca2d0ea1d710f66b prevhash 0x6be134f00d78f7129e29b6db9b7a55a387472acc929ec7809645319c5c0455a5
-2022-11-16T07:47:45.931514828+00:00 INFO controller::controller - chain_check_proposal: add remote proposal(0x4fe40496e71bf7a1d3344c6778c2cd9bea547763772fd276ab086ea3ceafe95c)
-2022-11-16T07:47:45.935420225+00:00 INFO controller::controller - chain_check_proposal: finished
-2022-11-16T07:47:46.014057182+00:00 INFO controller::node_manager - update node: NodeAddress(0a423460911494e1)
-2022-11-16T07:47:46.014086372+00:00 INFO controller::controller - update global status node(NodeAddress(0a423460911494e1)) height(23364)
-2022-11-16T07:47:46.015283211+00:00 INFO controller::chain - commit_block height: 23364 hash 0x4fe40496e71bf7a1d3344c6778c2cd9bea547763772fd276ab086ea3ceafe95c
-2022-11-16T07:47:46.020220810+00:00 INFO controller::chain - exec_block(23364): status: Success, state_root: 0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421
-2022-11-16T07:47:46.023409938+00:00 INFO controller::chain - finalize_block height: 23364
+2024-04-01T20:24:27.467869103+08:00  INFO commit_block:chain_commit_block:commit_block:finalize_block: controller::core::chain: finalize block(15) success: pool len: 0, pool quota: 0. hash: 0x4651b0fb4a075d74fdf3420ceb6ab2efbc8853b6b066de611f83d4d6fca59328
+2024-04-01T20:24:27.46975747+08:00  INFO process_network_msg: controller::protocol::node_manager: update node status: origin: 691b042ba5bbd15b, height: 15, hash: 0x4651b0fb4a075d74fdf3420ceb6ab2efbc8853b6b066de611f83d4d6fca59328
+2024-04-01T20:24:30.45592272+08:00  INFO check_proposal: controller::core::controller: check remote proposal(16): start check. hash: 0x95313b6693f2b77031ffea20314b98868a07c59da7adc1586eefc9e3697eb353
+2024-04-01T20:24:30.456815372+08:00  INFO check_proposal: controller::core::controller: check proposal(16) success: tx count: 0, quota: 0, block_hash: 0x95313b6693f2b77031ffea20314b98868a07c59da7adc1586eefc9e3697eb353
+2024-04-01T20:24:30.472022313+08:00  INFO commit_block:chain_commit_block:commit_block: controller::core::chain: commit block(16): hash: 0x95313b6693f2b77031ffea20314b98868a07c59da7adc1586eefc9e3697eb353
+2024-04-01T20:24:30.473016165+08:00  INFO commit_block:chain_commit_block:commit_block:finalize_block: controller::core::chain: execute block(16) Success: state_root: 0xcfb38b8f72345a07b9d9d86dfd67a1823e8be216c0aecf8663dfd0b078bcad92. hash: 0x95313b6693f2b77031ffea20314b98868a07c59da7adc1586eefc9e3697eb353
+2024-04-01T20:24:30.474432144+08:00  INFO commit_block:chain_commit_block:commit_block:finalize_block: controller::core::chain: store AllBlockData(16) success: hash: 0x95313b6693f2b77031ffea20314b98868a07c59da7adc1586eefc9e3697eb353
+2024-04-01T20:24:30.474479438+08:00  INFO commit_block:chain_commit_block:commit_block:finalize_block: controller::core::chain: update auditor and pool, tx_hash_list len 0
+2024-04-01T20:24:30.474486584+08:00  INFO commit_block:chain_commit_block:commit_block:finalize_block: controller::core::chain: finalize block(16) success: pool len: 0, pool quota: 0. hash: 0x95313b6693f2b77031ffea20314b98868a07c59da7adc1586eefc9e3697eb353
+2024-04-01T20:24:30.475586361+08:00  INFO process_network_msg: controller::protocol::node_manager: update node status: origin: 691b042ba5bbd15b, height: 16, hash: 0x95313b6693f2b77031ffea20314b98868a07c59da7adc1586eefc9e3697eb353
+2024-04-01T20:24:30.475722361+08:00  INFO controller::core::controller: update global status: origin: 691b042ba5bbd15b, height: 16, hash: 0x95313b6693f2b77031ffea20314b98868a07c59da7adc1586eefc9e3697eb353
 ```
 
 ## 基本操作

@@ -1,6 +1,123 @@
 # 版本发布
 ## 最新版本
 
+### 6.7.3
+
+#### 主要更新内容
+- Controller_hsm
+    - node_status接口增加返回waiting_block，方便客户端做限流
+    - 交易池打包交易顺序从随机改为先进先出，交易上链时间更加可控
+    - 增加新交易再次转发，新交易上链速度更快
+    - 优化交易池，剔除无效的utxo交易
+- consensus_overlord
+    - 优化日志，方便定位共识相关的问题
+    - 优化wal
+- consensus_raft
+    - 优化raft共识过程启动的条件
+- network_zenoh
+    - 优化了peers_info相关数据结构，显示更加及时
+- executor_evm
+    - 增加了grpc服务keep alive相关的参数，优化客户端网络连接体验
+    - 增加对参数的判断，避免无效参数引发微服务panic
+    - 增加对amend的支持
+- storage_opendal
+    - 增加s3 region的配置项，方便使用自建s3服务
+    - 优化往云存储备份的代码，减少对云存储的压力
+- cloud-config
+    - 配合storage_opendal增加s3-region
+    - 增加enable_tx_persistence，方便用户开启交易池持久化
+    - 增加对external service的支持，合并高级命令，复杂环境部署更加简单
+    - 优化init-node子命令文件拷贝操作，减少不必要的文件拷贝
+    - 增加raft日志等级的配置
+- cloud-op重构，简化运维操作步骤
+
+
+相关Commit
+
+
+#### cita_cloud_proto
+##### [Feature]
+* waiting_block @JLerxky
+
+#### cloud-common-rs
+##### [Feature]
+* waiting_block @JLerxky
+##### [Optim]
+* fix_warn @rink1969
+
+#### Controller_hsm
+##### [Feature]
+* tx_pool_queue @JLerxky 
+* waiting_block @JLerxky 
+* feat-amend @Pencil-Yao 
+##### [Optim]
+* broadcast_txs @JLerxky 
+* optim_pool @JLerxky 
+* fix_filter_utxo @JLerxky 
+
+#### network_zenoh
+##### [Fix]
+* optim_peers_info @JLerxky 
+
+#### consensus_overlord
+##### [Optim]
+* opt_log @rink1969
+* opt_wal @rink1969
+
+#### consensus_raft
+##### [Fix]
+* fix_config_proc @rink1969
+* fix_remove_multi_validators @rink1969
+* fix_warn @rink1969
+* fix_remove_multi_validators_with_restart @rink1969
+* fix_readonly_panic @rink1969
+
+#### executor_evm
+##### [Fix]
+* keepalive @JLerxky 
+* fix_unwrap @rink1969
+* feat-amend @Pencil-Yao 
+
+#### storage_opendal
+##### [Feature]
+* add_config_s3_region @rink1969
+##### [Fix]
+* fix_u32decode_failed  @rink1969
+##### [Optim]
+* reduce_s3_req @rink1969
+
+
+#### cloud-config
+##### [Feature]
+* add_some_config @rink1969
+* support_external_svc @rink1969
+* add_log_level_raft @rink1969
+##### [Optim]
+* opt_init_node_copy @rink1969
+##### [Fix]
+* fix_warn @rink1969
+
+#### cloud-cli
+##### [Feature]
+* waiting_block  @rink1969
+* feat-amend @Pencil-Yao 
+##### [Fix]
+* fix_warn @rink1969
+
+#### cloud-op
+##### [Feature]
+* refactor  @rink1969
+* split_backup_and_export   @rink1969
+##### [Fix]
+* fix_docker_build  @rink1969
+* fix_backup  @rink1969
+* fix_backup  @rink1969
+* fix_rollback_not_found  @rink1969
+* fix_decode_failed_after_cloud_rollback   @rink1969
+
+
+## 历史版本
+
 ### 6.7.2
 
 #### 主要更新内容
@@ -97,7 +214,6 @@
 ##### [Fix]
 * fix windows compile @Pencil-Yao
 
-## 历史版本
 
 ### 6.7.1
 
