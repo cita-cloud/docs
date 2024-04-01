@@ -115,42 +115,43 @@ $ grpcurl -emit-defaults -plaintext -d '{"flag": "false"}' \
 $ grpcurl -emit-defaults -plaintext -d '' \
 127.0.0.1:50004 controller.RPCService/GetNodeStatus
 {
-  "isDanger": false,
   "isSync": false,
-  "waiting_block": 0,
-  "version": "6.6.3",
+  "version": "6.7.3",
   "selfStatus": {
-    "height": "72",
-    "address": "mOhkarWP6rvHflW7WTotEq+jRYM=",
+    "height": "290",
+    "address": "t2A5lWifLrtPGlFNO2vwB94jqTQ=",
     "nodeNetInfo": null
   },
-  "peersCount": "3",
+  "peersCount": "4",
   "peersStatus": [
     {
-      "height": "72",
-      "address": "OHQt7esHjdYaN++ada8HozVrRq4=",
+      "height": "290",
+      "address": "l3UN++HaHPeYn476EU9mkcWvy8o=",
       "nodeNetInfo": {
-        "multiAddress": "/dns4/127.0.0.1/tcp/40002/tls/test-chain-2",
-        "origin": "4067926863296040406"
+        "multiAddress": "/dns4/127.0.0.1/tcp/40000/tls/test-overlord-node3",
+        "origin": "10913644647479385335"
       }
     },
     {
-      "height": "72",
-      "address": "4t8sZtTXWW171+g/ww+UG4EdWZM=",
+      "height": "290",
+      "address": "aRsEK6W70VvqF4T9WWWLmWudBUI=",
       "nodeNetInfo": {
-        "multiAddress": "/dns4/127.0.0.1/tcp/40001/tls/test-chain-1",
-        "origin": "16347833992547359085"
+        "multiAddress": "/dns4/127.0.0.1/tcp/40000/tls/test-overlord-node2",
+        "origin": "7573651783864275291"
       }
     },
     {
-      "height": "72",
-      "address": "+Nh2xYHoOKtJQfCcYj1d+9pUVWs=",
+      "height": "290",
+      "address": "IM5eRoT1UaQDKXEgiv9MFCB76jk=",
       "nodeNetInfo": {
-        "multiAddress": "/dns4/127.0.0.1/tcp/40003/tls/test-chain-3",
-        "origin": "17931212507035744427"
+        "multiAddress": "/dns4/127.0.0.1/tcp/40000/tls/test-overlord-node1",
+        "origin": "2363930511387480484"
       }
     }
-  ]
+  ],
+  "isDanger": false,
+  "initBlockNumber": "0",
+  "waitingBlock": "0"
 }
 ```
 
