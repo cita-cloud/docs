@@ -10,14 +10,14 @@
     - 交易持久化优化，更加及时进行交易持久化
     - 调大批量转发交易的时间，批量效果更明显
 - network_zenoh
-  - 升级至zenoh 1.0
+    - 升级至zenoh 1.0
 - executor_evm 
-  - 优化锁，提升读请求性能
+    - 优化锁，提升读请求性能
 - storage_opendal
-  - 新增将区块链数据导出到kafka的功能（实验性）
+    - 新增将区块链数据导出到kafka的功能（实验性）
 - cloud-config优化
-  - 配合storage_opendal增加导出到kafka的配置
-  - 修复endpoint问题
+    - 配合storage_opendal增加导出到kafka的配置
+    - 修复endpoint问题
 
 相关Commit：
 
