@@ -1,6 +1,86 @@
 # 版本发布
 ## 最新版本
 
+### 6.7.4
+
+#### 主要更新内容
+
+- 支持IPv4/v6双栈
+- Controller_hsm 多项优化
+    - 交易持久化优化，更加及时进行交易持久化
+    - 调大批量转发交易的时间，批量效果更明显
+- network_zenoh
+  - 升级至zenoh 1.0
+- executor_evm 
+  - 优化锁，提升读请求性能
+- storage_opendal
+  - 新增将区块链数据导出到kafka的功能（实验性）
+- cloud-config优化
+  - 配合storage_opendal增加导出到kafka的配置
+  - 修复endpoint问题
+
+相关Commit：
+
+#### cloud-common-rs
+##### [Feature]
+* support Dual-stack @rink1969
+
+#### crypto_eth
+##### [Feature]
+* support dual stack @rink1969
+
+#### crypto_sm
+##### [Feature]
+* support dual stack @rink1969
+
+#### Controller_hsm
+##### [Feature]
+* support dual stack @rink1969
+
+##### [Optim]
+* optim txs_persistence @JLerxky 
+* change buffer_duration to 30ms @rink1969
+
+##### [Fix]
+* fix potential dead lock @rink1969
+
+#### network_zenoh
+##### [Feature]
+*Bump zenoh and support dual stack  @JLerxky 
+
+##### [Fix]
+* fix msg codec @JLerxky 
+
+#### consensus_overlord
+##### [Feature]
+* bump version; update deps; support dual stack @rink1969
+
+#### consensus_raft
+##### [Feature]
+* bump version; update deps; support dual stack  @rink1969
+
+#### executor_evm
+##### [Feature]
+* bump version; update deps; support dual stack  @rink1969
+
+##### [Optim]
+* Optim read only req @JLerxky 
+
+#### storage_opendal
+##### [Feature]
+* export to kafka @rink1969
+* enhance exporter; support dual stack @rink1969
+
+#### cloud-config
+##### [Feature]
+* Support kafka  @rink1969
+* bump version; update deps; support dual stack  @rink1969
+
+##### [Fix]
+* add condition in endpointslice @rink1969
+
+## 历史版本
+
 ### 6.7.3
 
 #### 主要更新内容
@@ -115,8 +195,6 @@
 * fix_rollback_not_found  @rink1969
 * fix_decode_failed_after_cloud_rollback   @rink1969
 
-
-## 历史版本
 
 ### 6.7.2
 
