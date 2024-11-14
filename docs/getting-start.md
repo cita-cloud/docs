@@ -38,11 +38,11 @@ export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 使用方法参见[文档](https://cita-cloud.github.io/cloud-cli/)。
 
 ```
-$ wget https://github.com/cita-cloud/cloud-cli/releases/download/v0.6.1/cldi-x86_64-unknown-linux-musl.tar.gz
+$ wget https://github.com/cita-cloud/cloud-cli/releases/download/v0.6.2/cldi-x86_64-unknown-linux-musl.tar.gz
 $ tar zxvf cldi-x86_64-unknown-linux-musl.tar.gz
 $ sudo mv ./cldi /usr/local/bin/
 $ cldi -h
-cldi 0.6.1
+cldi 0.6.2
 Rivtower Technologies <contact@rivtower.com>
 The command line interface to interact with CITA-Cloud
 
@@ -86,15 +86,13 @@ Options:
 $ cldi account generate -h
 generate a new account
 
-USAGE:
-    cldi account generate [OPTIONS]
+Usage: cldi account generate [OPTIONS]
 
-OPTIONS:
-        --name <name>             The name for the new generated account, default to account address
-    -p, --password <password>     The password to encrypt the account
-        --crypto <crypto-type>    The crypto type for the generated account. [default: <current-
-                                  context-crypto-type>] [possible values: SM, ETH]
-    -h, --help                    Print help information
+Options:
+      --name <name>           The name for the new generated account, default to account address
+  -p, --password <password>   The password to encrypt the account
+      --crypto <crypto-type>  The crypto type for the generated account. [default: <current-context-crypto-type>] [possible values: SM, ETH]
+  -h, --help                  Print help
 ```
 
 为了演示方便，这里不设置密码，加密算法也使用默认值。
@@ -119,7 +117,7 @@ export DOCKER_REGISTRY=registry.devops.rivtower.com
 export DOCKER_REPO=cita-cloud
 
 # 设置链的版本
-export RELEASE_VERSION=v6.7.3
+export RELEASE_VERSION=v6.7.4
 
 # 设置链的类型和名称
 export CHIAN_TYPE=overlord
